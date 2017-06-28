@@ -1,5 +1,5 @@
 import libtcodpy as libtcod
-import math, textwrap
+import math, textwrap, shelve
 
 SCREENWIDTH = 80
 SCREENHEIGHT = 50
@@ -21,6 +21,10 @@ INVENTORY_WIDTH = 50
 HEAL_AMOUNT = 4
 LIGHTNING_DAMAGE = 20
 LIGHTNING_RANGE = 5
+CONFUSE_NUM_TURNS = 10
+CONFUSE_RANGE = 8
+FIREBALL_RADIUS = 3
+FIREBALL_DAMAGE = 12
 
 FOV_ALGO = 0
 FOV_LIGHT_WALLS = True
@@ -30,6 +34,19 @@ color_dark_wall = libtcod.Color(0, 0, 100)
 color_light_wall = libtcod.Color(130, 110, 50)
 color_dark_ground = libtcod.Color(50, 50, 150)
 color_light_ground = libtcod.Color(200, 180, 50)
+
+class ConfusedMonster:
+    def __init__(self, old_ai, num_turns = CONFUSE_NUM_TURNS):
+        self.old_ai = old_ai
+        self.num_turns = num_turns
+
+    def take_turn(self):
+        if self.num_turns > 0:
+            self.owner.move(libtcod.random_get_int(0, -1, 1), libtcod.random_get_int(0, -1, 1))
+            self.num_turns -= 1
+        else:
+            self.owner.ai = self.old_ai
+            message("The {} is no longer confused!".format(self.owner.name))
 
 class Item:
     def __init__(self, use_function = None):
@@ -49,6 +66,13 @@ class Item:
         else:
             if self.use_function() != "cancelled":
                 inventory.remove(self.owner)
+
+    def drop(self):
+        objects.append(self.owner)
+        inventory.remove(self.owner)
+        self.owner.x = player.x
+        self.owner.y = player.y
+        message("You dropped a {}.".format(self.owner.name), libtcod.yellow)
 
 class Fighter:
     def __init__(self, hp, defense, power, death_function = None):
@@ -142,6 +166,9 @@ class Object:
         dy = other.y - self.y
         return math.sqrt(dx ** 2 + dy ** 2)
 
+    def distance(self, x, y):
+        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
+
     def draw(self):
         if libtcod.map_is_in_fov(fov_map, self.x, self.y):
             libtcod.console_set_default_foreground(con, self.color)
@@ -172,6 +199,52 @@ class Rect:
 
     def intersect(self, other):
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >= other.y1)
+
+def target_monster(max_range = None):
+    while True:
+        x, y = target_tile(max_range)
+        if x == None:
+            return None
+
+        for obj in objects:
+            if obj.fighter and obj != player and obj.x == x and obj.y == y:
+                return obj
+
+def target_tile(max_range = None):
+    global key, mouse
+
+    while True:
+        libtcod.console_flush()
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS|libtcod.EVENT_MOUSE, key, mouse)
+        render_all()
+
+        x, y = mouse.cx, mouse.cy
+
+        if (mouse.lbutton_pressed and libtcod.map_is_in_fov(fov_map, x, y)) and (max_range == None or player.distance(x, y) <= max_range):
+            return x, y
+        if mouse.rbutton_pressed or key.vk == libtcod.KEY_ESCAPE:
+            return None, None
+
+def cast_fireball():
+    message("Left-click a target tile for the fireball, or right-click to cancel.", libtcod.light_cyan)
+    x, y = target_tile()
+    if x == None:
+        return "cancelled"
+    message("The fireball explodes, burning everything within {} tiles!".format(FIREBALL_RADIUS), libtcod.orange)
+    for obj in objects:
+        if obj.distance(x, y) <= FIREBALL_RADIUS and obj.fighter:
+            message("The {} gets burned for {} hit points.".format(obj.name, FIREBALL_DAMAGE), libtcod.orange)
+            obj.fighter.take_damage(FIREBALL_DAMAGE)
+
+def cast_confuse():
+    message("Left-click an enemy to confuse it, or right-click to cancel.", libtcod.light_cyan)
+    monster = target_monster(CONFUSE_RANGE)
+    if monster == None:
+        return "cancelled"
+    old_ai = monster.ai
+    monster.ai = ConfusedMonster(old_ai)
+    monster.ai.owner = monster
+    message("The eyes of the {} look vacant, as he starts to stumble around!".format(monster.name), libtcod.red)
 
 def closest_monster(max_range):
     closest_enemy = None
@@ -237,12 +310,19 @@ def place_objects(room):
         y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
 
         if not is_blocked(x, y):
-            if libtcod.random_get_int(0, 0, 100) < 70:
+            dice = libtcod.random_get_int(0, 0, 100)
+            if dice < 70:
                 item_component = Item(use_function = cast_heal)
                 item = Object(x, y, "!", "healing potion", libtcod.violet, item = item_component)
-            else:
+            elif dice < 80:
                 item_component = Item(use_function = cast_lightning)
                 item = Object(x, y, "#", "scroll of lightning bolt", libtcod.light_yellow, item = item_component)
+            elif dice < 90:
+                item_component = Item(use_function = cast_fireball)
+                item = Object(x, y, "#", "scroll of fireball", libtcod.light_yellow, item = item_component)
+            else:
+                item_component = Item(use_function = cast_confuse)
+                item = Object(x, y, "#", "scroll of consufion", libtcod.light_yellow, item = item_component)
             objects.append(item)
             item.send_to_back()
 
@@ -297,7 +377,9 @@ def render_all():
     libtcod.console_blit(panel, 0, 0, SCREENWIDTH, PANELHEIGHT, 0, 0, PANEL_Y)
 
 def make_map():
-    global map
+    global map, objects
+
+    objects = [player]
 
     map = [[Tile(True) for y in range(MAPHEIGHT)] for x in range(MAPWIDTH)]
     rooms = []
@@ -400,6 +482,10 @@ def handle_keys():
                 chosen_item = inventory_menu("Press the key next to an item to use it, or any other to cancel.\n")
                 if chosen_item != None:
                     chosen_item.use()
+            if key_char == "d":
+                chosen_item = inventory_menu("Press the key next to an item to drop it, or any other to cancel.\n")
+                if chosen_item != None:
+                    chosen_item.drop()
             return "didnt-take-turn"
 
 def render_bar(x, y, total_width, name, value, maximum, bar_color, back_color):
@@ -432,9 +518,13 @@ def get_names_under_mouse():
     return names.capitalize()
 
 def menu(header, options, width):
+    global key, mouse
+
     if len(options) > 26:
         raise ValueError("Cannot have a menu with more than 26 options.")
     header_height = libtcod.console_get_height_rect(con, 0, 0, width, SCREENHEIGHT, header)
+    if header == "":
+        header_height = 0
     height = len(options) + header_height
 
     window = libtcod.console_new(width, height)
@@ -453,12 +543,29 @@ def menu(header, options, width):
     y = SCREENHEIGHT // 2 - height // 2
     libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
 
-    libtcod.console_flush()
-    key = libtcod.console_wait_for_keypress(True)
-    index = key.c - ord("a")
-    if index >= 0 and index < len(options):
-        return index
-    return None
+    x_offset = x
+    y_offset = y + header_height
+
+    while True:
+        libtcod.console_flush()
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS|libtcod.EVENT_MOUSE, key, mouse)
+
+        if mouse.lbutton_pressed:
+            menu_x, menu_y = mouse.cx - x_offset, mouse.cy - y_offset
+            if menu_x >= 0 and menu_x < width and menu_y >= 0 and menu_y < height - header_height:
+                return menu_y
+
+        if mouse.rbutton_pressed or key.vk == libtcod.KEY_ESCAPE:
+            return None
+
+        if key.vk == libtcod.KEY_ENTER and key.lalt:
+            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+
+        index = key.c - ord("a")
+        if index >= 0 and index < len(options):
+            return index
+        if index >=0 and index <= 26:
+            return None
 
 def inventory_menu(header):
     if len(inventory) == 0:
@@ -487,49 +594,108 @@ def cast_lightning():
     message("A lightning bolt strikes the {} with a loud thunder! The bolt does {} damage".format(monster.name, LIGHTNING_DAMAGE), libtcod.light_blue)
     monster.fighter.take_damage(LIGHTNING_DAMAGE)
 
+def new_game():
+    global player, inventory, game_msgs, game_state
+
+    fighter_component = Fighter(30, 2, 5, death_function = player_death)
+    player = Object(0, 0, "@", "player", libtcod.white, True, fighter = fighter_component)
+    make_map()
+    initialize_fov()
+    game_msgs = []
+    inventory = []
+    message("Welcome stranger!", libtcod.red)
+
+def initialize_fov():
+    global fov_recompute, fov_map
+
+    libtcod.console_clear(con)
+
+    fov_recompute = True
+    fov_map = libtcod.map_new(MAPWIDTH, MAPHEIGHT)
+    for y in range(MAPHEIGHT):
+        for x in range(MAPWIDTH):
+            libtcod.map_set_properties(fov_map, x, y, not map[x][y].block_sight, not map[x][y].blocked)
+
+def play_game():
+    global key, mouse
+
+    player_action = None
+
+    while not libtcod.console_is_window_closed():
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS|libtcod.EVENT_MOUSE, key, mouse)
+        render_all()
+        libtcod.console_flush()
+
+        for obj in objects:
+            obj.clear()
+        player_action = handle_keys()
+        if player_action == "exit":
+            save_game()
+            break
+
+        if game_state == "playing" and player_action != "didnt-take-turn":
+            for obj in objects:
+                if obj.ai:
+                    obj.ai.take_turn()
+
+def main_menu():
+    img = libtcod.image_load("menu_background.png")
+
+    while not libtcod.console_is_window_closed():
+        libtcod.image_blit_2x(img, 0, 0, 0)
+
+        libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+        libtcod.console_print_ex(0, SCREENWIDTH // 2, SCREENHEIGHT // 2 - 14, libtcod.BKGND_NONE, libtcod.CENTER, "COMPUTING NEA PROJECT")
+        libtcod.console_print_ex(0, SCREENWIDTH // 2, SCREENHEIGHT // 2 - 12, libtcod.BKGND_NONE, libtcod.CENTER, "By Jarrode")
+
+        choice = menu("", ["Play a new game", "Continue last game", "Quit"], 24)
+        if choice == 0:
+            new_game()
+            play_game()
+        elif choice == 1:
+            try:
+                load_game()
+            except:
+                msg_box("\n No saved game to load. \n", 24)
+                continue
+            play_game()
+        elif choice == 2:
+            break
+
+def msg_box(text, width = 50):
+    menu(text, [], width)
+
+def save_game():
+    file = shelve.open("savegame", "n")
+    file["map"] = map
+    file["objects"] = objects
+    file["player_index"] = objects.index(player)
+    file["inventory"] = inventory
+    file["game_msgs"] = game_msgs
+    file["game_state"] = game_state
+    file.close()
+
+def load_game():
+    global map, objects, player, inventory, game_msgs, game_state
+
+    file = shelve.open("savegame", "r")
+    map = file["map"]
+    objects = file["objects"]
+    player = objects[file["player_index"]]
+    inventory = file["inventory"]
+    game_msgs = file["game_msgs"]
+    game_state = file["game_state"]
+    file.close()
+    print(1)
+    initialize_fov()
+
 libtcod.console_set_custom_font("arial10x10.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 libtcod.console_init_root(SCREENWIDTH, SCREENHEIGHT, "Cool practice thing", False)
 con = libtcod.console_new(MAPWIDTH, MAPHEIGHT)
-
 panel = libtcod.console_new(SCREENWIDTH, PANELHEIGHT)
-
-fighter_component = Fighter(30, 2, 5, death_function = player_death)
-
-player = Object(0, 0, "@", "player", libtcod.white, True, fighter = fighter_component)
-objects = [player]
-game_msgs = []
-inventory = []
-
-make_map()
-
-fov_map = libtcod.map_new(MAPWIDTH, MAPHEIGHT)
-for y in range(MAPHEIGHT):
-    for x in range(MAPWIDTH):
-        libtcod.map_set_properties(fov_map, x, y, not map[x][y].block_sight, not map[x][y].blocked)
-fov_recompute = True
-
 game_state = "playing"
-player_action = None
-
-message("Welcome stranger!", libtcod.red)
+libtcod.sys_set_fps(LIMITFPS)
 
 mouse = libtcod.Mouse()
 key = libtcod.Key()
-
-libtcod.sys_set_fps(LIMITFPS)
-
-while not libtcod.console_is_window_closed():
-    libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS|libtcod.EVENT_MOUSE, key, mouse)
-    render_all()
-    libtcod.console_flush()
-
-    for obj in objects:
-        obj.clear()
-    player_action = handle_keys()
-    if player_action == "exit":
-        break
-
-    if game_state == "playing" and player_action != "didnt-take-turn":
-        for obj in objects:
-            if obj.ai:
-                obj.ai.take_turn()
+main_menu()
