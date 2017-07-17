@@ -84,15 +84,19 @@ def dungeon_window(player, dungeon, fov_map):
     x, y, w, h, title = 17, 1, 46, 46, "Dungeon"
     create_window(x, y, w, h, title)
 
-    for y in range(len(dungeon)):
-        for x in range(len(dungeon[0])):
-            if 17 <= x + player.x_offset <= 62 and 1 <= y + player.y_offset <= 46:
-                visible = libtcod.map_is_in_fov(fov_map, x, y)
-                if not visible and dungeon[y][x].explored:
-                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon[y][x].base_bk_color, dungeon[y][x].base_char))
-                elif visible:
-                    dungeon[y][x].explored = True
-                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon[y][x].color, dungeon[y][x].char))
+    x_min = max(17 - player.x_offset, 0)
+    x_max = min(62 - player.x_offset, len(dungeon[0]) - 1)
+
+    y_min = max(1 - player.y_offset, 0)
+    y_max = min(46 - player.y_offset, len(dungeon) - 1)
+    for y in range(y_min, y_max + 1):
+        for x in range(x_min, x_max + 1):
+            visible = libtcod.map_is_in_fov(fov_map, x, y)
+            if not visible and dungeon[y][x].explored:
+                terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon[y][x].base_bk_color, dungeon[y][x].base_char))
+            elif visible:
+                dungeon[y][x].explored = True
+                terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon[y][x].color, dungeon[y][x].char))
 
 def monsters_window(player, entities, fov_map):
     x, y, w, h, title = 1, 15, 14, 32, "Monsters"
@@ -124,15 +128,3 @@ def description_window():
 def equipment_window():
     x, y, w, h, title = 65, 49, 30, 14, "Equipment"
     create_window(x, y, w, h, title)
-
-if __name__ == "__main__":
-    ui_elements =  [player_menu, dungeon_menu, inventory_menu, monsters_menu, messages_menu, description_menu, equipment_menu]
-    terminal.open()
-    terminal.set("window: size=96x64; font: 'font_12x12.png', size=12x12, codepage=437")
-    while True:
-        for e in ui_elements:
-            e()
-        terminal.refresh()
-        if terminal.read() == terminal.TK_CLOSE:
-            terminal.close()
-            break

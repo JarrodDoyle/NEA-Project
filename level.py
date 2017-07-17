@@ -77,8 +77,12 @@ def gen_dungeon(width, height):
     rooms = gen_rooms(dungeon)
     x, y = rooms[0].get_center()
     player = entities.Player(x, y)
-    player.x_offset = width // 2 - player.x
-    player.y_offset = height // 2 - player.y
+    #player.x_offset = width // 2 - player.x
+    #player.y_offset = height // 2 - player.y
+
+    # TODO: remove x and y offset hardcoding
+    player.x_offset = int((2 * 17 + 46) / 2 - player.x)
+    player.y_offset = int((2* 1 + 46) / 2 - player.y)
     dungeon[y][x].add_entity(player)
     entity_list = gen_monsters(dungeon, rooms)
     entity_list.insert(0, player)
