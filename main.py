@@ -33,6 +33,7 @@ while True:
             if entity.fighter and entity.fighter.hp <= 0:
                 dungeon[entity.y][entity.x].remove_entity()
                 player.messages.append("You killed the {}.".format(entity.name))
+                ui_elements["messages"].redraw = True
                 dead_entities.append(entity)
         for entity in dead_entities:
             entities.remove(entity)
