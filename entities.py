@@ -27,7 +27,6 @@ class Player(Entity):
             else:
                 self.move(level, dx, dy)
 
-
     def move(self, level, dx, dy):
         level[self.y][self.x].remove_entity()
         self.x += dx
