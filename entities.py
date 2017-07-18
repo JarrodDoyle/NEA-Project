@@ -16,15 +16,17 @@ class Player(Entity):
         super().__init__(x, y, "Player", "@", "white")
         self.fighter = Fighter(hp = 100, strength = 4, defense = 1, intelligence = 0)
 
-    def move_or_attack(self, level, dx, dy):
+    def move_or_attack(self, level, dx, dy, ui_elements):
         x = self.x + dx
         y = self.y + dy
         if level[y][x].is_blocked == False:
             entity = level[y][x].entity
             if entity is not None:
                 self.fighter.attack(entity)
+                ui_elements["player"].redraw = True
             else:
                 self.move(level, dx, dy)
+
 
     def move(self, level, dx, dy):
         level[self.y][self.x].remove_entity()
