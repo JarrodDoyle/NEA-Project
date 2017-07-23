@@ -1,12 +1,14 @@
 import libtcodpy as libtcod
 from bearlibterminal import terminal
-from level import *
+from map_generation.bsp_map import Dungeon_BSP
+from map_generation.tunneler_map import Dungeon_Tunneler
 from render.render_functions import *
 from fov_functions import *
 from input_functions import *
 from ui import *
 from game_states import *
 from death_functions import *
+from entities.entity_functions import get_blocking_entity
 
 # Initialize bearlibterminal terminal
 terminal.open()
@@ -20,8 +22,9 @@ game_state = Game_States.PLAYER_TURN
 ui_elements = initialize_ui_elements()
 
 # Initialize dungeon
-dungeon = Dungeon(96, 64)
-entities, player = dungeon.gen_dungeon_tunneling()
+#dungeon = Dungeon_Tunneler(96, 64)
+dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+player, entities = dungeon.gen_dungeon()
 
 # Initialize FOV
 fov_map, fov_recompute = initialize_fov(dungeon)
