@@ -33,7 +33,7 @@ class UI_Element:
 
 class Player_UI_Window(UI_Element):
     def __init__(self):
-        super().__init__(1, 1, 14, 12, "Player")
+        super().__init__(1, 1, 14, 13, "Player")
 
     def render(self, player):
         # Create border for window and clear area
@@ -60,26 +60,34 @@ class Player_UI_Window(UI_Element):
             terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color]".format(player.fighter.defense))
 
         # LINE FOUR
+        # If player has bonus accuracy display defense and then bonus accuracy after
+        if player.fighter.bonus_accuracy() > 0:
+            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.accuracy, player.fighter.bonus_accuracy()))
+        # Otherwise just display accuracy
+        else:
+            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color]".format(player.fighter.accuracy))
+
+        # LINE FIVE
         # If player has bonus intelligence display intelligence and then bonus intelligence after
         if player.fighter.bonus_intelligence() > 0:
-            terminal.puts(self.x, self.y + 3, "Int: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.intelligence, player.fighter.bonus_intelligence()))
+            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.intelligence, player.fighter.bonus_intelligence()))
         # Otherwise just display intelligence
         else:
-            terminal.puts(self.x, self.y + 3, "Int: [color=green]{}[/color]".format(player.fighter.intelligence))
+            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color]".format(player.fighter.intelligence))
 
         # TODO: implement level stuff
-        # LINE SIX
-        terminal.puts(self.x, self.y + 5, "Lvl: [color=orange]{}[/color]".format(1))
         # LINE SEVEN
-        terminal.puts(self.x, self.y + 6, "Exp: [color=orange]{}[/color]".format(0))
+        terminal.puts(self.x, self.y + 6, "Lvl: [color=orange]{}[/color]".format(1))
+        # LINE EIGHT
+        terminal.puts(self.x, self.y + 7, "Exp: [color=orange]{}[/color]".format(0))
 
-        # LINE NINE
-        terminal.puts(self.x, self.y + 8, "Hp: [color=red]{}/{}[/color]".format(player.fighter.hp, player.fighter.max_hp))
         # LINE TEN
-        health_bar(self.x, self.y + 9, self.w, 1, player)
+        terminal.puts(self.x, self.y + 9, "Hp: [color=red]{}/{}[/color]".format(player.fighter.hp, player.fighter.max_hp))
+        # LINE ELEVEN
+        health_bar(self.x, self.y + 10, self.w, 1, player)
 
-        # LINE TWELVE
-        terminal.puts(self.x, self.y + 11, "Gold: [color=yellow]{}[/color]".format(200)) # Replace with players gold amount
+        # LINE THIRTEEN
+        terminal.puts(self.x, self.y + 12, "Gold: [color=yellow]{}[/color]".format(200)) # Replace with players gold amount
 
 class Inventory_UI_Window(UI_Element):
     def __init__(self):
@@ -121,7 +129,7 @@ class Dungeon_UI_Window(UI_Element):
 
 class Monsters_UI_Window(UI_Element):
     def __init__(self):
-        super().__init__(1, 15, 14, 32, "Monsters")
+        super().__init__(1, 16, 14, 32, "Monsters")
 
     def render(self, player, entities, fov_map):
         self.create_window()
