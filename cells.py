@@ -6,7 +6,7 @@ class Cell:
         self.color = color
         self.is_blocked = is_blocked
         self.blocks_sight = blocks_sight
-        self.explored = False   
+        self.explored = False
 
 class Wall(Cell):
     def __init__(self):

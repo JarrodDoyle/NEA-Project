@@ -129,12 +129,12 @@ class Monsters_UI_Window(UI_Element):
         visible_entities = get_visible_entities(player, entities, fov_map)
         if visible_entities:
             num_monsters = 0
-            for i in range(len(visible_entities)):
+            for i in range(min(len(visible_entities), 8)):
                 if visible_entities[i].fighter:
                     entity = visible_entities[i]
-                    terminal.puts(self.x, self.y + num_monsters * 5, "[color={}]{}[/color]".format(entity.color, entity.name.capitalize()))
-                    terminal.puts(self.x, self.y + num_monsters * 5 + 1, "Hp: [color=red]{}/{}[/color]".format(entity.fighter.hp, entity.fighter.max_hp))
-                    health_bar(self.x, self.y + num_monsters * 5 + 2, 14, 1, entity)
+                    terminal.puts(self.x, self.y + num_monsters * 4, "[color={}]{}[/color]".format(entity.color, entity.name.capitalize()))
+                    terminal.puts(self.x, self.y + num_monsters * 4 + 1, "Hp: [color=red]{}/{}[/color]".format(entity.fighter.hp, entity.fighter.max_hp))
+                    health_bar(self.x, self.y + num_monsters * 4 + 2, 14, 1, entity)
                     num_monsters += 1
 
 class Messages_UI_Window(UI_Element):
