@@ -1,7 +1,6 @@
 import libtcodpy as libtcod
 from bearlibterminal import terminal
 from map_generation.bsp_map import Dungeon_BSP
-from map_generation.tunneler_map import Dungeon_Tunneler
 from render.render_functions import *
 from fov_functions import *
 from input_functions import *
@@ -38,6 +37,7 @@ while True:
     player_action = handle_inputs()
     move = player_action.get("move")
     rest = player_action.get("rest")
+    pickup = player_action.get("pickup")
     quit = player_action.get("quit")
 
     # If player action is to quit then break the main loop
@@ -74,13 +74,25 @@ while True:
             # Player turn is over so set game_state to ENEMY_TURN
             game_state = Game_States.ENEMY_TURN
 
+        # If player tries to pick something up
+        if pickup:
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.inventory.add_item(entity)
+                    break
+            else:
+                pickup_results = [{"message": "[color=yellow]There is nothing here to pick up."}]
+            player_turn_results.extend(pickup_results)
+
         for player_turn_result in player_turn_results:
             message = player_turn_result.get("message")
             dead_entity = player_turn_result.get("dead")
+            item_added = player_turn_result.get("item_added")
 
             # If the players turn has generated a message add them to the messages list
             if message:
                 ui_elements["messages"].messages.append(message)
+
             # If the players turn has resulted in an entity dying
             if dead_entity:
                 # If the player has died generate an appropriate message and change game_state
@@ -90,6 +102,12 @@ while True:
                 else:
                     message = kill_monster(dead_entity)
                 ui_elements["messages"].messages.append(message)
+
+            # If the player picked up an item
+            if item_added:
+                # Remove item from entities list and therefore the dungeon map. Change game state to enemy turn
+                entities.remove(item_added)
+                game_state = Game_States.ENEMY_TURN
 
     # If it is not the players turn
     if game_state == Game_States.ENEMY_TURN:

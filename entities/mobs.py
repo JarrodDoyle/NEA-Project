@@ -1,38 +1,8 @@
-import math
+from components.fighter import *
+from components.ai import *
+from components.inventory import *
 from render.render_classes import Render_Order
-
-class Entity:
-    # initialization of entity
-    def __init__(self, x, y, name, char, color, blocks = False, render_order = Render_Order.CORPSE, fighter = None, ai = None, inventory = None, item = None):
-        self.x = x
-        self.y = y
-        self.name = name
-        self.char = char
-        self.color = color
-        self.blocks = blocks
-        self.render_order = render_order
-        self.fighter = fighter
-        # If entity has a fighter component
-        if self.fighter:
-            self.fighter.owner = self
-        self.ai = ai
-        # If entity has an ai component
-        if self.ai:
-            self.ai.owner = self
-        self.inventory = inventory
-        # If entity has an inventory component
-        if self.inventory:
-            self.inventory.owner = self
-        self.item = item
-        if self.item:
-            self.item.owner = self
-
-    # Calculates distance between self and another entity
-    def distance_to(self, other):
-        dx = other.x - self.x
-        dy = other.y - self.y
-        return math.sqrt(dx ** 2 + dy ** 2)
-<<<<<<< HEAD
+from entities.entity_classes import Entity
 
 class Player(Entity):
     # Initialization of player entity
@@ -65,5 +35,3 @@ class Goblin(Entity):
         self.equipment = {"head": None, "body": None, "l_hand": None, "r_hand": None, "arms": None, "feet": None, "l_ring": None, "r_ring": None, "ranged": None, "ammo": None}
 
         super().__init__(x, y, "goblin", "g", "green", blocks = True, render_order = Render_Order.ACTOR, fighter = fighter_component, ai = ai_component)
-=======
->>>>>>> items

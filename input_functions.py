@@ -32,5 +32,8 @@ def handle_inputs():
     elif key == terminal.TK_KP_5:
         return {"rest": True}
 
+    if key == terminal.TK_G:
+        return {"pickup": True}
+
     else:
         return {}

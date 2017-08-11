@@ -98,7 +98,7 @@ class Inventory_UI_Window(UI_Element):
         inventory = player.inventory.items
         letter_index = ord("a")
         for i in range(len(inventory)):
-            terminal.puts(self.x, self.y + i, "{}) {}".format(chr(letter_index + i), inventory[i]))
+            terminal.puts(self.x, self.y + i, "{}) [color={}]{}[/color]".format(chr(letter_index + i), inventory[i].color, inventory[i].name))
 
 class Dungeon_UI_Window(UI_Element):
     def __init__(self):

@@ -2,7 +2,8 @@ import libtcodpy as libtcod
 import cells, random
 from rect import Rect
 from entities.entity_functions import get_blocking_entity
-from entities.entity_classes import *
+from entities.items import Health_Pot
+from entities.mobs import Goblin, Player
 
 class Dungeon_BSP:
     def __init__(self, width, height, depth = 5, min_leaf_size = 10, min_room_size = 5, max_room_area = 36, full_rooms = False):
@@ -14,8 +15,7 @@ class Dungeon_BSP:
         self.max_room_area = max_room_area
         self.full_rooms = full_rooms
 
-    def gen_monsters(self):
-        entity_list = []
+    def gen_monsters(self, entity_list):
         for room in self.rooms:
             max_num_monsters = room.get_area() // 15
             num_monsters = libtcod.random_get_int(0, 0, max_num_monsters)
@@ -25,7 +25,17 @@ class Dungeon_BSP:
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                     monster = Goblin(x, y)
                     entity_list.append(monster)
-        return entity_list
+
+    def gen_items(self, entity_list):
+        for room in self.rooms:
+            max_num_items = room.get_area() // 15
+            num_items = libtcod.random_get_int(0, 0, max_num_items)
+            for i in range(num_items):
+                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
+                    item = Health_Pot(x, y)
+                    entity_list.append(item)
 
     def initialize_dungeon(self):
         self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
@@ -169,7 +179,9 @@ class Dungeon_BSP:
         # TODO: remove offset hardcoding
         player.x_offset = int((2 * 17 + 46) / 2 - player.x)
         player.y_offset = int((2* 1 + 46) / 2 - player.y)
-        entity_list = self.gen_monsters()
+        entity_list = []
+        self.gen_monsters(entity_list)
+        self.gen_items(entity_list)
         entity_list.insert(0, player)
 
         return player, entity_list
