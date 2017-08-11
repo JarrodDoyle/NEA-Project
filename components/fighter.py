@@ -33,10 +33,10 @@ class Fighter:
             damage = self.strength + weapon1_damage + weapon2_damage
 
             # Generate appropriate attack message and simulate attack
-            results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
+            results.append({"message": f"[color={self.owner.color}]{self.owner.name.capitalize()}[color=red] dealt {damage} damage to [color={target.color}]{target.name}[color=red]."})
             results.extend(target.fighter.take_damage(damage))
         else:
-            results.append({"message": "[color={}]{}'s[/color] attack missed".format(self.owner.color, self.owner.name.capitalize())})
+            results.append({"message": f"[color={self.owner.color}]{self.owner.name.capitalize()}'s[/color] attack missed"})
         return results
 
     # Take damage

@@ -41,53 +41,53 @@ class Player_UI_Window(UI_Element):
 
         # LINE ONE
         # Display player name
-        terminal.puts(self.x, self.y, "Name: {}".format(player.name))
+        terminal.puts(self.x, self.y, f"Name: {player.name}")
 
         # LINE TWO
         # If player has bonus strength display strenght and then bonus strenght after
         if player.fighter.bonus_strength() > 0:
-            terminal.puts(self.x, self.y + 1, "Str: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.strength, player.fighter.bonus_strength()))
+            terminal.puts(self.x, self.y + 1, f"Str: [color=green]{player.fighter.strength}[/color] ([color=blue]+{player.fighter.bonus_strength()}[/color])")
         # Otherwise just display strength
         else:
-            terminal.puts(self.x, self.y + 1, "Str: [color=green]{}[/color]".format(player.fighter.strength))
+            terminal.puts(self.x, self.y + 1, f"Str: [color=green]{player.fighter.strength}[/color]")
 
         # LINE THREE
         # If player has bonus defense display defense and then bonus defense after
         if player.fighter.bonus_defense() > 0:
-            terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.defense, player.fighter.bonus_defense()))
+            terminal.puts(self.x, self.y + 2, f"Def: [color=green]{player.fighter.defense}[/color] ([color=blue]+{player.fighter.bonus_defense()}[/color])")
         # Otherwise just display defense
         else:
-            terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color]".format(player.fighter.defense))
+            terminal.puts(self.x, self.y + 2, f"Def: [color=green]{player.fighter.defense}[/color]")
 
         # LINE FOUR
         # If player has bonus accuracy display defense and then bonus accuracy after
         if player.fighter.bonus_accuracy() > 0:
-            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.accuracy, player.fighter.bonus_accuracy()))
+            terminal.puts(self.x, self.y + 3, f"Acc: [color=green]{player.fighter.accuracy}[/color] ([color=blue]+{player.fighter.bonus_accuracy()}[/color])")
         # Otherwise just display accuracy
         else:
-            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color]".format(player.fighter.accuracy))
+            terminal.puts(self.x, self.y + 3, f"Acc: [color=green]{player.fighter.accuracy}[/color]")
 
         # LINE FIVE
         # If player has bonus intelligence display intelligence and then bonus intelligence after
         if player.fighter.bonus_intelligence() > 0:
-            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.fighter.intelligence, player.fighter.bonus_intelligence()))
+            terminal.puts(self.x, self.y + 4, f"Int: [color=green]{player.fighter.intelligence}[/color] ([color=blue]+{player.fighter.bonus_intelligence()}[/color])")
         # Otherwise just display intelligence
         else:
-            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color]".format(player.fighter.intelligence))
+            terminal.puts(self.x, self.y + 4, f"Int: [color=green]{player.fighter.intelligence}[/color]")
 
         # TODO: implement level stuff
         # LINE SEVEN
-        terminal.puts(self.x, self.y + 6, "Lvl: [color=orange]{}[/color]".format(1))
+        terminal.puts(self.x, self.y + 6, f"Lvl: [color=orange]{1}[/color]")
         # LINE EIGHT
-        terminal.puts(self.x, self.y + 7, "Exp: [color=orange]{}[/color]".format(0))
+        terminal.puts(self.x, self.y + 7, f"Exp: [color=orange]{0}[/color]")
 
         # LINE TEN
-        terminal.puts(self.x, self.y + 9, "Hp: [color=red]{}/{}[/color]".format(player.fighter.hp, player.fighter.max_hp))
+        terminal.puts(self.x, self.y + 9, f"Hp: [color=red]{player.fighter.hp}/{player.fighter.max_hp}[/color]")
         # LINE ELEVEN
         health_bar(self.x, self.y + 10, self.w, 1, player)
 
         # LINE THIRTEEN
-        terminal.puts(self.x, self.y + 12, "Gold: [color=yellow]{}[/color]".format(200)) # Replace with players gold amount
+        terminal.puts(self.x, self.y + 12, f"Gold: [color=yellow]{200}[/color]") # Replace with players gold amount
 
 class Inventory_UI_Window(UI_Element):
     def __init__(self):
@@ -98,7 +98,7 @@ class Inventory_UI_Window(UI_Element):
         inventory = player.inventory.items
         letter_index = ord("a")
         for i in range(len(inventory)):
-            terminal.puts(self.x, self.y + i, "{}) [color={}]{}[/color]".format(chr(letter_index + i), inventory[i].color, inventory[i].name))
+            terminal.puts(self.x, self.y + i, f"{chr(letter_index + i)}) [color={inventory[i].color}]{inventory[i].name}[/color]")
 
 class Dungeon_UI_Window(UI_Element):
     def __init__(self):
@@ -116,16 +116,16 @@ class Dungeon_UI_Window(UI_Element):
             for x in range(x_min, x_max + 1):
                 visible = libtcod.map_is_in_fov(fov_map, x, y)
                 if not visible and dungeon.tiles[y][x].explored:
-                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].bk_color, dungeon.tiles[y][x].char))
+                    terminal.puts(x + player.x_offset, y + player.y_offset, f"[color={dungeon.tiles[y][x].bk_color}]{dungeon.tiles[y][x].char}[/color]")
                 elif visible:
                     dungeon.tiles[y][x].explored = True
-                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].color, dungeon.tiles[y][x].char))
+                    terminal.puts(x + player.x_offset, y + player.y_offset, f"[color={dungeon.tiles[y][x].color}]{dungeon.tiles[y][x].char}[/color]")
 
         entities_in_render_order = sorted(entities, key = lambda x: x.render_order.value)
         for entity in entities_in_render_order:
             visible = libtcod.map_is_in_fov(fov_map, entity.x, entity.y)
             if visible:
-                terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, "[color={}]{}[/color]".format(entity.color, entity.char))
+                terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, f"[color={entity.color}]{entity.char}[/color]")
 
 class Monsters_UI_Window(UI_Element):
     def __init__(self):
@@ -140,8 +140,8 @@ class Monsters_UI_Window(UI_Element):
             for i in range(min(len(visible_entities), 8)):
                 if visible_entities[i].fighter:
                     entity = visible_entities[i]
-                    terminal.puts(self.x, self.y + num_monsters * 4, "[color={}]{}[/color]".format(entity.color, entity.name.capitalize()))
-                    terminal.puts(self.x, self.y + num_monsters * 4 + 1, "Hp: [color=red]{}/{}[/color]".format(entity.fighter.hp, entity.fighter.max_hp))
+                    terminal.puts(self.x, self.y + num_monsters * 4, f"[color={entity.color}]{entity.name.capitalize()}[/color]")
+                    terminal.puts(self.x, self.y + num_monsters * 4 + 1, f"Hp: [color=red]{entity.fighter.hp}/{entity.fighter.max_hp}[/color]")
                     health_bar(self.x, self.y + num_monsters * 4 + 2, 14, 1, entity)
                     num_monsters += 1
 

@@ -8,9 +8,9 @@ class Inventory:
     def add_item(self, item):
         results = []
         if len(self.items) >= self.max_items:
-            results.append({"item_added": None, "message": "[color=yellow]You cannot carry any more, your inventory is full."})
+            results.append({"item_added": None, "message": f"[color={'yellow'}]You cannot carry any more, your inventory is full."})
         else:
-            results.append({"item_added": item, "message": "[color=blue]You pick up the {}!".format(item.name)})
+            results.append({"item_added": item, "message": f"[color={'blue'}]You pick up the {item.name}!"})
             self.items.append(item)
         return results
 
