@@ -10,12 +10,15 @@ class Fighter:
         self.base_accuracy = accuracy
         self.base_intelligence = intelligence
 
+    def set_owner(self, owner):
+        self.owner = owner
+
     # Attack another fighter
     def attack(self, target):
         results = []
 
         attacker_accuracy = roll_dice(1, self.accuracy)
-        target_defense = roll_dice(1, target.fighter.defense)
+        target_defense = roll_dice(1, target.components["fighter"].defense)
         if attacker_accuracy > target_defense:
             weapon1 = self.owner.equipment.get("l_hand")
             if weapon1 == None:
@@ -33,10 +36,10 @@ class Fighter:
             damage = self.strength + weapon1_damage + weapon2_damage
 
             # Generate appropriate attack message and simulate attack
-            results.append({"message": f"[color={self.owner.color}]{self.owner.name.capitalize()}[color=red] dealt {damage} damage to [color={target.color}]{target.name}[color=red]."})
-            results.extend(target.fighter.take_damage(damage))
+            results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
+            results.extend(target.components["fighter"].take_damage(damage))
         else:
-            results.append({"message": f"[color={self.owner.color}]{self.owner.name.capitalize()}'s[/color] attack missed"})
+            results.append({"message": "[color={}]{}'s[/color] attack missed".format(self.owner.color, self.owner.name.capitalize())})
         return results
 
     # Take damage

@@ -66,6 +66,9 @@ class Base_AI:
             # Move self
             self.move(dx, dy)
 
+    def set_owner(self, owner):
+        self.owner = owner
+
 class Basic_Monster(Base_AI):
     def take_turn(self, target, fov_map, dungeon, entities):
         results = []
@@ -78,7 +81,7 @@ class Basic_Monster(Base_AI):
                 # Move towards player using A* pathfinding
                 self.move_astar(target, entities, dungeon)
             # Else attack player if they're alive
-            elif target.fighter.hp > 0:
-                attack_results = monster.fighter.attack(target)
+            elif target.components["fighter"].hp > 0:
+                attack_results = monster.components["fighter"].attack(target)
                 results.extend(attack_results)
         return results

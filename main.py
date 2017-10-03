@@ -16,6 +16,7 @@ terminal.refresh()
 
 # Set inital game state
 game_state = Game_States.PLAYER_TURN
+previous_game_state = game_state
 
 # Initialize UI elements
 ui_elements = initialize_ui_elements()
@@ -23,6 +24,7 @@ ui_elements = initialize_ui_elements()
 # Initialize dungeon
 #dungeon = Dungeon_Tunneler(96, 64)
 dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+#dungeon = Dungeon_BSP(width = 96, height = 64, depth = 100, min_leaf_size = 1, min_room_size = 1, max_room_area = 1, full_rooms = False)
 player, entities = dungeon.gen_dungeon()
 
 # Initialize FOV
@@ -34,10 +36,13 @@ while True:
     render(dungeon, player, entities, fov_map, fov_recompute, ui_elements)
 
     # Get player action as a dict
-    player_action = handle_inputs()
+    player_action = handle_inputs(game_state)
     move = player_action.get("move")
     rest = player_action.get("rest")
     pickup = player_action.get("pickup")
+    inventory_active = player_action.get("inventory_active")
+    inventory_index = player_action.get("inventory_index")
+    cancel = player_action.get("cancel")
     quit = player_action.get("quit")
 
     # If player action is to quit then break the main loop
@@ -60,7 +65,7 @@ while True:
 
                 # If there is a blocking entity at destination attack it
                 if target:
-                    attack_results = player.fighter.attack(target)
+                    attack_results = player.components["fighter"].attack(target)
                     player_turn_results.extend(attack_results)
                 # Otherwise move to destination
                 else:
@@ -77,12 +82,19 @@ while True:
         # If player tries to pick something up
         if pickup:
             for entity in entities:
-                if entity.item and entity.x == player.x and entity.y == player.y:
-                    pickup_results = player.inventory.add_item(entity)
+                if entity.components.get("item") and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.components["inventory"].add_item(entity)
                     break
             else:
                 pickup_results = [{"message": "[color=yellow]There is nothing here to pick up."}]
             player_turn_results.extend(pickup_results)
+
+        # If player accesses inventory
+        if inventory_active:
+            previous_game_state = game_state
+            game_state = Game_States.INVENTORY_ACTIVE
+            message = "You open your inventory."
+            ui_elements["messages"].messages.append(message)
 
         for player_turn_result in player_turn_results:
             message = player_turn_result.get("message")
@@ -109,13 +121,58 @@ while True:
                 entities.remove(item_added)
                 game_state = Game_States.ENEMY_TURN
 
+    # If player looking at an item in inventory
+    if game_state == Game_States.USING_ITEM:
+        description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(item.name)
+        ui_elements["description"].text = description
+
+        use = player_action.get("use")
+        drop = player_action.get("drop")
+        examine = player_action.get("examine")
+
+        if use:
+            #use item
+            message = "You use the {}. sorta".format(item.name)
+            ui_elements["messages"].messages.append(message)
+            game_state = Game_States.PLAYER_TURN
+        if drop:
+            player.components["inventory"].items.remove(item)
+            item.x = player.x
+            item.y = player.y
+            entities.append(item)
+            message = "You drop the {} on the ground.".format(item.name)
+            ui_elements["messages"].messages.append(message)
+            game_state = Game_States.PLAYER_TURN
+        if examine:
+            ui_elements["description"].text = item.description
+            message = "You decide to look more closely at the {}.".format(item.name)
+            ui_elements["messages"].messages.append(message)
+
+        if cancel:
+            game_state = Game_States.INVENTORY_ACTIVE
+
+    # If player is using the inventory
+    if game_state == Game_States.INVENTORY_ACTIVE:
+        if inventory_index is not None:
+            if inventory_index < len(player.components["inventory"].items):
+                item = player.components["inventory"].items[inventory_index]
+                message = "You look at the {}.".format(item.name)
+                description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(item.name)
+                ui_elements["description"].text = description
+                game_state = Game_States.USING_ITEM
+            else:
+                message = "No valid item at index {}".format(inventory_index)
+            ui_elements["messages"].messages.append(message)
+        elif cancel:
+            game_state = previous_game_state
+
     # If it is not the players turn
     if game_state == Game_States.ENEMY_TURN:
         # For each entity that has an AI and is not the player
         for entity in entities:
-            if entity.ai and entity != player:
+            if entity.components.get("ai") and entity != player:
                 # Simulate entity turn and get results
-                enemy_turn_results = entity.ai.take_turn(player, fov_map, dungeon, entities)
+                enemy_turn_results = entity.components["ai"].take_turn(player, fov_map, dungeon, entities)
 
                 for enemy_turn_result in enemy_turn_results:
                     message = enemy_turn_result.get("message")
@@ -140,4 +197,8 @@ while True:
         else:
             game_state = Game_States.PLAYER_TURN
 
+    if game_state == Game_States.PLAYER_DEAD:
+        if player_action.get("quit"):
+            break      
+        
 terminal.close()
