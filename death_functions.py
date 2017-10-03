@@ -10,12 +10,12 @@ def kill_player(player):
     return message, game_state
 
 def kill_monster(monster):
-    message = f"[color={monster.color}]{monster.name.capitalize()}[/color] dies."
+    message = "[color={}]{}[/color] dies.".format(monster.color, monster.name.capitalize())
     monster.char = "%"
     monster.color = "dark red"
     monster.blocks = False
-    monster.fighter = None
-    monster.ai = None
-    monster.name = f"remains of {monster.name}."
+    monster.components.pop("fighter")
+    monster.components.pop("ai")
+    monster.name = "Remains of {}.".format(monster.name)
     monster.render_order = Render_Order.CORPSE
     return message

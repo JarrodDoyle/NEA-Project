@@ -185,3 +185,16 @@ class Dungeon_BSP:
         entity_list.insert(0, player)
 
         return player, entity_list
+
+    def gen_empty_dungeon(self):
+        self.initialize_dungeon()
+        self.rooms = []
+
+        # Root node
+        bsp = libtcod.bsp_new_with_size(0, 0, self.width, self.height)
+
+        # Split into nodes with recursive algorithm (10 is number of rooms?)(6 is min room size + 1?)(1.5 is max ratio v and h of nodes?)
+        libtcod.bsp_split_recursive(bsp, 0, self.depth, self.min_leaf_size + 1, self.min_leaf_size + 1, 1.5, 1.5)
+
+        # Traverse nodes and create rooms
+        libtcod.bsp_traverse_inverted_level_order(bsp, self.traverse_node)
