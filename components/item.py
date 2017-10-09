@@ -1,6 +1,6 @@
-class Item:
-    def __init__(self):
-        pass
+from components.component_base import Component
 
-    def set_owner(self, owner):
-        self.owner = owner
+class Item(Component):
+    def __init__(self):
+        super().__init__()
+        pass

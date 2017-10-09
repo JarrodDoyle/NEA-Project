@@ -8,11 +8,9 @@ from ui import *
 from game_states import *
 from death_functions import *
 from entities.entity_functions import get_blocking_entity
+from initialize import initialize_terminal
 
-# Initialize bearlibterminal terminal
-terminal.open()
-terminal.set("window: title = 'NEA Project', size = 96x64; font: 'font_12x12.png', size=12x12, codepage=437")
-terminal.refresh()
+initialize_terminal()
 
 # Set inital game state
 game_state = Game_States.PLAYER_TURN
@@ -22,7 +20,6 @@ previous_game_state = game_state
 ui_elements = initialize_ui_elements()
 
 # Initialize dungeon
-#dungeon = Dungeon_Tunneler(96, 64)
 dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
 #dungeon = Dungeon_BSP(width = 96, height = 64, depth = 100, min_leaf_size = 1, min_room_size = 1, max_room_area = 1, full_rooms = False)
 player, entities = dungeon.gen_dungeon()
