@@ -9,7 +9,7 @@ def render(dungeon, player, entities, fov_map, fov_recompute, ui_elements):
     ui_elements["player"].render(player)
     ui_elements["monsters"].render(player, entities, fov_map)
     ui_elements["messages"].render()
-    ui_elements["equipment"].render()
+    ui_elements["equipment"].render(player.equipment)
     ui_elements["description"].render()
     ui_elements["inventory"].render(player)
     ui_elements["dungeon"].render(player, entities, dungeon, fov_map)

@@ -35,6 +35,7 @@ class UI_Element:
 class Player_UI_Window(UI_Element):
     def __init__(self):
         super().__init__(1, 1, 14, 13, "Player")
+        # height = window height - 31
 
     def render(self, player):
         # Create border for window and clear area
@@ -201,8 +202,19 @@ class Equipment_UI_Window(UI_Element):
     def __init__(self):
         super().__init__(65, 49, 30, 14, "Equipment")
 
-    def render(self):
+    def render(self, equipment):
         self.create_window()
+        letter_index = ord("a")
+        dy = 0
+        for i in equipment:
+            equipment_piece = equipment.get(i)
+            if equipment_piece is not None:
+                terminal.puts(self.x, self.y + dy, "{}) {}: [color={}]{}[/color]".format(chr(letter_index + dy), i, equipment.get(i).color, equipment.get(i).name))
+            else:
+                terminal.puts(self.x, self.y + dy, "{}) {}:".format(chr(letter_index + dy), i))
+            dy += 1
+        
+        
 
 def health_bar(x, y, w, h, entity):
     percent_health = entity.components["fighter"].hp / entity.components["fighter"].max_hp

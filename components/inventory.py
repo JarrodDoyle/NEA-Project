@@ -1,7 +1,9 @@
 import libtcodpy as libtcod
+from components.component_base import Component
 
-class Inventory:
+class Inventory(Component):
     def __init__(self, max_items):
+        super().__init__()
         self.items = []
         self.max_items = max_items
 
@@ -16,7 +18,3 @@ class Inventory:
 
     def remove_item(self, item):
         self.items.remove(item)
-
-    def set_owner(self, owner):
-        self.owner = owner
-        

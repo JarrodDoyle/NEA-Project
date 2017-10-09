@@ -1,17 +1,16 @@
 from dice import roll_dice
+from components.component_base import Component
 
-class Fighter:
+class Fighter(Component):
     # Fighter initialization
     def __init__(self, hp, strength, defense, accuracy, intelligence):
+        super().__init__()
         self.base_max_hp = hp
         self.hp = hp
         self.base_strength = strength
         self.base_defense = defense
         self.base_accuracy = accuracy
         self.base_intelligence = intelligence
-
-    def set_owner(self, owner):
-        self.owner = owner
 
     # Attack another fighter
     def attack(self, target):

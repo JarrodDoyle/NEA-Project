@@ -1,9 +1,11 @@
 import libtcodpy as libtcod
 import math
 from entities.entity_functions import *
+from components.component_base import Component
 
-class Base_AI:
+class Base_AI(Component):
     def move(self, dx, dy):
+        super().__init__()
         self.owner.x += dx
         self.owner.y += dy
 
@@ -65,9 +67,6 @@ class Base_AI:
         if not (dungeon.tiles[destination_y][destination_x].is_blocked or entity is not None):
             # Move self
             self.move(dx, dy)
-
-    def set_owner(self, owner):
-        self.owner = owner
 
 class Basic_Monster(Base_AI):
     def take_turn(self, target, fov_map, dungeon, entities):
