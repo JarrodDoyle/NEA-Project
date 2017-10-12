@@ -8,8 +8,8 @@ class Player(Entity):
     # Initialization of player entity
     def __init__(self, x, y):
         # Inializing the players components
-        #fighter_component = Fighter(hp = 100, strength = 4, defense = 1, accuracy = 4, intelligence = 0)
-        fighter_component = Fighter(hp = 100, strength = 400, defense = 10, accuracy = 50, intelligence = 0)
+        fighter_component = Fighter(hp = 100, strength = 4, defense = 1, accuracy = 4, intelligence = 0)
+        #fighter_component = Fighter(hp = 100, strength = 400, defense = 10, accuracy = 50, intelligence = 0)
         inventory_component = Inventory(26)
         ai_component = Base_AI()
         components_dict = {"ai": ai_component, "inventory": inventory_component, "fighter": fighter_component}
