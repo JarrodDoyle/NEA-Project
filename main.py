@@ -3,7 +3,7 @@ from bearlibterminal import terminal
 from map_generation.bsp_map import Dungeon_BSP
 from render.render_functions import *
 from fov_functions import *
-from input_functions import *
+from input.input_functions import *
 from ui import *
 from game_states import *
 from death_functions import *
