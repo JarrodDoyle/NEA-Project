@@ -1,44 +1,17 @@
 import libtcodpy as libtcod
 import cells, random
 from rect import Rect
-from entities.entity_functions import get_blocking_entity
-from entities.items import Health_Pot
-from entities.mobs import Goblin, Player
+from map_generation.dungeon_base import Dungeon
+from entities.mobs import Player
 
-class Dungeon_BSP:
+class Dungeon_BSP(Dungeon):
     def __init__(self, width, height, depth = 5, min_leaf_size = 10, min_room_size = 5, max_room_area = 36, full_rooms = False):
-        self.width = width
-        self.height = height
+        super().__init__(width, height)
         self.depth = depth
         self.min_leaf_size = min_leaf_size
         self.min_room_size = min_room_size
         self.max_room_area = max_room_area
         self.full_rooms = full_rooms
-
-    def gen_monsters(self, entity_list):
-        for room in self.rooms:
-            max_num_monsters = room.get_area() // 15
-            num_monsters = libtcod.random_get_int(0, 0, max_num_monsters)
-            for i in range(num_monsters):
-                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
-                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
-                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                    monster = Goblin(x, y)
-                    entity_list.append(monster)
-
-    def gen_items(self, entity_list):
-        for room in self.rooms:
-            max_num_items = room.get_area() // 15
-            num_items = libtcod.random_get_int(0, 0, max_num_items)
-            for i in range(num_items):
-                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
-                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
-                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                    item = Health_Pot(x, y)
-                    entity_list.append(item)
-
-    def initialize_dungeon(self):
-        self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
 
     def v_line(self, x, y1, y2):
         if y1 > y2:
@@ -101,14 +74,7 @@ class Dungeon_BSP:
             node.w = max_x - min_x + 1
             node.h = max_y - min_y + 1
 
-            # dig room
-            for y in range(min_y - 1, max_y + 2):
-                for x in range(min_x - 1, max_x + 2):
-                    self.tiles[y][x] = cells.Wall()
-            for y in range(min_y, max_y + 1):
-                for x in range(min_x, max_x + 1):
-                    self.tiles[y][x] = cells.Floor()
-
+            self.dig_room((min_x, max_x), (min_y, max_y))
             self.rooms.append(Rect(node.x, node.y, node.w, node.h))
 
         # Create corridors
