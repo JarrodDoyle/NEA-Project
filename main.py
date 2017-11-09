@@ -1,6 +1,7 @@
 import libtcodpy as libtcod
 from bearlibterminal import terminal
 from map_generation.bsp_map import Dungeon_BSP
+from map_generation.cellular_automata import Dungeon_Cellular_Automata
 from render.render_functions import *
 from fov_functions import *
 from input.input_functions import *
@@ -20,17 +21,18 @@ previous_game_state = game_state
 ui_elements = initialize_ui_elements()
 
 # Initialize dungeon
-dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
-#dungeon = Dungeon_BSP(width = 96, height = 64, depth = 100, min_leaf_size = 1, min_room_size = 1, max_room_area = 1, full_rooms = False)
+#dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
 player, entities = dungeon.gen_dungeon()
 
 # Initialize FOV
 fov_map, fov_recompute = initialize_fov(dungeon)
+fog_of_war = True
 
 # Main Loop
 while True:
     # Render UI and dungeon
-    render(dungeon, player, entities, fov_map, fov_recompute, ui_elements)
+    render(dungeon, player, entities, fov_map, fov_recompute, ui_elements, fog_of_war)
 
     # Get player action as a dict
     player_action = handle_inputs(game_state)
@@ -49,6 +51,10 @@ while True:
     # If it is the players turn
     if game_state == Game_States.PLAYER_TURN:
         player_turn_results = []
+
+        # Toggle fog of war
+        if player_action.get("toggle_fog"):
+            fog_of_war = not fog_of_war
 
         # If the player wants to move
         if move:
