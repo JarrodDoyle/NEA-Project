@@ -30,6 +30,8 @@ def handle_player_turn_inputs():
         return {"pickup": True}
     elif key == Command_Keybinds.OPEN_INVENTORY:
         return {"inventory_active": True}
+    elif key == Command_Keybinds.TOGGLE_FOG:
+        return {"toggle_fog": True}
 
     else:
         return {}

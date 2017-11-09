@@ -17,5 +17,6 @@ class Move_Keybinds:
 class Command_Keybinds:
     PICK_UP = terminal.TK_G
     OPEN_INVENTORY = terminal.TK_I
+    TOGGLE_FOG = terminal.TK_P
 
 

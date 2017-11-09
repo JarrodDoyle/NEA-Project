@@ -108,7 +108,7 @@ class Dungeon_UI_Window(UI_Element):
         super().__init__(17, 1, 46, 46, "Dungeon")
 
     # Render dungeon within UI Box
-    def render(self, player, entities, dungeon, fov_map):
+    def render(self, player, entities, dungeon, fov_map, fog_of_war):
         self.create_window()
 
         # Get min/max x/y values of the dungeon to render so as to stay within the UI Box and decrease unneccesary terminal print calls
@@ -119,19 +119,27 @@ class Dungeon_UI_Window(UI_Element):
         y_max = min(46 - player.y_offset, dungeon.height - 1)
         for y in range(y_min, y_max + 1):
             for x in range(x_min, x_max + 1):
-                visible = libtcod.map_is_in_fov(fov_map, x, y)
-                if not visible and dungeon.tiles[y][x].explored:
-                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].bk_color, dungeon.tiles[y][x].char))
-                elif visible:
-                    dungeon.tiles[y][x].explored = True
+                if not fog_of_war:
                     terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].color, dungeon.tiles[y][x].char))
+                else:
+                    visible = libtcod.map_is_in_fov(fov_map, x, y)
+                    if not visible and dungeon.tiles[y][x].explored:
+                        terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].bk_color, dungeon.tiles[y][x].char))
+                    elif visible:
+                        dungeon.tiles[y][x].explored = True
+                        terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].color, dungeon.tiles[y][x].char))
 
         entities_in_render_order = sorted(entities, key = lambda x: x.render_order.value)
         for entity in entities_in_render_order:
-            visible = libtcod.map_is_in_fov(fov_map, entity.x, entity.y)
-            if visible:
-                terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, "[color={}]{}[/color]".format(entity.color, entity.char))
-
+            if entity.y in range(y_min, y_max + 1):
+                if entity.x in range(x_min, x_max + 1):
+                    if fog_of_war:
+                        visible = libtcod.map_is_in_fov(fov_map, entity.x, entity.y)
+                        if visible:
+                            terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, "[color={}]{}[/color]".format(entity.color, entity.char))
+                    else:
+                        terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, "[color={}]{}[/color]".format(entity.color, entity.char))
+                    
 class Monsters_UI_Window(UI_Element):
     def __init__(self):
         super().__init__(1, 16, 14, 31, "Monsters")
