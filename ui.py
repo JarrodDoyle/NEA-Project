@@ -119,15 +119,12 @@ class Dungeon_UI_Window(UI_Element):
         y_max = min(46 - player.y_offset, dungeon.height - 1)
         for y in range(y_min, y_max + 1):
             for x in range(x_min, x_max + 1):
-                if not fog_of_war:
+                visible = libtcod.map_is_in_fov(fov_map, x, y)
+                if visible:
+                    dungeon.tiles[y][x].explored = True
                     terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].color, dungeon.tiles[y][x].char))
-                else:
-                    visible = libtcod.map_is_in_fov(fov_map, x, y)
-                    if not visible and dungeon.tiles[y][x].explored:
-                        terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].bk_color, dungeon.tiles[y][x].char))
-                    elif visible:
-                        dungeon.tiles[y][x].explored = True
-                        terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].color, dungeon.tiles[y][x].char))
+                elif (not visible and dungeon.tiles[y][x].explored) or not fog_of_war:
+                    terminal.puts(x + player.x_offset, y + player.y_offset, "[color={}]{}[/color]".format(dungeon.tiles[y][x].bk_color, dungeon.tiles[y][x].char))
 
         entities_in_render_order = sorted(entities, key = lambda x: x.render_order.value)
         for entity in entities_in_render_order:

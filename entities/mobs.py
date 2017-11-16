@@ -14,7 +14,7 @@ class Player(Entity):
         ai_component = Base_AI()
         components_dict = {"ai": ai_component, "inventory": inventory_component, "fighter": fighter_component}
 
-        # TODO: ADD PROPER EQUIPTMENT JESUS CHRIST
+        # TODO: ADD PROPER EQUIPTMENT
         self.equipment = {"head": None, "body": None, "l_hand": None, "r_hand": None, "arms": None, "feet": None, "l_ring": None, "r_ring": None, "ranged": None, "ammo": None}
 
         # Composing entity
@@ -32,7 +32,7 @@ class Goblin(Entity):
         ai_component = Basic_Monster()
         components_dict = {"ai": ai_component, "fighter": fighter_component}
 
-        # TODO: ADD PROPER EQUIPTMENT JESUS CHRIST
+        # TODO: ADD PROPER EQUIPTMENT
         self.equipment = {"head": None, "body": None, "l_hand": None, "r_hand": None, "arms": None, "feet": None, "l_ring": None, "r_ring": None, "ranged": None, "ammo": None}
 
         super().__init__(x, y, "goblin", "g", "green", "An ugly green goblin.", blocks = True, render_order = Render_Order.ACTOR, components = components_dict)

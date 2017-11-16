@@ -1,7 +1,7 @@
 from map_generation.dungeon_base import Dungeon
 import random, cells
 from floodfill import flood_fill
-from entities.mobs import Player, Goblin
+from entities.mobs import Goblin
 from entities.items import Health_Pot
 from entities.entity_functions import get_blocking_entity
 
@@ -173,7 +173,15 @@ class Dungeon_Cellular_Automata(Dungeon):
                 self.dig_h_corridor(y2, x1, x2)
                 self.dig_v_corridor(x2, y2, y3)
 
-    def gen_dungeon(self):
+    def gen_stairs(self):
+        while True:
+            x = random.randint(0, self.width - 1)
+            y = random.randint(0, self.height - 1)
+            if not self.tiles[y][x].is_blocked:
+                break
+        self.tiles[y][x] = cells.Stair_Down()
+
+    def gen_dungeon(self, player):
         entity_list = []
         self.initialize_dungeon()
         for i in range(self.num_steps):
@@ -183,12 +191,14 @@ class Dungeon_Cellular_Automata(Dungeon):
         while True:
             x = random.randint(0, self.width - 1)
             y = random.randint(0, self.height - 1)
-            if self.tiles[y][x].cell_name == "floor":
-                player = Player(x, y)
+            if not self.tiles[y][x].is_blocked:
+                player.x = x
+                player.y = y
                 player.x_offset = int((2 * 17 + 46) / 2 - player.x)
                 player.y_offset = int((2* 1 + 46) / 2 - player.y)
                 entity_list.append(player)
                 break
+        self.gen_stairs()
         self.gen_monsters(entity_list)
         self.gen_items(entity_list)
 
@@ -205,4 +215,4 @@ class Dungeon_Cellular_Automata(Dungeon):
         for entity in entity_list:
             entity.x += 1
             entity.y += 1
-        return player, entity_list            
+        return entity_list            

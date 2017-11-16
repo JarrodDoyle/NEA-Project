@@ -9,4 +9,3 @@ def flood_fill(arr, coords, base_mark, mark):
         new_x = base_x + dx
         if new_x in range(0, len(arr[0])) and arr[base_y][new_x] == base_mark:
             flood_fill(arr, (new_x, base_y), base_mark, mark)
-            

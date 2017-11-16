@@ -19,3 +19,7 @@ class Floor(Cell):
 class Rock(Cell):
     def __init__(self):
         super().__init__("rock", "#", is_blocked = True, blocks_sight = True)
+
+class Stair_Down(Cell):
+    def __init__(self):
+        super().__init__("stair_down", ">", is_blocked = False, blocks_sight = False)

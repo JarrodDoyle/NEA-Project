@@ -1,4 +1,5 @@
 import libtcodpy as libtcod
+import random
 from bearlibterminal import terminal
 from map_generation.bsp_map import Dungeon_BSP
 from map_generation.cellular_automata import Dungeon_Cellular_Automata
@@ -10,6 +11,7 @@ from game_states import *
 from death_functions import *
 from entities.entity_functions import get_blocking_entity
 from initialize import initialize_terminal
+from entities.mobs import Player
 
 initialize_terminal()
 
@@ -17,13 +19,16 @@ initialize_terminal()
 game_state = Game_States.PLAYER_TURN
 previous_game_state = game_state
 
-# Initialize UI elements
+# Initialize UI elements and player
 ui_elements = initialize_ui_elements()
+player = Player(0,0)
 
 # Initialize dungeon
-#dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
-dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
-player, entities = dungeon.gen_dungeon()
+if random.randint(0, 1):
+    dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+else:
+    dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
+entities = dungeon.gen_dungeon(player)
 
 # Initialize FOV
 fov_map, fov_recompute = initialize_fov(dungeon)
@@ -91,6 +96,21 @@ while True:
             else:
                 pickup_results = [{"message": "[color=yellow]There is nothing here to pick up."}]
             player_turn_results.extend(pickup_results)
+
+        # GO DOWN A FLOOR BOI
+        if player_action.get("stair_down"):
+            if dungeon.tiles[player.y][player.x].cell_name == "stair_down":
+                message = "go to next floor buddy"
+                ui_elements["messages"].messages.append(message)
+                if random.randint(0, 1):
+                    dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+                else:
+                    dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
+                entities = dungeon.gen_dungeon(player)
+                fov_map, fov_recompute = initialize_fov(dungeon)
+            else:
+                message = "There are no stairs here."
+                ui_elements["messages"].messages.append(message)
 
         # If player accesses inventory
         if inventory_active:
