@@ -2,7 +2,6 @@ import libtcodpy as libtcod
 import cells, random
 from rect import Rect
 from map_generation.dungeon_base import Dungeon
-from entities.mobs import Player
 
 class Dungeon_BSP(Dungeon):
     def __init__(self, width, height, depth = 5, min_leaf_size = 10, min_room_size = 5, max_room_area = 36, full_rooms = False):
@@ -122,7 +121,11 @@ class Dungeon_BSP(Dungeon):
                     self.h_line_right(right.x, y)
         return True
 
-    def gen_dungeon(self):
+    def place_stairs(self, location):
+        x, y = location.get_center()
+        self.tiles[y][x] = cells.Stair_Down()
+
+    def gen_dungeon(self, player):
         self.initialize_dungeon()
         self.rooms = []
 
@@ -138,10 +141,11 @@ class Dungeon_BSP(Dungeon):
         # Pick a room for the stairs
         stairs_location = random.choice(self.rooms)
         # self.rooms.remove(stairs_location)
-        # TODO: gen stairs and place them
+        self.place_stairs(stairs_location)
         player_room = random.choice(self.rooms)
         x, y = player_room.get_center()
-        player = Player(x, y)
+        player.x = x
+        player.y = y
         # TODO: remove offset hardcoding
         player.x_offset = int((2 * 17 + 46) / 2 - player.x)
         player.y_offset = int((2* 1 + 46) / 2 - player.y)
@@ -150,7 +154,7 @@ class Dungeon_BSP(Dungeon):
         self.gen_items(entity_list)
         entity_list.insert(0, player)
 
-        return player, entity_list
+        return entity_list
 
     def gen_empty_dungeon(self):
         self.initialize_dungeon()

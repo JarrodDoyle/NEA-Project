@@ -32,9 +32,12 @@ def handle_player_turn_inputs():
         return {"inventory_active": True}
     elif key == Command_Keybinds.TOGGLE_FOG:
         return {"toggle_fog": True}
+    if terminal.state(terminal.TK_SHIFT):
+        key += terminal.TK_SHIFT
+        if key == Command_Keybinds.STAIR_DOWN:
+            return {"stair_down": True}
 
-    else:
-        return {}
+    return {}
 
 def handle_player_dead_inputs():
     key = terminal.read()
