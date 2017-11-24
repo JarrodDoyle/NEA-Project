@@ -19,13 +19,13 @@ class Fighter(Component):
         attacker_accuracy = roll_dice(1, self.accuracy)
         target_defense = roll_dice(1, target.components["fighter"].defense)
         if attacker_accuracy > target_defense:
-            weapon1 = self.owner.equipment.get("l_hand")
+            weapon1 = self.owner.components.get("equipment").equipment.get("l_hand")
             if weapon1 == None:
                 weapon1_damage = 0
             else:
                 weapon1_damage = weapon1.damage()
 
-            weapon2 = self.owner.equipment.get("r_hand")
+            weapon2 = self.owner.components.get("equipment").equipment.get("r_hand")
             if weapon2 == None:
                 weapon2_damage = 0
             else:

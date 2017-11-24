@@ -16,6 +16,7 @@ def kill_monster(monster):
     monster.blocks = False
     monster.components.pop("fighter")
     monster.components.pop("ai")
+    monster.description = "The decaying remains of {}.".format(monster.name)
     monster.name = "Remains of {}.".format(monster.name)
     monster.render_order = Render_Order.CORPSE
     return message

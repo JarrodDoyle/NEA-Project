@@ -22,4 +22,4 @@ class Rock(Cell):
 
 class Stair_Down(Cell):
     def __init__(self):
-        super().__init__("stair_down", ">", is_blocked = False, blocks_sight = False)
+        super().__init__("stair_down", ">", bk_color = "light blue", color = "light blue", is_blocked = False, blocks_sight = False)

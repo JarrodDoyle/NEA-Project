@@ -77,11 +77,10 @@ class Player_UI_Window(UI_Element):
         else:
             terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color]".format(player.components["fighter"].intelligence))
 
-        # TODO: implement level stuff
         # LINE SEVEN
-        terminal.puts(self.x, self.y + 6, "Lvl: [color=orange]{}[/color]".format(1))
+        terminal.puts(self.x, self.y + 6, "Lvl: [color=orange]{}[/color]".format(player.components["level"].level))
         # LINE EIGHT
-        terminal.puts(self.x, self.y + 7, "Exp: [color=orange]{}[/color]".format(0))
+        terminal.puts(self.x, self.y + 7, "Exp: [color=orange]{}/{}[/color]".format(player.components["level"].xp, player.components["level"].level_up_xp))
 
         # LINE TEN
         terminal.puts(self.x, self.y + 9, "Hp: [color=red]{}/{}[/color]".format(player.components["fighter"].hp, player.components["fighter"].max_hp))
@@ -162,7 +161,6 @@ class Messages_UI_Window(UI_Element):
 
     def render(self):
         self.create_window()
-
         for i in range(0, len(self.messages)):
             index = len(self.messages) - 1 - i
             if self.y + self.h - 1 - i < self.y:

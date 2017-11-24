@@ -25,7 +25,8 @@ player = Player(0,0)
 
 # Initialize dungeon
 if random.randint(0, 1):
-    dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
+    dungeon = Dungeon_BSP(width =
+                          96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
 else:
     dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
 entities = dungeon.gen_dungeon(player)
@@ -130,13 +131,18 @@ while True:
 
             # If the players turn has resulted in an entity dying
             if dead_entity:
+                messages = []
                 # If the player has died generate an appropriate message and change game_state
                 if dead_entity == player:
                     message, game_state = kill_player(dead_entity)
+                    messages.append[message]
                 # Otherwise generate an appropriate message for the entities death
                 else:
-                    message = kill_monster(dead_entity)
-                ui_elements["messages"].messages.append(message)
+                    messages.append(kill_monster(dead_entity))
+                    xp = dead_entity.components["level"].drop_xp()
+                    messages.append(player.components["level"].gain_xp(xp))
+                for message in messages:
+                    ui_elements["messages"].messages.append(message)
 
             # If the player picked up an item
             if item_added:
@@ -154,8 +160,7 @@ while True:
         examine = player_action.get("examine")
 
         if use:
-            #use item
-            message = "You use the {}. sorta".format(item.name)
+            message = item.components["item"].use(player, player.components["inventory"])
             ui_elements["messages"].messages.append(message)
             game_state = Game_States.PLAYER_TURN
         if drop:
@@ -193,6 +198,8 @@ while True:
     if game_state == Game_States.ENEMY_TURN:
         # For each entity that has an AI and is not the player
         for entity in entities:
+            if entity != player and entity.x == player.x and entity.y == player.y:
+                ui_elements["description"].text = entity.description
             if entity.components.get("ai") and entity != player:
                 # Simulate entity turn and get results
                 enemy_turn_results = entity.components["ai"].take_turn(player, fov_map, dungeon, entities)

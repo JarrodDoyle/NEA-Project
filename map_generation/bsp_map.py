@@ -149,11 +149,9 @@ class Dungeon_BSP(Dungeon):
         # TODO: remove offset hardcoding
         player.x_offset = int((2 * 17 + 46) / 2 - player.x)
         player.y_offset = int((2* 1 + 46) / 2 - player.y)
-        entity_list = []
+        entity_list = [player]
         self.gen_monsters(entity_list)
         self.gen_items(entity_list)
-        entity_list.insert(0, player)
-
         return entity_list
 
     def gen_empty_dungeon(self):

@@ -1,6 +1,17 @@
 from components.component_base import Component
 
+
 class Item(Component):
-    def __init__(self):
+    def __init__(self, use_function, args):
+        self.use_function = use_function
+        self.args = args
         super().__init__()
-        pass
+
+    def use(self, entity, inventory):
+        used = self.use_function(entity, self.args)
+        if used:
+            message = "You used the {}.".format(self.owner.name)
+            inventory.remove_item(self.owner)
+        else:
+            message = "You failed to use the {}.".format(self.owner.name)
+        return message

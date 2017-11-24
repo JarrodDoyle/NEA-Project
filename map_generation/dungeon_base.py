@@ -15,13 +15,16 @@ class Dungeon:
     def gen_monsters(self, entity_list):
         for room in self.rooms:
             max_num_monsters = room.get_area() // 15
-            num_monsters = libtcod.random_get_int(0, 0, max_num_monsters)
+            num_monsters = libtcod.random_get_int(None, 0, max_num_monsters)
             for i in range(num_monsters):
                 x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
                 y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                     monster = Goblin(x, y)
                     entity_list.append(monster)
+
+                else:
+                    print(self.tiles[y][x].cell_name, get_blocking_entity(entity_list, x, y))
 
     def gen_items(self, entity_list):
         for room in self.rooms:
