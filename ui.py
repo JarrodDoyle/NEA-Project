@@ -32,6 +32,14 @@ class UI_Element:
             offset = (self.w + 2 - len(self.title)) // 2 - 1
             terminal.puts(self.x + offset, self.y - 1, self.title)
 
+class Menu(UI_Element):
+    def __init__(self, x, y, w, h, title, options):
+        self.options = options
+        super().__init__(x, y, w, h, title)
+
+    def render(self):
+        pass
+
 class Player_UI_Window(UI_Element):
     def __init__(self):
         super().__init__(1, 1, 14, 13, "Player")
@@ -98,8 +106,21 @@ class Inventory_UI_Window(UI_Element):
         self.create_window()
         inventory = player.components["inventory"].items
         letter_index = ord("a")
+        num_item = 0
+        dy = 0
+        if len(inventory) > 0:
+            current_item = inventory[0]
         for i in range(len(inventory)):
-            terminal.puts(self.x, self.y + i, "{}) [color={}]{}[/color]".format(chr(letter_index + i), inventory[i].color, inventory[i].name))
+            if inventory[i].name == current_item.name:
+                num_item += 1
+                terminal.puts(self.x, self.y + dy, "{}) [color={}]{}[/color]".format(chr(letter_index), inventory[i].color, inventory[i].name))
+                if num_item > 1:
+                    dx = self.w - 3 - len(str(num_item))
+                    terminal.puts(self.x + dx, self.y + dy, "(x{})".format(num_item))
+            else:
+                dy += 1
+                letter_index += 1
+                terminal.puts(self.x, self.y + dy, "{}) [color={}]{}[/color]".format(chr(letter_index), inventory[i].color, inventory[i].name))
 
 class Dungeon_UI_Window(UI_Element):
     # Initialize from parent UI_Element class
@@ -228,9 +249,6 @@ def health_bar(x, y, w, h, entity):
                 terminal.puts(x, y, "[bkcolor=red] [/color]")
             else:
                 terminal.puts(x, y, "[bkcolor=darker red] [/color]")
-
-def menu():
-    pass
 
 def initialize_ui_elements():
     ui_elements = {
