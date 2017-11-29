@@ -10,7 +10,7 @@ class Dungeon_Cellular_Automata(Dungeon):
         super().__init__(width - 2, height - 2)
         self.set_ruleset(birth_limit, death_limit, chance_to_be_alive)
         self.num_steps = num_steps
-        
+
     def initialize_dungeon(self):
         self.tiles = [[cells.Rock() for x in range(self.width)]for y in range(self.height)]
         self.room_arr = []
@@ -43,7 +43,7 @@ class Dungeon_Cellular_Automata(Dungeon):
             if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                 item = Health_Pot(x, y)
                 entity_list.append(item)
-    
+
     def simulate_step(self):
         new_tiles = self.room_arr
         for y in range(self.height):
@@ -74,20 +74,6 @@ class Dungeon_Cellular_Automata(Dungeon):
                     else:
                         alive += 1
         return alive
-
-    def display_dungeon(self, entity_list):
-        dungeon = self.tiles
-        for y in range(self.height):
-            for x in range(self.width):
-                dungeon[y][x] = self.tiles[y][x].char
-        entities_in_render_order = sorted(entity_list, key = lambda x: x.render_order.value)
-        for entity in entities_in_render_order:
-            dungeon[entity.y][entity.x] = entity.char
-
-        for y in dungeon:
-            for x in y:
-                print(x, end="")
-            print()
 
     def set_ruleset(self, birth_limit, death_limit, chance_to_be_alive):
         self.birth_limit = birth_limit
@@ -215,4 +201,4 @@ class Dungeon_Cellular_Automata(Dungeon):
         for entity in entity_list:
             entity.x += 1
             entity.y += 1
-        return entity_list            
+        return entity_list
