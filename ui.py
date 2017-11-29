@@ -38,7 +38,20 @@ class Menu(UI_Element):
         super().__init__(x, y, w, h, title)
 
     def render(self):
-        pass
+        self.create_window()
+
+        letter_index = ord("a")
+        for i in range(len(self.options)):
+            terminal.puts(self.x, self.y + i, "{}) {}".format(chr(letter_index), self.options[i]))
+            letter_index += 1
+
+    def get_choice(self):
+        valid_choice = False
+        while not valid_choice:
+            choice = terminal.read()
+            if choice - terminal.TK_A in range(len(self.options)):
+                valid_choice = True
+        return choice - terminal.TK_A
 
 class Player_UI_Window(UI_Element):
     def __init__(self):
