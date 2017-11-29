@@ -23,9 +23,6 @@ class Dungeon:
                     monster = Goblin(x, y)
                     entity_list.append(monster)
 
-                else:
-                    print(self.tiles[y][x].cell_name, get_blocking_entity(entity_list, x, y))
-
     def gen_items(self, entity_list):
         for room in self.rooms:
             max_num_items = room.get_area() // 15

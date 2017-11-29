@@ -135,7 +135,7 @@ class Game:
                     else:
                         messages.append(kill_monster(dead_entity))
                         xp = dead_entity.components["level"].drop_xp()
-                        messages.append(player.components["level"].gain_xp(xp))
+                        messages.append(self.player.components["level"].gain_xp(xp))
                     for message in messages:
                         self.ui_elements["messages"].messages.append(message)
 
@@ -147,7 +147,7 @@ class Game:
 
         # If player looking at an item in inventory
         if self.game_state == Game_States.USING_ITEM:
-            description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(item.name)
+            description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
             self.ui_elements["description"].text = description
 
             use = player_action.get("use")
@@ -155,20 +155,20 @@ class Game:
             examine = player_action.get("examine")
 
             if use:
-                message = item.components["item"].use(self.player, self.player.components["inventory"])
+                message = self.item.components["item"].use(self.player, self.player.components["inventory"])
                 self.ui_elements["messages"].messages.append(message)
                 self.game_state = Game_States.PLAYER_TURN
             if drop:
-                self.player.components["inventory"].items.remove(item)
-                item.x = self.player.x
-                item.y = self.player.y
+                self.player.components["inventory"].items.remove(self.item)
+                self.item.x = self.player.x
+                self.item.y = self.player.y
                 self.entities.append(item)
-                message = "You drop the {} on the ground.".format(item.name)
+                message = "You drop the {} on the ground.".format(self.item.name)
                 self.ui_elements["messages"].messages.append(message)
                 self.game_state = Game_States.PLAYER_TURN
             if examine:
-                self.ui_elements["description"].text = item.description
-                message = "You decide to look more closely at the {}.".format(item.name)
+                self.ui_elements["description"].text = self.item.description
+                message = "You decide to look more closely at the {}.".format(self.item.name)
                 self.ui_elements["messages"].messages.append(message)
 
             if cancel:
@@ -178,9 +178,9 @@ class Game:
         if self.game_state == Game_States.INVENTORY_ACTIVE:
             if inventory_index is not None:
                 if inventory_index < len(self.player.components["inventory"].items):
-                    item = self.player.components["inventory"].items[inventory_index]
-                    message = "You look at the {}.".format(item.name)
-                    description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(item.name)
+                    self.item = self.player.components["inventory"].items[inventory_index]
+                    message = "You look at the {}.".format(self.item.name)
+                    description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
                     self.ui_elements["description"].text = description
                     self.game_state = Game_States.USING_ITEM
                 else:
@@ -194,7 +194,7 @@ class Game:
             # For each entity that has an AI and is not the player
             for entity in self.entities:
                 if entity != self.player and entity.x == self.player.x and entity.y == self.player.y:
-                    ui_elements["description"].text = entity.description
+                    self.ui_elements["description"].text = entity.description
                 if entity.components.get("ai") and entity != self.player:
                     # Simulate entity turn and get results
                     enemy_turn_results = entity.components["ai"].take_turn(self.player, self.fov_map, self.dungeon, self.entities)
