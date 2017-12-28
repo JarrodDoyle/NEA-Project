@@ -9,8 +9,8 @@ class Dungeon:
         self.width = width
         self.height = height
 
-    def initialize_dungeon(self):
-        self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
+    def initialize_dungeon(self, tile = cells.Rock()):
+        self.tiles = [[tile for x in range(self.width)] for y in range(self.height)]
 
     def gen_monsters(self, entity_list):
         for room in self.rooms:
