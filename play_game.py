@@ -9,6 +9,7 @@ from game_states import Game_States
 from entities.mobs import Player
 from death_functions import kill_player, kill_monster
 from entities.entity_functions import get_blocking_entity
+from initialize import initialize_dungeon
 
 class Game:
     def __init__(self):
@@ -21,11 +22,7 @@ class Game:
         self.player = Player(0,0)
 
         # Initialize dungeon
-        if random.randint(0, 1):
-            self.dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
-        else:
-            self.dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
-        self.entities = self.dungeon.gen_dungeon(self.player)
+        self.dungeon, self.entities = initialize_dungeon(self.player)
 
         # Initialize FOV
         self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
@@ -98,11 +95,7 @@ class Game:
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
                     message = "go to next floor buddy"
                     self.ui_elements["messages"].messages.append(message)
-                    if random.randint(0, 1):
-                        self.dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
-                    else:
-                        self.dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
-                    self.entities = dungeon.gen_dungeon(self.player)
+                    self.dungeon, self.entities = initialize_dungeon(player)
                     self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
                 else:
                     message = "There are no stairs here."

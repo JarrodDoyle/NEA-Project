@@ -26,24 +26,6 @@ class Dungeon_Cellular_Automata(Dungeon):
         # Doesn't take chance to be alive into account
         #self.tiles = [[[1, 0][random.randint(0,1)] for x in range(self.width)] for y in range(self.height)]
 
-    def gen_monsters(self, entity_list):
-        max_num_monsters = int((self.height * self.width) * 0.015)
-        for i in range(max_num_monsters):
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                monster = Goblin(x, y)
-                entity_list.append(monster)
-
-    def gen_items(self, entity_list):
-        max_num_items = int((self.height * self.width) * 0.015)
-        for i in range(max_num_items):
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                item = Health_Pot(x, y)
-                entity_list.append(item)
-
     def simulate_step(self):
         new_tiles = self.room_arr
         for y in range(self.height):
@@ -159,14 +141,6 @@ class Dungeon_Cellular_Automata(Dungeon):
                 self.dig_h_corridor(y2, x1, x2)
                 self.dig_v_corridor(x2, y2, y3)
 
-    def gen_stairs(self):
-        while True:
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if not self.tiles[y][x].is_blocked:
-                break
-        self.tiles[y][x] = cells.Stair_Down()
-
     def gen_dungeon(self, player):
         entity_list = []
         self.initialize_dungeon()
@@ -180,8 +154,8 @@ class Dungeon_Cellular_Automata(Dungeon):
             if not self.tiles[y][x].is_blocked:
                 player.x = x
                 player.y = y
-                player.x_offset = int((2 * 17 + 46) / 2 - player.x)
-                player.y_offset = int((2* 1 + 46) / 2 - player.y)
+                player.x_offset = int((2 * 17 + 46) / 2 - player.x + 1)
+                player.y_offset = int((2* 1 + 46) / 2 - player.y + 1)
                 entity_list.append(player)
                 break
         self.gen_stairs()
