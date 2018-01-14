@@ -1,5 +1,5 @@
 import libtcodpy as libtcod
-import cells
+import cells, random
 from entities.items import Health_Pot
 from entities.mobs import Goblin
 from entities.entity_functions import get_blocking_entity
@@ -9,30 +9,63 @@ class Dungeon:
         self.width = width
         self.height = height
 
-    def initialize_dungeon(self, tile = cells.Rock()):
-        self.tiles = [[tile for x in range(self.width)] for y in range(self.height)]
+    def initialize_dungeon(self, tile = None):
+        if tile != None:
+            self.tiles = [[tile for x in range(self.width)] for y in range(self.height)]
+        else:
+            self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
 
-    def gen_monsters(self, entity_list):
-        for room in self.rooms:
-            max_num_monsters = room.get_area() // 15
-            num_monsters = libtcod.random_get_int(None, 0, max_num_monsters)
-            for i in range(num_monsters):
-                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
-                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+    def gen_monsters(self, entity_list, only_in_rooms = False):
+        if only_in_rooms:
+            for room in self.rooms:
+                max_num_monsters = room.get_area() // 15
+                num_monsters = libtcod.random_get_int(None, 0, max_num_monsters)
+                for i in range(num_monsters):
+                    x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+                    y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+                    if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
+                        monster = Goblin(x, y)
+                        entity_list.append(monster)
+        else:
+            max_num_monsters = int((self.height * self.width) * 0.015)
+            for i in range(max_num_monsters):
+                x = libtcod.random_get_int(0, 0, self.width - 1)
+                y = libtcod.random_get_int(0, 0, self.height - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                     monster = Goblin(x, y)
                     entity_list.append(monster)
 
-    def gen_items(self, entity_list):
-        for room in self.rooms:
-            max_num_items = room.get_area() // 15
-            num_items = libtcod.random_get_int(0, 0, max_num_items)
-            for i in range(num_items):
-                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
-                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+    def gen_items(self, entity_list, only_in_rooms = False):
+        if only_in_rooms:
+            for room in self.rooms:
+                max_num_items = room.get_area() // 15
+                num_items = libtcod.random_get_int(0, 0, max_num_items)
+                for i in range(num_items):
+                    x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+                    y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+                    if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
+                        item = Health_Pot(x, y)
+                        entity_list.append(item)
+        else:
+            max_num_items = int((self.height * self.width) * 0.015)
+            for i in range(max_num_items):
+                x = random.randint(0, self.width - 1)
+                y = random.randint(0, self.height - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                     item = Health_Pot(x, y)
                     entity_list.append(item)
+
+    def gen_stairs(self, only_in_rooms = False):
+        if only_in_rooms:
+            x, y = random.choice(self.rooms).get_center()
+            self.tiles[y][x] = cells.Stair_Down()
+        else:
+            while True:
+                x = random.randint(0, self.width - 1)
+                y = random.randint(0, self.height - 1)
+                if not self.tiles[y][x].is_blocked:
+                    break
+            self.tiles[y][x] = cells.Stair_Down()
 
     def dig_room(self, x_range, y_range):
         min_x, max_x = x_range

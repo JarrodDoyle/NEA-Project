@@ -121,10 +121,6 @@ class Dungeon_BSP(Dungeon):
                     self.h_line_right(right.x, y)
         return True
 
-    def place_stairs(self, location):
-        x, y = location.get_center()
-        self.tiles[y][x] = cells.Stair_Down()
-
     def gen_dungeon(self, player):
         self.initialize_dungeon()
         self.rooms = []
@@ -138,10 +134,7 @@ class Dungeon_BSP(Dungeon):
         # Traverse nodes and create rooms
         libtcod.bsp_traverse_inverted_level_order(bsp, self.traverse_node)
 
-        # Pick a room for the stairs
-        stairs_location = random.choice(self.rooms)
-        # self.rooms.remove(stairs_location)
-        self.place_stairs(stairs_location)
+        self.gen_stairs(only_in_rooms = True)
         player_room = random.choice(self.rooms)
         x, y = player_room.get_center()
         player.x = x
@@ -150,8 +143,8 @@ class Dungeon_BSP(Dungeon):
         player.x_offset = int((2 * 17 + 46) / 2 - player.x)
         player.y_offset = int((2* 1 + 46) / 2 - player.y)
         entity_list = [player]
-        self.gen_monsters(entity_list)
-        self.gen_items(entity_list)
+        self.gen_monsters(entity_list, only_in_rooms = True)
+        self.gen_items(entity_list, only_in_rooms = True)
         return entity_list
 
     def gen_empty_dungeon(self):

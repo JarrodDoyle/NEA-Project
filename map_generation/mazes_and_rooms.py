@@ -3,7 +3,7 @@ from rect import Rect
 from kruskals import Kruskals_Algorithm
 import random, cells
 
-class Dungeon_Maze_And_Rooms(Dungeon):
+class Dungeon_Mazes_And_Rooms(Dungeon):
     def __init__(self, width, height):
         super().__init__(width, height)
         self.initialize_dungeon(tile = 0)
@@ -160,7 +160,8 @@ class Dungeon_Maze_And_Rooms(Dungeon):
         height = random.choice([i for i in range(min_size, max_size + 1, 2)])
         return Rect(x, y, width, height)
 
-    def gen_full_dungeon(self, attempts):
+    def gen_dungeon(self, player, attempts):
+        entity_list = []
         self.gen_rooms(attempts)
         self.tiles = self.gen_mazes()
         self.build_room_regions()
@@ -171,3 +172,15 @@ class Dungeon_Maze_And_Rooms(Dungeon):
         self.fill_blank_space()
         self.build_walls()
         self.remove_dead_ends()
+
+        x, y = random.choice(self.rooms).get_center()
+        player.x = x
+        player.y = y
+        player.x_offset = int((2 * 17 + 46) / 2 - player.x)
+        player.y_offset = int((2* 1 + 46) / 2 - player.y)
+        entity_list.append(player)
+
+        self.gen_monsters(entity_list, only_in_rooms = True)
+        self.gen_items(entity_list, only_in_rooms = True)
+        self.gen_stairs(only_in_rooms = True)
+        return entity_list
