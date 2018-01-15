@@ -95,7 +95,7 @@ class Game:
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
                     message = "go to next floor buddy"
                     self.ui_elements["messages"].messages.append(message)
-                    self.dungeon, self.entities = initialize_dungeon(player)
+                    self.dungeon, self.entities = initialize_dungeon(self.player)
                     self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
                 else:
                     message = "There are no stairs here."
