@@ -3,6 +3,7 @@ import random
 from map_generation.bsp_map import Dungeon_BSP
 from map_generation.cellular_automata import Dungeon_Cellular_Automata
 from map_generation.mazes_and_rooms import Dungeon_Mazes_And_Rooms
+from map_generation.rogue import Dungeon_Rogue
 
 def load_terminal_settings():
     settings = open("config/terminal_settings.cfg", "r")
@@ -14,7 +15,7 @@ def initialize_terminal():
     terminal.refresh()
 
 def initialize_dungeon(player):
-    dungeon_variants = [0,1,2]
+    dungeon_variants = [0,1,2,3]
     variant = random.choice(dungeon_variants)
     if variant == 0:
         dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
@@ -27,6 +28,10 @@ def initialize_dungeon(player):
     elif variant == 2:
         dungeon = Dungeon_Mazes_And_Rooms(width = 95, height = 63)
         entities = dungeon.gen_dungeon(player, attempts = 100)
+        return dungeon, entities
+    elif variant == 3:
+        dungeon = Dungeon_Rogue(96, 64)
+        entities = dungeon.gen_dungeon(player)
         return dungeon, entities
 
 def initialize_move_keybinds():
