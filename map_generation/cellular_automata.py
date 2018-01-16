@@ -24,7 +24,7 @@ class Dungeon_Cellular_Automata(Dungeon):
             self.room_arr.append(row)
 
         # Doesn't take chance to be alive into account
-        #self.tiles = [[[1, 0][random.randint(0,1)] for x in range(self.width)] for y in range(self.height)]
+        # self.tiles = [[[1, 0][random.randint(0,100) < self.chance_to_be_alive] for x in range(self.width)] for y in range(self.height)]
 
     def simulate_step(self):
         new_tiles = self.room_arr
@@ -142,22 +142,13 @@ class Dungeon_Cellular_Automata(Dungeon):
                 self.dig_v_corridor(x2, y2, y3)
 
     def gen_dungeon(self, player):
-        entity_list = []
         self.initialize_dungeon()
         for i in range(self.num_steps):
             self.simulate_step()
         self.connect_rooms()
         self.convert_dungeon()
-        while True:
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if not self.tiles[y][x].is_blocked:
-                player.x = x
-                player.y = y
-                player.x_offset = int((2 * 17 + 46) / 2 - player.x + 1)
-                player.y_offset = int((2* 1 + 46) / 2 - player.y + 1)
-                entity_list.append(player)
-                break
+        self.set_player_coords(player, rooms = False)
+        entity_list = [player]
         self.gen_stairs()
         self.gen_monsters(entity_list)
         self.gen_items(entity_list)

@@ -67,6 +67,22 @@ class Dungeon:
                     break
             self.tiles[y][x] = cells.Stair_Down()
 
+    def set_player_coords(self, player, rooms = True):
+        if rooms:
+            player.x, player.y = random.choice(self.rooms).get_center()
+            player.x_offset = int((2 * 17 + 46) / 2 - player.x)
+            player.y_offset = int((2* 1 + 46) / 2 - player.y)
+        else:
+            while True:
+                x = random.randint(0, self.width - 1)
+                y = random.randint(0, self.height - 1)
+                if not self.tiles[y][x].is_blocked:
+                    player.x = x
+                    player.y = y
+                    player.x_offset = int((2 * 17 + 46) / 2 - player.x + 1)
+                    player.y_offset = int((2* 1 + 46) / 2 - player.y + 1)
+                    break
+
     def dig_room(self, x_range, y_range):
         min_x, max_x = x_range
         min_y, max_y = y_range

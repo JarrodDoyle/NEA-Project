@@ -51,16 +51,13 @@ class Dungeon_Rogue(Dungeon):
                 self.tiles[y][x] = cells.Floor()
 
     def gen_dungeon(self, player):
-        entity_list = []
         self.initialize_dungeon()
         self.split_dungeon()
         self.gen_rooms()
         self.gen_corridors()
         self.gen_stairs(only_in_rooms = True)
-        player.x, player.y = random.choice(self.rooms).get_center()
-        player.x_offset = int((2 * 17 + 46) / 2 - player.x)
-        player.y_offset = int((2 * 1 + 46) / 2 - player.y)
-        entity_list.append(player)
+        self.set_player_coords(player)
+        entity_list = [player]
         self.gen_monsters(entity_list, only_in_rooms = True)
         self.gen_items(entity_list, only_in_rooms = True)
         return entity_list

@@ -135,13 +135,7 @@ class Dungeon_BSP(Dungeon):
         libtcod.bsp_traverse_inverted_level_order(bsp, self.traverse_node)
 
         self.gen_stairs(only_in_rooms = True)
-        player_room = random.choice(self.rooms)
-        x, y = player_room.get_center()
-        player.x = x
-        player.y = y
-        # TODO: remove offset hardcoding
-        player.x_offset = int((2 * 17 + 46) / 2 - player.x)
-        player.y_offset = int((2* 1 + 46) / 2 - player.y)
+        self.set_player_coords(player)
         entity_list = [player]
         self.gen_monsters(entity_list, only_in_rooms = True)
         self.gen_items(entity_list, only_in_rooms = True)
