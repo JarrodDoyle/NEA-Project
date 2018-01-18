@@ -15,24 +15,25 @@ class Dungeon:
         else:
             self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
 
-    def gen_monsters(self, entity_list, only_in_rooms = False):
-        if only_in_rooms:
-            for room in self.rooms:
-                max_num_monsters = room.get_area() // 15
-                num_monsters = libtcod.random_get_int(None, 0, max_num_monsters)
-                for i in range(num_monsters):
-                    x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
-                    y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
-                    if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                        monster = Goblin(x, y)
-                        entity_list.append(monster)
-        else:
-            max_num_monsters = int((self.height * self.width) * 0.015)
-            for i in range(max_num_monsters):
+    def gen_monsters(self, player, entity_list, only_in_rooms = False):
+        xp_sum = 0
+        min_required_xp = player.components["level"].level_up_xp
+        
+        while xp_sum < min_required_xp*1.2:
+            if only_in_rooms:
+                room = random.choice(self.rooms)
+                x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+                y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
+                    monster = Goblin(x, y)
+                    xp_sum += monster.components["level"].avg_xp_drop
+                    entity_list.append(monster)
+            else:
                 x = libtcod.random_get_int(0, 0, self.width - 1)
                 y = libtcod.random_get_int(0, 0, self.height - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
                     monster = Goblin(x, y)
+                    xp_sum += monster.components["level"].avg_xp_drop
                     entity_list.append(monster)
 
     def gen_items(self, entity_list, only_in_rooms = False):

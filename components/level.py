@@ -21,9 +21,12 @@ class Level(Component):
         self.xp = self.xp - self.level_up_xp
         self.level_up_xp = self.base_xp * (self.level)^self.level_up_factor
 
+    @property
+    def avg_xp_drop(self):
+        return self.base_xp_drop + self.level_up_factor
+
     def drop_xp(self):
-        avg_drop = (self.base_xp_drop + self.level_up_factor)
-        return random.randint(avg_drop - self.level, avg_drop + self.level)
+        return random.randint(self.avg_xp_drop - self.level, self.avg_xp_drop + self.level)
 
     def gain_xp(self, xp):
         self.xp += xp

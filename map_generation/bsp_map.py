@@ -137,7 +137,7 @@ class Dungeon_BSP(Dungeon):
         self.gen_stairs(only_in_rooms = True)
         self.set_player_coords(player)
         entity_list = [player]
-        self.gen_monsters(entity_list, only_in_rooms = True)
+        self.gen_monsters(player, entity_list, only_in_rooms = True)
         self.gen_items(entity_list, only_in_rooms = True)
         return entity_list
 

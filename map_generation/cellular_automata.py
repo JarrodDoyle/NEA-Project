@@ -150,7 +150,7 @@ class Dungeon_Cellular_Automata(Dungeon):
         self.set_player_coords(player, rooms = False)
         entity_list = [player]
         self.gen_stairs()
-        self.gen_monsters(entity_list)
+        self.gen_monsters(player, entity_list)
         self.gen_items(entity_list)
 
         # Insert border around dungeon
