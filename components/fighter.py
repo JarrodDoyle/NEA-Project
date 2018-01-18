@@ -1,5 +1,6 @@
 from dice import roll_dice
 from components.component_base import Component
+import random
 
 class Fighter(Component):
     # Fighter initialization
@@ -23,16 +24,16 @@ class Fighter(Component):
             if weapon1 == None:
                 weapon1_damage = 0
             else:
-                weapon1_damage = weapon1.damage()
+                weapon1_damage = weapon1.damage
 
             weapon2 = self.owner.components.get("equipment").equipment.get("r_hand")
             if weapon2 == None:
                 weapon2_damage = 0
             else:
-                weapon2_damage = weapon2.damage()
+                weapon2_damage = weapon2.damage
 
             # Damage is the diffence between the fighters strength and the enemy fighters defense
-            damage = self.strength + weapon1_damage + weapon2_damage
+            damage = random.randint(self.strength // 2, self.strength) + weapon1_damage + weapon2_damage
 
             # Generate appropriate attack message and simulate attack
             results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
@@ -72,18 +73,38 @@ class Fighter(Component):
     def strength(self):
         return (self.base_strength + self.bonus_strength())
 
+    @strength.setter
+    def strength(self, value):
+        self.base_strength = value
+
     @property
     def defense(self):
         return (self.base_defense + self.bonus_defense())
+
+    @defense.setter
+    def defense(self, defense):
+        self.base_defense = defense
 
     @property
     def accuracy(self):
         return (self.base_accuracy + self.bonus_accuracy())
 
+    @accuracy.setter
+    def accuracy(self, accuracy):
+        self.base_accuracy = accuracy
+
     @property
     def intelligence(self):
         return (self.base_intelligence + self.bonus_intelligence())
 
+    @intelligence.setter
+    def intelligence(self, intelligence):
+        self.base_intelligence = intelligence
+
     @property
     def max_hp(self):
         return self.base_max_hp
+
+    @max_hp.setter
+    def max_hp(self, hp):
+        self.base_max_hp = hp

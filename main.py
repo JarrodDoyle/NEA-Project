@@ -16,7 +16,6 @@ x = xc - w//2
 y = yc - h//2
 main_menu = Menu(x, y, w, h, "Main Menu", options, "black")
 
-
 while True:
     terminal.clear()
     terminal.puts(0, 0, chr(int(0xE000)))
