@@ -21,6 +21,14 @@ class Level(Component):
         self.xp = self.xp - self.level_up_xp
         self.level_up_xp = self.base_xp * (self.level)^self.level_up_factor
 
+        # Update owners fighter stats
+        fighter = self.owner.components.get("fighter")
+        fighter.strength += 1
+        fighter.defense += 1
+        fighter.accuracy += 1
+        fighter.intelligence += 1
+        fighter.max_hp += 1
+
     @property
     def avg_xp_drop(self):
         return self.base_xp_drop + self.level_up_factor
