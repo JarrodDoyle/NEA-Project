@@ -30,7 +30,7 @@ class Player(Entity):
 class Goblin(Entity):
     def __init__(self, x, y):
         fighter_component = Fighter(hp = 30, strength = 3, defense = 1, accuracy = 2, intelligence = 0)
-        level_component = Level(base_level = 1, base_xp = 50, lvl_up_factor = 3, xp_drop = 5)
+        level_component = Level(base_level = 1, base_xp = 50, lvl_up_factor = 3, xp_drop = 1)
         ai_component = Basic_Monster()
         equipment_component = Equipment()
         components_dict = {"ai": ai_component, "fighter": fighter_component, "level": level_component, "equipment": equipment_component}

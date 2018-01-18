@@ -3,18 +3,20 @@ from rect import Rect
 import cells, random
 
 class Dungeon_Rogue(Dungeon):
-    def __init__(self, width, height):
+    def __init__(self, width, height, rows = 3, columns = 3):
         super().__init__(width, height)
+        self.rows = rows
+        self.columns = columns
 
     def split_dungeon(self):
         self.regions = []
-        region_width = self.width // 3
-        region_height = self.height // 3
+        region_width = self.width // self.columns
+        region_height = self.height // self.rows
 
         x, y = 0, 0
 
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.rows):
+            for j in range(self.columns):
                 region = Rect(x, y, region_width, region_height)
                 self.regions.append(region)
                 x += region_width
@@ -25,8 +27,8 @@ class Dungeon_Rogue(Dungeon):
         self.rooms = []
         for region in self.regions:
             a, b = region.get_center()
-            width = random.randint(6, 14)
-            height = random.randint(6, 14)
+            width = random.randint((region.x2 - region.x1) // 4, (region.x2- region.x1) // 2)
+            height = random.randint((region.y2 - region.y1) // 4, (region.y2 - region.y1) // 2)
             x = a - width // 2
             y = b - height // 2
             room = Rect(x, y, width, height)
@@ -35,19 +37,23 @@ class Dungeon_Rogue(Dungeon):
             
 
     def gen_corridors(self):
-        region_width = self.width // 3
-        region_height = self.height // 3
+        region_width = self.width // self.columns
+        region_height = self.height // self.rows
 
-        x1, y1 = self.regions[0].get_center() # Top left region
-        x2, y2 = self.regions[4].get_center() # Middle region
-        x3, y3 = self.regions[8].get_center() # Bottom right region
+        x_vals = []
+        y_vals = []
+        for i in range(0, self.columns):
+            x_vals.append(self.regions[i].get_center()[0])
+
+        for i in range(0, self.rows):
+            y_vals.append(self.regions[i*self.columns].get_center()[1])
         
-        for x in range(x1, x3 + 1):
-            for y in [y1, y2, y3]:
+        for x in range(min(x_vals), max(x_vals) + 1):
+            for y in y_vals:
                 self.tiles[y][x] = cells.Floor()        
 
-        for y in range(y1, y3 + 1):
-            for x in [x1, x2, x3]:
+        for y in range(min(y_vals), max(y_vals)):
+            for x in x_vals:
                 self.tiles[y][x] = cells.Floor()
 
     def gen_dungeon(self, player):
@@ -58,7 +64,7 @@ class Dungeon_Rogue(Dungeon):
         self.gen_stairs(only_in_rooms = True)
         self.set_player_coords(player)
         entity_list = [player]
-        self.gen_monsters(entity_list, only_in_rooms = True)
+        self.gen_monsters(player, entity_list, only_in_rooms = True)
         self.gen_items(entity_list, only_in_rooms = True)
         return entity_list
         
