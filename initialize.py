@@ -4,6 +4,8 @@ from map_generation.bsp_map import Dungeon_BSP
 from map_generation.cellular_automata import Dungeon_Cellular_Automata
 from map_generation.mazes_and_rooms import Dungeon_Mazes_And_Rooms
 from map_generation.rogue import Dungeon_Rogue
+from create_character import Character_Creation
+from ui import *
 
 def load_terminal_settings():
     settings = open("config/terminal_settings.cfg", "r")
@@ -44,3 +46,9 @@ def initialize_move_keybinds():
         value = int(i[equals_index + 1:].strip())
         keybinds[key] = value
     return keybinds
+
+def initialize_player(player, ui_elements):
+    creator_class = Character_Creation()
+    creator_ui = Character_Creation_UI_Window()
+    name = creator_class.choose_name(creator_ui)
+    player.name = name
