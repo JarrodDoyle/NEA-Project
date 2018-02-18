@@ -153,6 +153,41 @@ class Inventory_UI_Window(UI_Element):
 
         terminal.layer(base_layer)
 
+class Character_Creation_UI_Window(UI_Element):
+    def __init__(self):
+        super().__init__(17, 1, 46, 46, "Character Creation")
+
+    def render(self, text):
+        self.text = text
+        base_layer = self.create_window("black")
+
+        # Turn text into a list of non-textwrapped lines
+        text = []
+        line = ""
+        for i in self.text:
+            if i != "\n":
+                line += i
+            else:
+                text.append(line)
+                line = ""
+        if len(line) > 0:
+            text.append(line)
+
+        # Get a final list of the lines in description by word wrapping the previously created text list
+        description = []
+        for i in text:
+            description += textwrap.wrap(i, width = self.w)
+
+        if len(description) > self.h:
+            raise Exception("Description is too long")
+
+        for i in range(len(description)):
+            terminal.puts(self.x, self.y + i, description[i])
+        # Reset description text
+        self.text = ""
+
+        terminal.layer(base_layer)
+
 class Dungeon_UI_Window(UI_Element):
     # Initialize from parent UI_Element class
     def __init__(self):
