@@ -35,7 +35,7 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
     def build_floors(self):
         for y in range(self.height):
             for x in range(self.width):
-                if self.tiles[y][x] != None:
+                if self.tiles[y][x] != None and self.tiles[y][x] != 0:
                     self.tiles[y][x] = cells.Floor()
 
     def build_walls(self):
@@ -71,27 +71,35 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         mazes.gen_maze()
         return mazes.arr
 
-    def gen_connections(self):
+    def gen_connection_at_point(self, connections, x, y):
+        above = self.tiles[y-1][x]
+        below = self.tiles[y+1][x]
+        left = self.tiles[y][x-1]
+        right = self.tiles[y][x+1]
+        if above != 0 and below != 0 and above != below:
+            connections.append([x, y, "v"])
+        elif left != 0 and right != 0 and left != right:
+            connections.append([x, y, "h"])
+
+    def gen_connections_list(self):
         '''Find valid connection points between regions'''
         connections = []
-        for y in range(self.height):
-            for x in range(self.width):
-                if 0 < x < self.width - 1 and 0 < y < self.height - 1 and self.tiles[y][x] == None:
-                    above = self.tiles[y-1][x]
-                    below = self.tiles[y+1][x]
-                    left = self.tiles[y][x-1]
-                    right = self.tiles[y][x+1]
-                    if above != None and below != None and above != below:
-                        connections.append([x, y, "v"])
-                    elif left != None and right != None and left != right:
-                        connections.append([x, y, "h"])
+        for room in self.rooms:
+            for x in range(room.x1, room.x2 + 1):
+                for y in [room.y1 - 1, room.y2 + 1]:
+                    if x in range(self.width) and y in range(1, self.height - 1):
+                        self.gen_connection_at_point(connections, x, y)
+            for y in range(room.y1, room.y2 + 1):
+                for x in [room.x1 - 1, room.x2 + 1]:
+                    if x in range(1, self.width - 1) and y in range(self.height):
+                        self.gen_connection_at_point(connections, x, y)
         return connections
 
     def remove_invalid_connections(self, connections):
         invalid_connections = []
         for connection in connections:
             x, y, direction = connection
-            if self.tiles[y][x] != None:
+            if self.tiles[y][x] != 0:
                 invalid_connections.append(connection)
             elif direction == "v":
                 if self.tiles[y-1][x] == self.tiles[y+1][x]:
@@ -149,9 +157,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
                             done = False
 
     def fill_blank_space(self):
-        for y in range(len(self.tiles)):
-            for x in range(len(self.tiles[y])):
-                if self.tiles[y][x] is None:
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.tiles[y][x] == 0:
                     self.tiles[y][x] = cells.Rock()
 
     def gen_rand_odd_rect(self, x, y, min_size, max_size):
@@ -164,7 +172,7 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         self.gen_rooms(attempts)
         self.tiles = self.gen_mazes()
         self.build_room_regions()
-        connections = self.gen_connections()
+        connections = self.gen_connections_list()
         while len(connections) > 0:
             connections = self.connect_dungeon(connections)
         self.build_floors()

@@ -17,7 +17,7 @@ def initialize_terminal():
     terminal.refresh()
 
 def initialize_dungeon(player):
-    dungeon_variants = [0, 1, 2, 3]
+    dungeon_variants = [2]
     variant = random.choice(dungeon_variants)
     if variant == 0:
         dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
