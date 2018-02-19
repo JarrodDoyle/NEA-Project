@@ -165,45 +165,9 @@ class Inventory_UI_Window(UI_Element):
         terminal.color(base_color)
         terminal.layer(base_layer)
 
-class Level_Up_UI_Window(UI_Element):
-    def __init__(self):
-        super().__init__(1, 1, 94, 62, "Level Up Menu")
-
-    def render(self, text):
-        self.text = text
-        base_color, base_layer = self.create_window()
-
-        # Turn text into a list of non-textwrapped lines
-        text = []
-        line = ""
-        for i in self.text:
-            if i != "\n":
-                line += i
-            else:
-                text.append(line)
-                line = ""
-        if len(line) > 0:
-            text.append(line)
-
-        # Get a final list of the lines in description by word wrapping the previously created text list
-        description = []
-        for i in text:
-            description += textwrap.wrap(i, width = self.w)
-
-        if len(description) > self.h:
-            raise Exception("Description is too long")
-
-        for i in range(len(description)):
-            terminal.puts(self.x, self.y + i, description[i])
-        # Reset description text
-        self.text = ""
-
-        terminal.color(base_color)
-        terminal.layer(base_layer)
-
-class Character_Creation_UI_Window(UI_Element):
-    def __init__(self):
-        super().__init__(1, 1, 94, 62, "Character Creation")
+class Generic_Text_Window(UI_Element):
+    def __init__(self, x, y, w, h, title):
+        super().__init__(x, y, w, h, title)
 
     def render(self, text):
         self.text = text

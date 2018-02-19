@@ -1,5 +1,5 @@
 from components.component_base import Component
-from ui import Level_Up_UI_Window
+from ui import Generic_Text_Window
 from bearlibterminal import terminal
 import random
 
@@ -19,7 +19,7 @@ class Level(Component):
         return self.xp >= self.level_up_xp
 
     def level_up(self):
-        menu = Level_Up_UI_Window()
+        menu = Generic_Text_Window(1, 1, 94, 62, "Level Up Menu")
         self.level += 1
         self.xp = self.xp - self.level_up_xp
         self.level_up_xp = self.base_xp * (self.level)^self.level_up_factor

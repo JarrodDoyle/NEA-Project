@@ -5,7 +5,6 @@ from map_generation.cellular_automata import Dungeon_Cellular_Automata
 from map_generation.mazes_and_rooms import Dungeon_Mazes_And_Rooms
 from map_generation.rogue import Dungeon_Rogue
 from create_character import Character_Creation
-from ui import *
 from entities.mobs import Player
 
 def load_terminal_settings():
@@ -52,7 +51,6 @@ def initialize_move_keybinds():
 
 def initialize_player():
     creator_class = Character_Creation()
-    creator_ui = Character_Creation_UI_Window()
-    player_name = creator_class.choose_name(creator_ui)
-    player_class = creator_class.choose_class(creator_ui)
+    player_name = creator_class.choose_name()
+    player_class = creator_class.choose_class()
     return Player(0, 0, player_name, player_class)

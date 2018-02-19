@@ -1,14 +1,15 @@
 from bearlibterminal import terminal
-from ui import UI_Element
+from ui import Generic_Text_Window
 import components.fighter as fighter
 
 class Character_Creation:
-    def choose_name(self, character_creation_ui):
+    def choose_name(self):
         name = ""
+        menu = Generic_Text_Window(1, 1, 94, 62, "Character Creation")
         while True:
             terminal.clear()
             text = "Please enter your name:\n{}".format(name)
-            character_creation_ui.render(text)
+            menu.render(text)
             terminal.refresh()
             key = terminal.read()
 
@@ -21,10 +22,11 @@ class Character_Creation:
 
         return name
 
-    def choose_class(self, character_creation_ui):
+    def choose_class(self):
+        menu = Generic_Text_Window(1, 1, 94, 62, "Character Creation")
         classes = [fighter.Barbarian, fighter.Wizard, fighter.Rogue, fighter.Ranger, fighter.God]
         text = "Please select a class:\n a) Barbarian\n b) Wizard\n c) Rogue\n d) Ranger\n e) GOD"
-        character_creation_ui.render(text)
+        menu.render(text)
         terminal.refresh()
         valid_choice = False
         while not valid_choice:
