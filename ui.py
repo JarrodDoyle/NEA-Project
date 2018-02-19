@@ -11,17 +11,17 @@ class UI_Element:
         self.h = h
         self.title = title
 
-    def create_window(self, color):
+    def create_window(self, bk_color = "black", color = "white"):
         # Create buffer layer with given color to create a background for UI_Element without removing whats underneath
-        base_layer = terminal.state(terminal.TK_LAYER)
         base_color = terminal.state(terminal.TK_COLOR)
+        base_layer = terminal.state(terminal.TK_LAYER)
+        terminal.color(bk_color)
         terminal.layer(base_layer + 1)
-        terminal.color(color)
         row = "█" * (self.w + 2)
         for y in range(self.y - 1, self.y + self.h + 1):
             terminal.puts(self.x - 1, y, row)
         terminal.layer(base_layer + 2)
-        terminal.color("white") # TODO: make it return to previous color properly
+        terminal.color(color)
 
         # create top border
         border_top = "╔" + "═" * (self.w) + "╗"
@@ -41,22 +41,24 @@ class UI_Element:
             offset = (self.w + 2 - len(self.title)) // 2 - 1
             terminal.puts(self.x + offset, self.y - 1, self.title)
 
-        return base_layer
+        return base_color, base_layer
 
 class Menu(UI_Element):
-    def __init__(self, x, y, w, h, title, options, bk_color):
+    def __init__(self, x, y, w, h, title, options, bk_color = "black", color = "white"):
         self.options = options
         self.bk_color = bk_color
+        self.color = color
         super().__init__(x, y, w, h, title)
 
     def render(self):
-        base_layer = self.create_window(self.bk_color)
+        base_color, base_layer = self.create_window(bk_color = self.bk_color, color = self.color)
 
         letter_index = ord("a")
         for i in range(len(self.options)):
             terminal.puts(self.x, self.y + i, "{}) {}".format(chr(letter_index), self.options[i]))
             letter_index += 1
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
     def get_choice(self):
@@ -74,7 +76,7 @@ class Player_UI_Window(UI_Element):
 
     def render(self, player):
         # Create border for window and clear area
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
 
         # LINE ONE
         # Display player name
@@ -112,19 +114,28 @@ class Player_UI_Window(UI_Element):
         else:
             terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color]".format(player.components["fighter"].intelligence))
 
-        # LINE SEVEN
-        terminal.puts(self.x, self.y + 6, "Lvl: [color=orange]{}[/color]".format(player.components["level"].level))
-        # LINE EIGHT
-        terminal.puts(self.x, self.y + 7, "Exp: [color=orange]{}/{}[/color]".format(player.components["level"].xp, player.components["level"].level_up_xp))
+        # LINE SIX
+        # If player has bonus dexterity display dexterity and then bonus dexterity after
+        if player.components["fighter"].bonus_dexterity() > 0:
+            terminal.puts(self.x, self.y + 5, "Dex: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].dexterity, player.components["fighter"].bonus_dexterity()))
+        # Otherwise just display dexterity
+        else:
+            terminal.puts(self.x, self.y + 5, "Dex: [color=green]{}[/color]".format(player.components["fighter"].dexterity))
 
-        # LINE TEN
-        terminal.puts(self.x, self.y + 9, "Hp: [color=red]{}/{}[/color]".format(player.components["fighter"].hp, player.components["fighter"].max_hp))
+        # LINE EIGHT
+        terminal.puts(self.x, self.y + 7, "Lvl: [color=orange]{}[/color]".format(player.components["level"].level))
+        # LINE NINE
+        terminal.puts(self.x, self.y + 8, "Exp: [color=orange]{}/{}[/color]".format(player.components["level"].xp, player.components["level"].level_up_xp))
+
         # LINE ELEVEN
-        health_bar(self.x, self.y + 10, self.w, 1, player)
+        terminal.puts(self.x, self.y + 10, "Hp: [color=red]{}/{}[/color]".format(player.components["fighter"].hp, player.components["fighter"].max_hp))
+        # LINE TELVE
+        health_bar(self.x, self.y + 11, self.w, 1, player)
 
         # LINE THIRTEEN
         terminal.puts(self.x, self.y + 12, "Gold: [color=yellow]{}[/color]".format(200)) # TODO: Replace with players gold amount
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Inventory_UI_Window(UI_Element):
@@ -132,7 +143,7 @@ class Inventory_UI_Window(UI_Element):
         super().__init__(65, 1, 30, 29, "Inventory")
 
     def render(self, player):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
         inventory = player.components["inventory"].items
         letter_index = ord("a")
         num_item = 0
@@ -151,15 +162,16 @@ class Inventory_UI_Window(UI_Element):
                 letter_index += 1
                 terminal.puts(self.x, self.y + dy, "{}) [color={}]{}[/color]".format(chr(letter_index), inventory[i].color, inventory[i].name))
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Character_Creation_UI_Window(UI_Element):
     def __init__(self):
-        super().__init__(17, 1, 46, 46, "Character Creation")
+        super().__init__(1, 1, 94, 62, "Character Creation")
 
     def render(self, text):
         self.text = text
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
 
         # Turn text into a list of non-textwrapped lines
         text = []
@@ -186,6 +198,7 @@ class Character_Creation_UI_Window(UI_Element):
         # Reset description text
         self.text = ""
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Dungeon_UI_Window(UI_Element):
@@ -195,7 +208,7 @@ class Dungeon_UI_Window(UI_Element):
 
     # Render dungeon within UI Box
     def render(self, player, entities, dungeon, fov_map, fog_of_war):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
 
         # Get min/max x/y values of the dungeon to render so as to stay within the UI Box and decrease unneccesary terminal print calls
         x_min = max(17 - player.x_offset, 0)
@@ -223,6 +236,7 @@ class Dungeon_UI_Window(UI_Element):
                     else:
                         terminal.puts(entity.x + player.x_offset, entity.y + player.y_offset, "[color={}]{}[/color]".format(entity.color, entity.char))
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Monsters_UI_Window(UI_Element):
@@ -230,7 +244,7 @@ class Monsters_UI_Window(UI_Element):
         super().__init__(1, 16, 14, 31, "Monsters")
 
     def render(self, player, entities, fov_map):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
 
         visible_entities = get_visible_entities(player, entities, fov_map)
         if visible_entities:
@@ -243,6 +257,7 @@ class Monsters_UI_Window(UI_Element):
                     health_bar(self.x, self.y + num_monsters * 4 + 2, 14, 1, entity)
                     num_monsters += 1
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Messages_UI_Window(UI_Element):
@@ -251,7 +266,7 @@ class Messages_UI_Window(UI_Element):
         self.messages = []
 
     def render(self):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
         for i in range(0, len(self.messages)):
             index = len(self.messages) - 1 - i
             if self.y + self.h - 1 - i < self.y:
@@ -259,6 +274,7 @@ class Messages_UI_Window(UI_Element):
             message = self.messages[index]
             terminal.puts(self.x, self.y + self.h - 1 - i, message)
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Description_UI_Window(UI_Element):
@@ -267,7 +283,7 @@ class Description_UI_Window(UI_Element):
         self.text = ""
 
     def render(self):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window()
 
         # Turn text into a list of non-textwrapped lines
         text = []
@@ -294,6 +310,7 @@ class Description_UI_Window(UI_Element):
         # Reset description text
         self.text = ""
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 class Equipment_UI_Window(UI_Element):
@@ -301,7 +318,7 @@ class Equipment_UI_Window(UI_Element):
         super().__init__(65, 49, 30, 14, "Equipment")
 
     def render(self, equipment):
-        base_layer = self.create_window("black")
+        base_color, base_layer = self.create_window("black")
         letter_index = ord("a")
         dy = 0
         for i in equipment:
@@ -312,6 +329,7 @@ class Equipment_UI_Window(UI_Element):
                 terminal.puts(self.x, self.y + dy, "{}) {}:".format(chr(letter_index + dy), i))
             dy += 1
 
+        terminal.color(base_color)
         terminal.layer(base_layer)
 
 def health_bar(x, y, w, h, entity):

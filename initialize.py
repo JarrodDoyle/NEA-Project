@@ -6,6 +6,7 @@ from map_generation.mazes_and_rooms import Dungeon_Mazes_And_Rooms
 from map_generation.rogue import Dungeon_Rogue
 from create_character import Character_Creation
 from ui import *
+from entities.mobs import Player
 
 def load_terminal_settings():
     settings = open("config/terminal_settings.cfg", "r")
@@ -14,6 +15,8 @@ def load_terminal_settings():
 def initialize_terminal():
     terminal.open()
     terminal.set(load_terminal_settings())
+    terminal.bkcolor("black")
+    terminal.color("white")
     terminal.refresh()
 
 def initialize_dungeon(player):
@@ -47,8 +50,9 @@ def initialize_move_keybinds():
         keybinds[key] = value
     return keybinds
 
-def initialize_player(player, ui_elements):
+def initialize_player():
     creator_class = Character_Creation()
     creator_ui = Character_Creation_UI_Window()
-    name = creator_class.choose_name(creator_ui)
-    player.name = name
+    player_name = creator_class.choose_name(creator_ui)
+    player_class = creator_class.choose_class(creator_ui)
+    return Player(0, 0, player_name, player_class)

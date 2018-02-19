@@ -4,14 +4,10 @@ import random
 
 class Fighter(Component):
     # Fighter initialization
-    def __init__(self, hp, strength, defense, accuracy, intelligence):
+    def __init__(self, fighter_class):
         super().__init__()
-        self.base_max_hp = hp
-        self.hp = hp
-        self.base_strength = strength
-        self.base_defense = defense
-        self.base_accuracy = accuracy
-        self.base_intelligence = intelligence
+        self.fighter_class = fighter_class
+        self.hp = fighter_class.base_max_hp
 
     # Attack another fighter
     def attack(self, target):
@@ -58,7 +54,7 @@ class Fighter(Component):
     def bonus_strength(self):
         return 0
 
-    # Calculates bonus defense from amor and buffs and returns it
+    # Calculates bonus defense from armor and buffs and returns it
     def bonus_defense(self):
         return 0
 
@@ -69,42 +65,89 @@ class Fighter(Component):
     def bonus_intelligence(self):
         return 0
 
+    # Calculates bonus intelligence from buffs and returns it
+    def bonus_dexterity(self):
+        return 0
+
     @property
     def strength(self):
-        return (self.base_strength + self.bonus_strength())
+        return (self.fighter_class.base_strength + self.bonus_strength())
 
     @strength.setter
     def strength(self, value):
-        self.base_strength = value
+        self.fighter_class.base_strength = value
 
     @property
     def defense(self):
-        return (self.base_defense + self.bonus_defense())
+        return (self.fighter_class.base_defense + self.bonus_defense())
 
     @defense.setter
     def defense(self, defense):
-        self.base_defense = defense
+        self.fighter_class.base_defense = defense
 
     @property
     def accuracy(self):
-        return (self.base_accuracy + self.bonus_accuracy())
+        return (self.fighter_class.base_accuracy + self.bonus_accuracy())
 
     @accuracy.setter
     def accuracy(self, accuracy):
-        self.base_accuracy = accuracy
+        self.fighter_class.base_accuracy = accuracy
 
     @property
     def intelligence(self):
-        return (self.base_intelligence + self.bonus_intelligence())
+        return (self.fighter_class.base_intelligence + self.bonus_intelligence())
 
     @intelligence.setter
     def intelligence(self, intelligence):
-        self.base_intelligence = intelligence
+        self.fighter_class.base_intelligence = intelligence
+
+    @property
+    def dexterity(self):
+        return (self.fighter_class.base_dexterity + self.bonus_dexterity())
+
+    @dexterity.setter
+    def dexterity(self, value):
+        self.fighter_class.base_dexterity = value
 
     @property
     def max_hp(self):
-        return self.base_max_hp
+        return self.fighter_class.base_max_hp
 
     @max_hp.setter
     def max_hp(self, hp):
-        self.base_max_hp = hp
+        self.fighter_class.base_max_hp = hp
+
+class Fighter_Class:
+    def __init__(self, name, strength, defense, accuracy, intelligence, dexterity, max_hp):
+        self.class_name = name
+        self.base_strength = strength
+        self.base_defense = defense
+        self.base_accuracy = accuracy
+        self.base_intelligence = intelligence
+        self.base_dexterity = dexterity
+        self.base_max_hp = max_hp
+
+class Barbarian(Fighter_Class):
+    def __init__(self):
+        super().__init__(name = "barbarian", strength = 4, defense = 1, accuracy = 3, intelligence = 0, dexterity = 0, max_hp = 100)
+        self.description = "Barbarians are very strong and fairly accurate with their attacks. They have a lot of health which allows them to survive long, close range, fights. However they severely lack abilities with magic and ranged weapons."
+
+class Wizard(Fighter_Class):
+    def __init__(self):
+        super().__init__(name = "wizard", strength = 2, defense = 1, accuracy = 2, intelligence = 5, dexterity = 0, max_hp = 50)
+        self.description = "Wizards are extremely strong with magical attacks and are trained in some hand to hand combat. They lack ability with ranged weapons."
+
+class Rogue(Fighter_Class):
+    def __init__(self):
+        super().__init__(name = "rogue", strength = 2, defense = 1, accuracy = 4, intelligence = 0, dexterity = 2, max_hp = 75)
+        self.description = "Rogues are capable in all standard combat methods but struggle with magic attacks."
+
+class Ranger(Fighter_Class):
+    def __init__(self):
+        super().__init__(name = "ranger", strength = 1, defense = 1, accuracy = 4, intelligence = 0, dexterity = 5, max_hp = 25)
+        self.description = "Rangers are extremely good with ranged weapons and are accurate shots, they are however very weak and struggle in close combat situations."
+
+class God(Fighter_Class):
+    def __init__(self):
+        super().__init__(name = "god", strength = 1000, defense = 1000, accuracy = 1000, intelligence = 1000, dexterity = 1000, max_hp = 1000)
+        self.description = "You're a GOD with almost no weaknesses."

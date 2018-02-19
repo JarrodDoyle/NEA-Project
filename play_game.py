@@ -16,10 +16,10 @@ class Game:
         # Set inital game state
         self.game_state = Game_States.PLAYER_TURN
         self.previous_game_state = self.game_state
-        
+
         # Initialize UI elements and dummy player
         self.ui_elements = initialize_ui_elements()
-        self.player = Player(0, 0)
+        self.player = initialize_player()
 
         # Initialize dungeon
         self.dungeon, self.entities = initialize_dungeon(self.player)
@@ -30,7 +30,6 @@ class Game:
 
         # Initialize final player
         render(player = self.player, entities = self.entities, fov_map = self.fov_map, fov_recompute = self.fov_recompute, ui_elements = self.ui_elements, fog_of_war = self.fog_of_war)
-        initialize_player(self.player, self.ui_elements)
 
     def play(self):
         # Render UI and dungeon

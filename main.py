@@ -14,7 +14,7 @@ w = 15
 h = len(options)
 x = xc - w//2
 y = yc - h//2
-main_menu = Menu(x, y, w, h, "Main Menu", options, "black")
+main_menu = Menu(x, y, w, h, "Main Menu", options)
 
 while True:
     terminal.clear()
