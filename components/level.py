@@ -1,4 +1,6 @@
 from components.component_base import Component
+from ui import Level_Up_UI_Window
+from bearlibterminal import terminal
 import random
 
 class Level(Component):
@@ -17,17 +19,58 @@ class Level(Component):
         return self.xp >= self.level_up_xp
 
     def level_up(self):
+        menu = Level_Up_UI_Window()
         self.level += 1
         self.xp = self.xp - self.level_up_xp
         self.level_up_xp = self.base_xp * (self.level)^self.level_up_factor
 
-        # Update owners fighter stats
         fighter = self.owner.components.get("fighter")
-        fighter.strength += 1
-        fighter.defense += 1
-        fighter.accuracy += 1
-        fighter.intelligence += 1
-        fighter.max_hp += 1
+
+        confirmed_stats = False
+        while not confirmed_stats:
+            available_points = 5
+            stats = [0, 0, 0, 0, 0, 0]
+            while available_points > 0:
+                terminal.clear()
+                text = "Chose stats to increase, you have {} points remaining:".format(available_points)
+                text += "\n a) Strength: {} (+{})".format(fighter.strength, stats[0])
+                text += "\n b) Defense: {} (+{})".format(fighter.defense, stats[1])
+                text += "\n c) Accuracy: {} (+{})".format(fighter.accuracy, stats[2])
+                text += "\n d) Intelligence: {} (+{})".format(fighter.intelligence, stats[3])
+                text += "\n e) Dexterity: {} (+{})".format(fighter.dexterity, stats[4])
+                text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 25)
+                menu.render(text)
+                terminal.refresh()
+                valid_choice = False
+                while not valid_choice:
+                    key = terminal.read()
+                    if key - terminal.TK_A in range(len(stats)):
+                        valid_choice = True
+                        choice = key - terminal.TK_A
+                stats[choice] += 1
+                available_points -= 1
+            terminal.clear()
+            text = "Press 'a' to confirm the following stat changes or 'b' to reset them:"
+            text += "\n a) Strength: {} (+{})".format(fighter.strength, stats[0])
+            text += "\n b) Defense: {} (+{})".format(fighter.defense, stats[1])
+            text += "\n c) Accuracy: {} (+{})".format(fighter.accuracy, stats[2])
+            text += "\n d) Intelligence: {} (+{})".format(fighter.intelligence, stats[3])
+            text += "\n e) Dexterity: {} (+{})".format(fighter.dexterity, stats[4])
+            text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 25)
+            menu.render(text)
+            terminal.refresh()
+            valid_choice = False
+            while not valid_choice:
+                key = terminal.read()
+                if key - terminal.TK_A in range(2):
+                    valid_choice = True
+                    confirmed_stats = not (key - terminal.TK_A)
+        fighter.strength += stats[0]
+        fighter.defense += stats[1]
+        fighter.accuracy += stats[2]
+        fighter.intelligence += stats[3]
+        fighter.dexterity += stats[4]
+        fighter.max_hp += stats[5] * 25
 
     @property
     def avg_xp_drop(self):
