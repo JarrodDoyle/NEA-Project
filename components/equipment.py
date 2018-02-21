@@ -5,8 +5,5 @@ class Equipment(Component):
         super().__init__()
         self.equipment = {"head": None, "body": None, "l_hand": None, "r_hand": None, "arms": None, "feet": None, "l_ring": None, "r_ring": None, "ranged": None, "ammo": None}
 
-    def equip_item(self, item, slot):
-        if self.equipment[slot] == None:
-            self.equipment[slot] = item
 
 

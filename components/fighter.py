@@ -12,24 +12,27 @@ class Fighter(Component):
     # Attack another fighter
     def attack(self, target):
         results = []
+        weapon_damage = []
 
         attacker_accuracy = roll_dice(1, self.accuracy)
         target_defense = roll_dice(1, target.components["fighter"].defense)
         if attacker_accuracy > target_defense:
             weapon1 = self.owner.components.get("equipment").equipment.get("l_hand")
             if weapon1 == None:
-                weapon1_damage = 0
+                weapon_damage.append(0)
             else:
-                weapon1_damage = weapon1.damage
+                weapon_damage.extend(weapon1.damage)
 
             weapon2 = self.owner.components.get("equipment").equipment.get("r_hand")
             if weapon2 == None:
-                weapon2_damage = 0
+                weapon_damage.append(0)
             else:
-                weapon2_damage = weapon2.damage
+                weapon_damage.extend(weapon2.damage)
 
-            # Damage is the diffence between the fighters strength and the enemy fighters defense
-            damage = random.randint(self.strength // 2, self.strength) + weapon1_damage + weapon2_damage
+            # Initial damage roll based on strength followed by application of each weapon hit
+            damage = random.randint(self.strength // 2, self.strength)
+            for i in weapon_damage:
+                damage += i
 
             # Generate appropriate attack message and simulate attack
             results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
@@ -50,28 +53,37 @@ class Fighter(Component):
             results.append({"dead": self.owner})
         return results
 
+    def bonus_stat(self, stat):
+        equipment_component = self.owner.components.get("equipment")
+        stat_sum = 0
+        if equipment_component:
+            for item in equipment_component.equipment.items():
+                if item[1] is not None:
+                    stat_sum += item[1].get_stat(stat)
+        return stat_sum
+
     # Calculates bonus strength from weapons and buffs and returns it
     def bonus_strength(self):
-        return 0
+        return self.bonus_stat("strength")
 
     # Calculates bonus defense from armor and buffs and returns it
     def bonus_defense(self):
-        return 0
+        return self.bonus_stat("defense")
 
     def bonus_accuracy(self):
-        return 0
+        return self.bonus_stat("accuracy")
 
     # Calculates bonus intelligence from buffs and returns it
     def bonus_intelligence(self):
-        return 0
+        return self.bonus_stat("intelligence")
 
     # Calculates bonus intelligence from buffs and returns it
     def bonus_dexterity(self):
-        return 0
+        return self.bonus_stat("dexterity")
 
     @property
     def strength(self):
-        return (self.fighter_class.base_strength + self.bonus_strength())
+        return (self.fighter_class.base_strength + self.bonus_stat("strength"))
 
     @strength.setter
     def strength(self, value):
@@ -79,7 +91,7 @@ class Fighter(Component):
 
     @property
     def defense(self):
-        return (self.fighter_class.base_defense + self.bonus_defense())
+        return (self.fighter_class.base_defense + self.bonus_stat("defense"))
 
     @defense.setter
     def defense(self, defense):
@@ -87,7 +99,7 @@ class Fighter(Component):
 
     @property
     def accuracy(self):
-        return (self.fighter_class.base_accuracy + self.bonus_accuracy())
+        return (self.fighter_class.base_accuracy + self.bonus_stat("accuracy"))
 
     @accuracy.setter
     def accuracy(self, accuracy):
@@ -95,7 +107,7 @@ class Fighter(Component):
 
     @property
     def intelligence(self):
-        return (self.fighter_class.base_intelligence + self.bonus_intelligence())
+        return (self.fighter_class.base_intelligence + self.bonus_stat("intelligence"))
 
     @intelligence.setter
     def intelligence(self, intelligence):
@@ -103,7 +115,7 @@ class Fighter(Component):
 
     @property
     def dexterity(self):
-        return (self.fighter_class.base_dexterity + self.bonus_dexterity())
+        return (self.fighter_class.base_dexterity + self.bonus_stat("dexterity"))
 
     @dexterity.setter
     def dexterity(self, value):

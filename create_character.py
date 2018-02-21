@@ -19,7 +19,6 @@ class Character_Creation:
                 name = name[:-1]
             elif terminal.check(terminal.TK_CHAR) and len(name) < 8:
                 name += chr(terminal.state(terminal.TK_CHAR))
-
         return name
 
     def choose_class(self):

@@ -141,35 +141,6 @@ class Game:
                     self.entities.remove(item_added)
                     self.game_state = Game_States.ENEMY_TURN
 
-        # If player looking at an item in inventory
-        if self.game_state == Game_States.USING_ITEM:
-            description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
-            self.ui_elements["description"].text = description
-
-            use = player_action.get("use")
-            drop = player_action.get("drop")
-            examine = player_action.get("examine")
-
-            if use:
-                message = self.item.components["item"].use(self.player, self.player.components["inventory"])
-                self.ui_elements["messages"].messages.append(message)
-                self.game_state = Game_States.PLAYER_TURN
-            if drop:
-                self.player.components["inventory"].items.remove(self.item)
-                self.item.x = self.player.x
-                self.item.y = self.player.y
-                self.entities.append(item)
-                message = "You drop the {} on the ground.".format(self.item.name)
-                self.ui_elements["messages"].messages.append(message)
-                self.game_state = Game_States.PLAYER_TURN
-            if examine:
-                self.ui_elements["description"].text = self.item.description
-                message = "You decide to look more closely at the {}.".format(self.item.name)
-                self.ui_elements["messages"].messages.append(message)
-
-            if cancel:
-                self.game_state = Game_States.INVENTORY_ACTIVE
-
         # If player is using the inventory
         if self.game_state == Game_States.INVENTORY_ACTIVE:
             if inventory_index is not None:
@@ -183,7 +154,39 @@ class Game:
                     message = "No valid item at index {}".format(inventory_index)
                 self.ui_elements["messages"].messages.append(message)
             elif cancel:
-                self.game_state = previous_game_state
+                message = "You close your inventory."
+                self.ui_elements["messages"].messages.append(message)
+                self.game_state = self.previous_game_state
+
+        # If player looking at an item in inventory
+        if self.game_state == Game_States.USING_ITEM:
+            description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
+            self.ui_elements["description"].text = description
+
+            use = player_action.get("use")
+            drop = player_action.get("drop")
+            examine = player_action.get("examine")
+
+            if use:
+                message = self.item.components["item"].use(self.player, self.player.components["inventory"])
+                self.ui_elements["messages"].messages.append(message)
+                self.game_state = Game_States.INVENTORY_ACTIVE
+            if drop:
+                self.player.components["inventory"].items.remove(self.item)
+                self.item.x = self.player.x
+                self.item.y = self.player.y
+                self.entities.append(item)
+                message = "You drop the {} on the ground.".format(self.item.name)
+                self.ui_elements["messages"].messages.append(message)
+                self.game_state = Game_States.INVENTORY_ACTIVE
+            if examine:
+                self.ui_elements["description"].text = self.item.description
+                message = "You decide to look more closely at the {}.".format(self.item.name)
+                self.ui_elements["messages"].messages.append(message)
+
+            if cancel:
+                self.game_state = Game_States.INVENTORY_ACTIVE
+
 
         # If it is not the players turn
         if self.game_state == Game_States.ENEMY_TURN:
