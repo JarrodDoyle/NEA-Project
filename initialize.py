@@ -13,7 +13,7 @@ def load_terminal_settings():
 
 def initialize_terminal():
     terminal.open()
-    terminal.set(load_terminal_settings())
+    #terminal.set(load_terminal_settings())
     terminal.bkcolor("black")
     terminal.color("white")
     terminal.refresh()

@@ -1,8 +1,6 @@
 from map_generation.dungeon_base import Dungeon
 import random, cells
 from floodfill import flood_fill
-from entities.mobs import Goblin
-from entities.items import Health_Pot
 from entities.entity_functions import get_blocking_entity
 
 class Dungeon_Cellular_Automata(Dungeon):

@@ -4,9 +4,10 @@ import random
 
 class Fighter(Component):
     # Fighter initialization
-    def __init__(self, fighter_class):
+    def __init__(self, fighter_class, spawn_chance):
         super().__init__()
         self.fighter_class = fighter_class
+        self.spawn_chance = spawn_chance
         self.hp = fighter_class.base_max_hp
 
     # Attack another fighter

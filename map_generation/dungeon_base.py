@@ -1,7 +1,6 @@
 import libtcodpy as libtcod
 import cells, random
-from entities.items import Health_Pot
-from entities.mobs import Goblin
+from map_generation.spawn_entities import choose_item_to_spawn, choose_mob_to_spawn
 from entities.entity_functions import get_blocking_entity
 
 class Dungeon:
@@ -24,17 +23,14 @@ class Dungeon:
                 room = random.choice(self.rooms)
                 x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
                 y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
-                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                    monster = Goblin(x, y)
-                    xp_sum += monster.components["level"].avg_xp_drop
-                    entity_list.append(monster)
             else:
                 x = libtcod.random_get_int(0, 0, self.width - 1)
                 y = libtcod.random_get_int(0, 0, self.height - 1)
-                if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                    monster = Goblin(x, y)
-                    xp_sum += monster.components["level"].avg_xp_drop
-                    entity_list.append(monster)
+
+            if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
+                monster = choose_mob_to_spawn()(x,y)
+                xp_sum += monster.components["level"].avg_xp_drop
+                entity_list.append(monster)
 
     def gen_items(self, entity_list, only_in_rooms = False):
         if only_in_rooms:
@@ -45,7 +41,7 @@ class Dungeon:
                     x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
                     y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
                     if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                        item = Health_Pot(x, y)
+                        item = choose_item_to_spawn()(x,y)
                         entity_list.append(item)
         else:
             max_num_items = int((self.height * self.width) * 0.015)
@@ -53,8 +49,8 @@ class Dungeon:
                 x = random.randint(0, self.width - 1)
                 y = random.randint(0, self.height - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                    item = Health_Pot(x, y)
-                    entity_list.append(item)
+                        item = choose_item_to_spawn()(x,y)
+                        entity_list.append(item)
 
     def gen_stairs(self, only_in_rooms = False):
         if only_in_rooms:

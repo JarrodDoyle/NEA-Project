@@ -2,8 +2,9 @@ from components.component_base import Component
 
 
 class Item(Component):
-    def __init__(self, use_function, args):
+    def __init__(self, use_function, args, spawn_chance):
         self.use_function = use_function
+        self.spawn_chance = spawn_chance
         self.args = args
         super().__init__()
 
