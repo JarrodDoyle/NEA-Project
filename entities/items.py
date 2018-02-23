@@ -41,13 +41,13 @@ class Intelligence_Potion(Entity):
 class Dexterity_Potion(Entity):
     def __init__(self, x, y):
         use_args = {"dexterity_increase": 2}
-        item_component = Item(use_function = use_functions.increase_dexterity, args = use_args, spawn_chance = 25)
+        item_component = Item(use_function = use_functions.increase_dexterity, args = use_args, spawn_chance = 100)
         components_dict = {"item": item_component}
         super().__init__(x, y, "Dexterity Potion", "!", "yellow", "A dexterity potion. Gives increased dexterity to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Max_HP_Potion(Entity):
     def __init__(self, x, y):
-        use_args = {"max_hp_increase": 2}
-        item_component = Item(use_function = use_functions.increase_max_hp, args = use_args, spawn_chance = 25)
+        use_args = {"max_hp_increase": 5}
+        item_component = Item(use_function = use_functions.increase_max_hp, args = use_args, spawn_chance = 100)
         components_dict = {"item": item_component}
         super().__init__(x, y, "Max HP Potion", "!", "yellow", "A max HP potion. Gives increased max HP to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
