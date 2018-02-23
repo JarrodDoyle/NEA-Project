@@ -34,8 +34,8 @@ def handle_player_turn_inputs():
         return {"toggle_fog": True}
     if terminal.state(terminal.TK_SHIFT):
         key += terminal.TK_SHIFT
-        if key == Command_Keybinds.STAIR_DOWN:
-            return {"stair_down": True}
+        if key == Command_Keybinds.STAIR_DOWN or key == Command_Keybinds.STAIR_UP:
+            return {"stair_used": True}
 
     return {}
 

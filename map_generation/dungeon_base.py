@@ -17,7 +17,7 @@ class Dungeon:
     def gen_monsters(self, player, entity_list, only_in_rooms = False):
         xp_sum = 0
         min_required_xp = player.components["level"].level_up_xp
-        
+
         while xp_sum < min_required_xp*1.2:
             if only_in_rooms:
                 room = random.choice(self.rooms)
@@ -54,31 +54,42 @@ class Dungeon:
 
     def gen_stairs(self, only_in_rooms = False):
         if only_in_rooms:
-            x, y = random.choice(self.rooms).get_center()
-            self.tiles[y][x] = cells.Stair_Down()
+            x1, y1 = self.rooms[0].get_center()
+            while True:
+                x2, y2 = random.choice(self.rooms).get_center()
+                if x2 != x1 and y2 != y1:
+                    break
+            self.tiles[y1][x1] = cells.Stair_Up()
+            self.tiles[y2][x2] = cells.Stair_Down()
+            self.entrance = (x1, y1)
+            self.exit = (x2, y2)
         else:
             while True:
-                x = random.randint(0, self.width - 1)
-                y = random.randint(0, self.height - 1)
-                if not self.tiles[y][x].is_blocked:
+                x1 = random.randint(0, self.width - 1)
+                y1 = random.randint(0, self.height - 1)
+                if not self.tiles[y1][x1].is_blocked:
+                    while True:
+                        x2 = random.randint(0, self.width - 1)
+                        y2 = random.randint(0, self.height - 1)
+                        if x2 != x1 and y2 != y1 and not self.tiles[y2][x2].is_blocked:
+                            break
                     break
-            self.tiles[y][x] = cells.Stair_Down()
+            self.tiles[y1][x1] = cells.Stair_Up()
+            self.tiles[y2][x2] = cells.Stair_Down()
+            self.entrance = (x1, y1)
+            self.exit = (x2, y2)
+
+    def set_player_offset(self, player):
+        player.x_offset = int((2 * 17 + 46) / 2 - player.x)
+        player.y_offset = int((2* 1 + 46) / 2 - player.y)
 
     def set_player_coords(self, player, rooms = True):
         if rooms:
-            player.x, player.y = random.choice(self.rooms).get_center()
-            player.x_offset = int((2 * 17 + 46) / 2 - player.x)
-            player.y_offset = int((2* 1 + 46) / 2 - player.y)
+            player.x, player.y = self.rooms[0].get_center()
+            self.set_player_offset(player)
         else:
-            while True:
-                x = random.randint(0, self.width - 1)
-                y = random.randint(0, self.height - 1)
-                if not self.tiles[y][x].is_blocked:
-                    player.x = x
-                    player.y = y
-                    player.x_offset = int((2 * 17 + 46) / 2 - player.x + 1)
-                    player.y_offset = int((2* 1 + 46) / 2 - player.y + 1)
-                    break
+            player.x, player.y = self.entrance
+            self.set_player_offset(player)
 
     def dig_room(self, x_range, y_range):
         min_x, max_x = x_range

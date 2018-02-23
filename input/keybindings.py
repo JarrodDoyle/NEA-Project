@@ -19,4 +19,4 @@ class Command_Keybinds:
     OPEN_INVENTORY = terminal.TK_I
     TOGGLE_FOG = terminal.TK_P
     STAIR_DOWN = terminal.TK_PERIOD + terminal.TK_SHIFT
-
+    STAIR_UP = terminal.TK_COMMA + terminal.TK_SHIFT

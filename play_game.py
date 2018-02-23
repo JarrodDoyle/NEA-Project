@@ -23,6 +23,8 @@ class Game:
 
         # Initialize dungeon
         self.dungeon, self.entities = initialize_dungeon(self.player)
+        self.floors = [[self.dungeon, self.entities]]
+        self.floor_index = 0
 
         # Initialize FOV
         self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
@@ -94,15 +96,28 @@ class Game:
                 player_turn_results.extend(pickup_results)
 
             # GO DOWN A FLOOR BOI
-            if player_action.get("stair_down"):
+            if player_action.get("stair_used"):
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
+                    self.floor_index += 1
+                    if self.floor_index >= len(self.floors):
+                        self.dungeon, self.entities = initialize_dungeon(self.player)
+                        self.floors.append([self.dungeon, self.entities])
+                    else:
+                        self.dungeon, self.entities = self.floors[self.floor_index]
+                        self.player.x, self.player.y = self.dungeon.exit
+                        self.dungeon.set_player_offset(self.player)
                     message = "go to next floor buddy"
-                    self.ui_elements["messages"].messages.append(message)
-                    self.dungeon, self.entities = initialize_dungeon(self.player)
-                    self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
-                else:
-                    message = "There are no stairs here."
-                    self.ui_elements["messages"].messages.append(message)
+                elif self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_up":
+                    if self.floor_index > 0:
+                        self.floor_index -= 1
+                        self.dungeon, self.entities = self.floors[self.floor_index]
+                        self.player.x, self.player.y = self.dungeon.exit
+                        self.dungeon.set_player_offset(self.player)
+                        message = "go to previous floor buddy"
+                    else:
+                        message = "cant go any higher"
+                self.ui_elements["messages"].messages.append(message)
+                self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
 
             # If player accesses inventory
             if inventory_active:
