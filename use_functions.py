@@ -3,12 +3,22 @@ def toggle_equip(entity, args):
     slot = args.get("slot")
     item = args.get("item")
     if equipment_component:
-        if equipment_component.equipment[slot] is None:
-            equipment_component.equipment[slot] = item
-        elif equipment_component.equipment[slot] == item:
-            equipment_component.equipment[slot] = None
+        was_equipped = dequip(equipment_component.equipment, slot, item)
+        if not was_equipped:
+            equip(equipment_component.equipment, slot, item)
         return True
     return False
+
+def equip(equipment_list, slot, item):
+    equipment_list[slot] = item
+    return True
+
+def dequip(equipment_list, slot, item):
+    if equipment_list[slot] == item:
+        equipment_list[slot] = None
+        return True
+    else:
+        return False
 
 def heal_entity(entity, args):
     heal_amount = args.get("heal_amount")

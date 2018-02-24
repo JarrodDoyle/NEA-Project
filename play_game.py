@@ -187,10 +187,7 @@ class Game:
                 self.ui_elements["messages"].messages.append(message)
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if drop:
-                self.player.components["inventory"].items.remove(self.item)
-                self.item.x = self.player.x
-                self.item.y = self.player.y
-                self.entities.append(item)
+                self.item.components["item"].drop(self.entities, self.player, self.player.components["inventory"])
                 message = "You drop the {} on the ground.".format(self.item.name)
                 self.ui_elements["messages"].messages.append(message)
                 self.game_state = Game_States.INVENTORY_ACTIVE

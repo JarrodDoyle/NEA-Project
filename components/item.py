@@ -1,5 +1,5 @@
 from components.component_base import Component
-
+import use_functions
 
 class Item(Component):
     def __init__(self, use_function, args, spawn_chance, remove_on_use = True):
@@ -18,3 +18,11 @@ class Item(Component):
         else:
             message = "You failed to use the {}.".format(self.owner.name)
         return message
+
+    def drop(self, entity_list, entity, inventory):
+        inventory.items.remove(self.owner)
+        self.owner.x = entity.x
+        self.owner.y = entity.y
+        entity_list.append(self.owner)
+        if self.use_function == use_functions.toggle_equip:
+            self.use(entity, inventory)

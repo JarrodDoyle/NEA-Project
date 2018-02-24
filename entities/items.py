@@ -4,13 +4,77 @@ from components.item import Item
 from components.weapons import Melee, Ranged, Wand
 import use_functions
 
-class Sword(Entity):
+class Iron_Sword(Entity):
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
         weapon_component = Melee(attack_power = 10, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
-        super().__init__(x, y, "Sword", "/", "cyan", "A shiny sword", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+        super().__init__(x, y, "Iron Sword", "/", "cyan", "A shiny sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Copper_Sword(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 5, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Copper Sword", "/", "orange", "A copper sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Copper_Dagger(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 2, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Copper Dagger", "-", "orange", "A short copper dagger.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Dagger(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 4, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Iron Dagger", "-", "cyan", "A short iron dagger.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Copper_Axe(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 4, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Copper Axe", "\\", "orange", "A copper axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Axe(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 8, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Iron Axe", "\\", "cyan", "An iron axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Battle_Axe(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 12, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Battle Axe", "\\", "yellow", "A large battle axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Copper_Longsword(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 7, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Copper Longsword", "/", "orange", "A large copper sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Longsword(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 14, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Iron Longsword", "/", "cyan", "A large iron sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Health_Potion(Entity):
     def __init__(self, x, y):
