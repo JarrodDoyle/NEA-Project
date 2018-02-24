@@ -18,17 +18,11 @@ class Fighter(Component):
         attacker_accuracy = roll_dice(1, self.accuracy)
         target_defense = roll_dice(1, target.components["fighter"].defense)
         if attacker_accuracy > target_defense:
-            weapon1 = self.owner.components.get("equipment").equipment.get("l_hand")
-            if weapon1 == None:
+            weapon = self.owner.components.get("equipment").equipment.get("hands")
+            if weapon == None:
                 weapon_damage.append(0)
             else:
-                weapon_damage.extend(weapon1.damage)
-
-            weapon2 = self.owner.components.get("equipment").equipment.get("r_hand")
-            if weapon2 == None:
-                weapon_damage.append(0)
-            else:
-                weapon_damage.extend(weapon2.damage)
+                weapon_damage.extend(weapon.components["weapon"].damage)
 
             # Initial damage roll based on strength followed by application of each weapon hit
             damage = random.randint(self.strength // 2, self.strength)
@@ -60,7 +54,10 @@ class Fighter(Component):
         if equipment_component:
             for item in equipment_component.equipment.items():
                 if item[1] is not None:
-                    stat_sum += item[1].get_stat(stat)
+                    if item[1].components.get("weapon"):
+                        stat_sum += item[1].components["weapon"].get_stat(stat)
+                    elif item[1].components.get("armor"):
+                        stat_sum += item[1].components["armor"].get_stat(stat)
         return stat_sum
 
     # Calculates bonus strength from weapons and buffs and returns it

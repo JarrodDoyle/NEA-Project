@@ -12,7 +12,7 @@ def get_mob_list():
     return mob_list
 
 def get_item_list():
-    item_list = [items.Health_Potion, items.Strength_Potion, items.Defense_Potion, items.Accuracy_Potion, items.Intelligence_Potion, items.Dexterity_Potion, items.Max_HP_Potion]
+    item_list = [items.Sword, items.Health_Potion, items.Strength_Potion, items.Defense_Potion, items.Accuracy_Potion, items.Intelligence_Potion, items.Dexterity_Potion, items.Max_HP_Potion]
     return item_list
 
 def choose_item_to_spawn():

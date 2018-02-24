@@ -1,3 +1,15 @@
+def toggle_equip(entity, args):
+    equipment_component = entity.components.get("equipment")
+    slot = args.get("slot")
+    item = args.get("item")
+    if equipment_component:
+        if equipment_component.equipment[slot] is None:
+            equipment_component.equipment[slot] = item
+        elif equipment_component.equipment[slot] == item:
+            equipment_component.equipment[slot] = None
+        return True
+    return False
+
 def heal_entity(entity, args):
     heal_amount = args.get("heal_amount")
     if heal_amount is not None and entity.components.get("fighter") and entity.components["fighter"].hp < entity.components["fighter"].max_hp:

@@ -1,7 +1,16 @@
 from render.render_classes import Render_Order
 from entities.entity_classes import Entity
 from components.item import Item
+from components.weapons import Melee, Ranged, Wand
 import use_functions
+
+class Sword(Entity):
+    def __init__(self, x, y):
+        use_args = {"slot": "hands", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, spawn_chance = 100, remove_on_use = False)
+        weapon_component = Melee(attack_power = 10, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Sword", "/", "cyan", "A shiny sword", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Health_Potion(Entity):
     def __init__(self, x, y):
