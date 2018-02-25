@@ -6,6 +6,8 @@ def handle_player_turn_inputs():
     key = terminal.read()
     if key == terminal.TK_CLOSE:
         return {"quit": True}
+    elif key == terminal.TK_ESCAPE:
+        return {"cancel": True}
 
     elif key == Move_Keybinds.MOVE_N:
         return {"move": (0, -1)}
@@ -26,12 +28,14 @@ def handle_player_turn_inputs():
     elif key == Move_Keybinds.REST:
         return {"rest": True}
 
-    if key == Command_Keybinds.PICK_UP:
+    elif key == Command_Keybinds.PICK_UP:
         return {"pickup": True}
     elif key == Command_Keybinds.OPEN_INVENTORY:
         return {"inventory_active": True}
     elif key == Command_Keybinds.TOGGLE_FOG:
         return {"toggle_fog": True}
+    elif key == Command_Keybinds.TARGET:
+        return {"target": True}
     if terminal.state(terminal.TK_SHIFT):
         key += terminal.TK_SHIFT
         if key == Command_Keybinds.STAIR_DOWN or key == Command_Keybinds.STAIR_UP:
@@ -43,6 +47,8 @@ def handle_player_dead_inputs():
     key = terminal.read()
     if key == terminal.TK_CLOSE:
         return {"quit": True}
+    elif key == terminal.TK_ESCAPE:
+        return {"cancel": True}
     return {}
 
 def handle_inventory_inputs():

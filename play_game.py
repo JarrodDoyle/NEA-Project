@@ -1,4 +1,4 @@
-import random
+import random, targetting
 from map_generation.bsp_map import Dungeon_BSP
 from map_generation.cellular_automata import Dungeon_Cellular_Automata
 from fov_functions import *
@@ -34,6 +34,8 @@ class Game:
         render(player = self.player, entities = self.entities, fov_map = self.fov_map, fov_recompute = self.fov_recompute, ui_elements = self.ui_elements, fog_of_war = self.fog_of_war)
 
     def play(self):
+        result = {}
+
         # Render UI and dungeon
         render(self.dungeon, self.player, self.entities, self.fov_map, self.fov_recompute, self.ui_elements, self.fog_of_war)
 
@@ -49,15 +51,36 @@ class Game:
 
         # If player action is to quit then break the main loop
         if quit:
-            return False
+            result["quit"] = True
 
         # If it is the players turn
         if self.game_state == Game_States.PLAYER_TURN:
+            if cancel:
+                result["cancel"] = True
+
             player_turn_results = []
 
             # Toggle fog of war
             if player_action.get("toggle_fog"):
                 self.fog_of_war = not self.fog_of_war
+
+            if player_action.get("target"):
+                weapon = self.player.components["equipment"].equipment["hands"]
+                if weapon is not None:
+                    target_range = weapon.components["weapon"].attack_range
+                else:
+                    target_range = 1
+
+                targetting_result = targetting.choose_target(self.player, self.entities, target_range, entity_type = "fighter")
+                if targetting_result.get("target"):
+                    target = targetting_result.get("target")
+                    player_turn_results.extend(self.player.components["fighter"].attack(target))
+                    self.game_state = Game_States.ENEMY_TURN
+                elif targetting_result.get("cancel"):
+                    pass
+                elif targetting_result.get("quit"):
+                    result["quit"] = True
+                    return result
 
             # If the player wants to move
             if move:
@@ -233,7 +256,4 @@ class Game:
             else:
                 self.game_state = Game_States.PLAYER_TURN
 
-        if self.game_state == Game_States.PLAYER_DEAD:
-            if player_action.get("quit"):
-                return False
-        return True
+        return result

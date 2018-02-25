@@ -21,14 +21,18 @@ while True:
     terminal.puts(0, 0, chr(int(0xE000)))
     main_menu.render()
     terminal.refresh()
-    choice = main_menu.get_choice()
-    if choice == 0:
+    result = main_menu.get_choice()
+    if result.get("choice") == 0:
         game = Game()
         playing = True
         while playing:
-            playing = game.play()
-    elif choice == 1:
+            result = game.play()
+            if result.get("cancel") or result.get("quit"):
+                playing = False
+                if result.get("quit"):
+                    terminal.close()
+    elif result.get("choice") == 1:
         pass
-    elif choice == 2:
+    elif result.get("choice") == 2 or result.get("cancel") or result.get("quit"):
         terminal.close()
         break

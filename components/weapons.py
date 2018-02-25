@@ -2,9 +2,10 @@ from components.component_base import Component
 import dice
 
 class Weapon(Component):
-    def __init__(self, attack_power, hits, bonus_stats = {}):
+    def __init__(self, attack_power, attack_range, hits, bonus_stats = {}):
         super().__init__()
         self.attack_power = attack_power
+        self.attack_range = attack_range
         self.hits = hits
         self.bonus_stats = bonus_stats
 
@@ -20,22 +21,22 @@ class Weapon(Component):
             return 0
 
 class Melee(Weapon):
-    def __init__(self, attack_power, hits, bonus_stats = {}):
-        super().__init__(attack_power, hits, bonus_stats)
+    def __init__(self, attack_power, hits, attack_range = 1, bonus_stats = {}):
+        super().__init__(attack_power, attack_range, hits, bonus_stats)
 
     def damage(self, fighter):
         return self.get_damage_roll(fighter.strength)
 
 class Ranged(Weapon):
-    def __init__(self, attack_power, hits, bonus_stats = {}):
-        super().__init__(attack_power, hits, bonus_stats)
+    def __init__(self, attack_power, hits, attack_range, bonus_stats = {}):
+        super().__init__(attack_power, attack_range, hits, bonus_stats)
 
     def damage(self, fighter):
         return self.get_damage_roll(fighter.dexterity)
 
 class Wand(Weapon):
-    def __init__(self, attack_power, hits, bonus_stats = {}):
-        super().__init__(attack_power, hits, bonus_stats)
+    def __init__(self, attack_power, hits, attack_range, bonus_stats = {}):
+        super().__init__(attack_power, attack_range, hits, bonus_stats)
 
     def damage(self, fighter):
         return self.get_damage_roll(fighter.intelligence)

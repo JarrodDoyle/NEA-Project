@@ -62,12 +62,20 @@ class Menu(UI_Element):
         terminal.layer(base_layer)
 
     def get_choice(self):
+        result = {}
         valid_choice = False
         while not valid_choice:
             choice = terminal.read()
             if choice - terminal.TK_A in range(len(self.options)):
                 valid_choice = True
-        return choice - terminal.TK_A
+                result["choice"] = choice - terminal.TK_A
+            elif choice == terminal.TK_ESCAPE:
+                valid_choice = True
+                result["cancel"] = True
+            elif choice == terminal.TK_CLOSE:
+                valid_choice = True
+                result["quit"] = True
+        return result
 
 class Player_UI_Window(UI_Element):
     def __init__(self):

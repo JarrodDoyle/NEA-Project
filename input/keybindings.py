@@ -18,5 +18,6 @@ class Command_Keybinds:
     PICK_UP = terminal.TK_G
     OPEN_INVENTORY = terminal.TK_I
     TOGGLE_FOG = terminal.TK_P
+    TARGET = terminal.TK_T
     STAIR_DOWN = terminal.TK_PERIOD + terminal.TK_SHIFT
     STAIR_UP = terminal.TK_COMMA + terminal.TK_SHIFT

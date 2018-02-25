@@ -138,22 +138,22 @@ class Fighter_Class:
 
 class Barbarian(Fighter_Class):
     def __init__(self):
-        super().__init__(name = "barbarian", strength = 4, defense = 1, accuracy = 3, intelligence = 0, dexterity = 0, max_hp = 100)
+        super().__init__(name = "barbarian", strength = 4, defense = 1, accuracy = 3, intelligence = 1, dexterity = 1, max_hp = 100)
         self.description = "Barbarians are very strong and fairly accurate with their attacks. They have a lot of health which allows them to survive long, close range, fights. However they severely lack abilities with magic and ranged weapons."
 
 class Wizard(Fighter_Class):
     def __init__(self):
-        super().__init__(name = "wizard", strength = 2, defense = 1, accuracy = 2, intelligence = 5, dexterity = 0, max_hp = 50)
+        super().__init__(name = "wizard", strength = 2, defense = 1, accuracy = 2, intelligence = 5, dexterity = 1, max_hp = 50)
         self.description = "Wizards are extremely strong with magical attacks and are trained in some hand to hand combat. They lack ability with ranged weapons."
 
 class Rogue(Fighter_Class):
     def __init__(self):
-        super().__init__(name = "rogue", strength = 2, defense = 1, accuracy = 4, intelligence = 0, dexterity = 2, max_hp = 75)
+        super().__init__(name = "rogue", strength = 2, defense = 1, accuracy = 4, intelligence = 1, dexterity = 2, max_hp = 75)
         self.description = "Rogues are capable in all standard combat methods but struggle with magic attacks."
 
 class Ranger(Fighter_Class):
     def __init__(self):
-        super().__init__(name = "ranger", strength = 1, defense = 1, accuracy = 4, intelligence = 0, dexterity = 5, max_hp = 25)
+        super().__init__(name = "ranger", strength = 1, defense = 1, accuracy = 4, intelligence = 1, dexterity = 5, max_hp = 25)
         self.description = "Rangers are extremely good with ranged weapons and are accurate shots, they are however very weak and struggle in close combat situations."
 
 class God(Fighter_Class):
