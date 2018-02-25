@@ -13,6 +13,7 @@ def get_mob_list():
 
 def get_item_list():
     item_list = [items.Iron_Longsword, items.Copper_Longsword, items.Battle_Axe, items.Iron_Axe, items.Copper_Axe, items.Copper_Sword, items.Iron_Sword, items.Copper_Dagger, items.Iron_Dagger, items.Health_Potion, items.Strength_Potion, items.Defense_Potion, items.Accuracy_Potion, items.Intelligence_Potion, items.Dexterity_Potion, items.Max_HP_Potion]
+    #item_list = [items.Iron_Longsword]
     return item_list
 
 def choose_item_to_spawn():

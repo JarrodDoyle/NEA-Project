@@ -20,12 +20,11 @@ class Fighter(Component):
         if attacker_accuracy > target_defense:
             weapon = self.owner.components.get("equipment").equipment.get("hands")
             if weapon == None:
-                weapon_damage.append(0)
+                weapon_damage.append(random.randint(self.strength // 2, self.strength))
             else:
-                weapon_damage.extend(weapon.components["weapon"].damage)
+                weapon_damage.extend(weapon.components["weapon"].damage(self))
 
-            # Initial damage roll based on strength followed by application of each weapon hit
-            damage = random.randint(self.strength // 2, self.strength)
+            damage = 0
             for i in weapon_damage:
                 damage += i
 
