@@ -126,7 +126,9 @@ class Game:
             if player_action.get("stair_used"):
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
                     self.floor_index += 1
-                    if self.floor_index >= len(self.floors):
+                    if self.floor_index == 25:
+                        self.game_state = Game_States.WIN
+                    elif self.floor_index >= len(self.floors):
                         self.dungeon, self.entities = initialize_dungeon(self.player)
                         self.floors.append([self.dungeon, self.entities])
                     else:
@@ -207,6 +209,17 @@ class Game:
             else:
                 self.game_state = Game_States.PLAYER_TURN
             turn_results.extend(results)
+
+        if self.game_state == Game_States.WIN:
+            win_screen = Generic_Text_Window(17, 1, 46, 46, "Congratulations!")
+            win_screen.render("Congratulations you won! Review your inventory and character stats then press any key to go back to the main menu.")
+            terminal.refresh()
+            key = terminal.read()
+            if key == terminal.TK_CLOSE:
+                result["quit"] = True
+            else:
+                result["cancel"] = True
+
 
         for turn_result in turn_results:
             message = turn_result.get("message")
