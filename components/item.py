@@ -10,19 +10,23 @@ class Item(Component):
         super().__init__()
 
     def use(self, entity, inventory):
+        results = []
         used = self.use_function(entity, self.args)
         if used:
-            message = "You used the {}.".format(self.owner.name)
+            results.append({"message": "You used the {}.".format(self.owner.name)})
             if self.remove_on_use:
                 inventory.remove_item(self.owner)
         else:
-            message = "You failed to use the {}.".format(self.owner.name)
-        return message
+            results.append({"message": "You failed to use the {}.".format(self.owner.name)})
+        return results
 
     def drop(self, entity_list, entity, inventory):
+        results = []
         inventory.items.remove(self.owner)
         self.owner.x = entity.x
         self.owner.y = entity.y
         entity_list.append(self.owner)
         if self.use_function == use_functions.toggle_equip:
-            self.use(entity, inventory)
+            results.extend(self.use(entity, inventory))
+        results.append({"message": "You drop the {} on the ground.".format(self.owner.name)})
+        return results

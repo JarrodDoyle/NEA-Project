@@ -92,40 +92,40 @@ class Player_UI_Window(UI_Element):
 
         # LINE TWO
         # If player has bonus strength display strenght and then bonus strenght after
-        if player.components["fighter"].bonus_strength() > 0:
-            terminal.puts(self.x, self.y + 1, "Str: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].strength, player.components["fighter"].bonus_strength()))
+        if player.components["fighter"].bonus_stat("strength") > 0:
+            terminal.puts(self.x, self.y + 1, "Str: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].strength, player.components["fighter"].bonus_stat("strength")))
         # Otherwise just display strength
         else:
             terminal.puts(self.x, self.y + 1, "Str: [color=green]{}[/color]".format(player.components["fighter"].strength))
 
         # LINE THREE
         # If player has bonus defense display defense and then bonus defense after
-        if player.components["fighter"].bonus_defense() > 0:
-            terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].defense, player.components["fighter"].bonus_defense()))
+        if player.components["fighter"].bonus_stat("defense") > 0:
+            terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].defense, player.components["fighter"].bonus_stat("defense")))
         # Otherwise just display defense
         else:
             terminal.puts(self.x, self.y + 2, "Def: [color=green]{}[/color]".format(player.components["fighter"].defense))
 
         # LINE FOUR
         # If player has bonus accuracy display defense and then bonus accuracy after
-        if player.components["fighter"].bonus_accuracy() > 0:
-            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].accuracy, player.components["fighter"].bonus_accuracy()))
+        if player.components["fighter"].bonus_stat("accuracy") > 0:
+            terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].accuracy, player.components["fighter"].bonus_stat("accuracy")))
         # Otherwise just display accuracy
         else:
             terminal.puts(self.x, self.y + 3, "Acc: [color=green]{}[/color]".format(player.components["fighter"].accuracy))
 
         # LINE FIVE
         # If player has bonus intelligence display intelligence and then bonus intelligence after
-        if player.components["fighter"].bonus_intelligence() > 0:
-            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].intelligence, player.components["fighter"].bonus_intelligence()))
+        if player.components["fighter"].bonus_stat("intelligence") > 0:
+            terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].intelligence, player.components["fighter"].bonus_stat("intelligence")))
         # Otherwise just display intelligence
         else:
             terminal.puts(self.x, self.y + 4, "Int: [color=green]{}[/color]".format(player.components["fighter"].intelligence))
 
         # LINE SIX
         # If player has bonus dexterity display dexterity and then bonus dexterity after
-        if player.components["fighter"].bonus_dexterity() > 0:
-            terminal.puts(self.x, self.y + 5, "Dex: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].dexterity, player.components["fighter"].bonus_dexterity()))
+        if player.components["fighter"].bonus_stat("dexterity") > 0:
+            terminal.puts(self.x, self.y + 5, "Dex: [color=green]{}[/color] ([color=blue]+{}[/color])".format(player.components["fighter"].dexterity, player.components["fighter"].bonus_stat("dexterity")))
         # Otherwise just display dexterity
         else:
             terminal.puts(self.x, self.y + 5, "Dex: [color=green]{}[/color]".format(player.components["fighter"].dexterity))

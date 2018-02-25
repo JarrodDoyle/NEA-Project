@@ -27,14 +27,18 @@ class Game:
         self.floor_index = 0
 
         # Initialize FOV
-        self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
-        self.fog_of_war = True
+        self.init_fov()
 
         # Initialize final player
         render(player = self.player, entities = self.entities, fov_map = self.fov_map, fov_recompute = self.fov_recompute, ui_elements = self.ui_elements, fog_of_war = self.fog_of_war)
 
+    def init_fov(self):
+        self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
+        self.fog_of_war = True
+
     def play(self):
         result = {}
+        turn_results = []
 
         # Render UI and dungeon
         render(self.dungeon, self.player, self.entities, self.fov_map, self.fov_recompute, self.ui_elements, self.fog_of_war)
@@ -127,77 +131,48 @@ class Game:
                         self.floors.append([self.dungeon, self.entities])
                     else:
                         self.dungeon, self.entities = self.floors[self.floor_index]
-                        self.player.x, self.player.y = self.dungeon.exit
+                        self.player.x, self.player.y = self.dungeon.entrance
                         self.dungeon.set_player_offset(self.player)
-                    message = "go to next floor buddy"
+                    player_turn_results.append({"message": "go to next floor buddy"})
                 elif self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_up":
                     if self.floor_index > 0:
                         self.floor_index -= 1
                         self.dungeon, self.entities = self.floors[self.floor_index]
                         self.player.x, self.player.y = self.dungeon.exit
                         self.dungeon.set_player_offset(self.player)
-                        message = "go to previous floor buddy"
+                        player_turn_results.append({"message": "go to previous floor buddy"})
                     else:
-                        message = "cant go any higher"
-                self.ui_elements["messages"].messages.append(message)
+                        player_turn_results.append({"message": "cant go any higher"})
                 self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
 
             # If player accesses inventory
             if inventory_active:
                 self.previous_game_state = self.game_state
                 self.game_state = Game_States.INVENTORY_ACTIVE
-                message = "You open your inventory."
-                self.ui_elements["messages"].messages.append(message)
+                player_turn_results.append({"message": "You open your inventory."})
 
-            for player_turn_result in player_turn_results:
-                message = player_turn_result.get("message")
-                dead_entity = player_turn_result.get("dead")
-                item_added = player_turn_result.get("item_added")
-
-                # If the players turn has generated a message add them to the messages list
-                if message:
-                    self.ui_elements["messages"].messages.append(message)
-
-                # If the players turn has resulted in an entity dying
-                if dead_entity:
-                    messages = []
-                    # If the player has died generate an appropriate message and change game_state
-                    if dead_entity == self.player:
-                        message, self.game_state = kill_player(dead_entity)
-                        messages.append[message]
-                    # Otherwise generate an appropriate message for the entities death
-                    else:
-                        messages.append(kill_monster(dead_entity))
-                        xp = dead_entity.components["level"].drop_xp()
-                        messages.append(self.player.components["level"].gain_xp(xp))
-                    for message in messages:
-                        self.ui_elements["messages"].messages.append(message)
-
-                # If the player picked up an item
-                if item_added:
-                    # Remove item from entities list and therefore the dungeon map. Change game state to enemy turn
-                    self.entities.remove(item_added)
-                    self.game_state = Game_States.ENEMY_TURN
+            turn_results.extend(player_turn_results)
 
         # If player is using the inventory
         if self.game_state == Game_States.INVENTORY_ACTIVE:
+            results = []
             if inventory_index is not None:
                 if inventory_index < len(self.player.components["inventory"].items):
                     self.item = self.player.components["inventory"].items[inventory_index]
-                    message = "You look at the {}.".format(self.item.name)
+                    results.append({"message": "You look at the {}.".format(self.item.name)})
                     description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
                     self.ui_elements["description"].text = description
                     self.game_state = Game_States.USING_ITEM
                 else:
-                    message = "No valid item at index {}".format(inventory_index)
-                self.ui_elements["messages"].messages.append(message)
+                    results.append({"message": "No valid item at index {}".format(inventory_index)})
             elif cancel:
-                message = "You close your inventory."
-                self.ui_elements["messages"].messages.append(message)
+                results.append({"message": "You close your inventory."})
                 self.game_state = self.previous_game_state
+            turn_results.extend(results)
 
         # If player looking at an item in inventory
         if self.game_state == Game_States.USING_ITEM:
+            results =[]
             description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
             self.ui_elements["description"].text = description
 
@@ -206,54 +181,59 @@ class Game:
             examine = player_action.get("examine")
 
             if use:
-                message = self.item.components["item"].use(self.player, self.player.components["inventory"])
-                self.ui_elements["messages"].messages.append(message)
+                results.extend(self.item.components["item"].use(self.player, self.player.components["inventory"]))
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if drop:
-                self.item.components["item"].drop(self.entities, self.player, self.player.components["inventory"])
-                message = "You drop the {} on the ground.".format(self.item.name)
-                self.ui_elements["messages"].messages.append(message)
+                results.extend(self.item.components["item"].drop(self.entities, self.player, self.player.components["inventory"]))
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if examine:
                 self.ui_elements["description"].text = self.item.description
-                message = "You decide to look more closely at the {}.".format(self.item.name)
-                self.ui_elements["messages"].messages.append(message)
-
+                results.append({"message": "You decide to look more closely at the {}.".format(self.item.name)})
             if cancel:
                 self.game_state = Game_States.INVENTORY_ACTIVE
-
+            turn_results.extend(results)
 
         # If it is not the players turn
         if self.game_state == Game_States.ENEMY_TURN:
+            results = []
             # For each entity that has an AI and is not the player
             for entity in self.entities:
                 if entity != self.player and entity.x == self.player.x and entity.y == self.player.y:
                     self.ui_elements["description"].text = entity.description
                 if entity.components.get("ai") and entity != self.player:
                     # Simulate entity turn and get results
-                    enemy_turn_results = entity.components["ai"].take_turn(self.player, self.fov_map, self.dungeon, self.entities)
-
-                    for enemy_turn_result in enemy_turn_results:
-                        message = enemy_turn_result.get("message")
-                        dead_entity = enemy_turn_result.get("dead")
-
-                        # If entity turn has generated a message add it to the messages list
-                        if message:
-                            self.ui_elements["messages"].messages.append(message)
-                        # If the entities turn has resulted in an entity dying
-                        if dead_entity:
-                            # If the player has died generate an appropriate message and change game_state
-                            if dead_entity == self.player:
-                                message, self.game_state = kill_player(dead_entity)
-                            # Otherwise generate an appropriate message for the entities death
-                            else:
-                                message = kill_monster(dead_entity)
-                            self.ui_elements["messages"].messages.append(message)
-                    # If the player has died during the entities turn break the for loop and stop simulating entity turns
-                    if self.game_state == Game_States.PLAYER_DEAD:
-                        break
+                    results.extend(entity.components["ai"].take_turn(self.player, self.fov_map, self.dungeon, self.entities))
             # If the player does not die as a result of an entities turn set game_state to PLAYER_TURN
             else:
                 self.game_state = Game_States.PLAYER_TURN
+            turn_results.extend(results)
+
+        for turn_result in turn_results:
+            message = turn_result.get("message")
+            dead_entity = turn_result.get("dead")
+            item_added = turn_result.get("item_added")
+
+            messages = []
+            # If the players turn has generated a message add them to the messages list
+            if message:
+                self.ui_elements["messages"].messages.append(message)
+
+            # If the players turn has resulted in an entity dying
+            if dead_entity:
+                # If the player has died generate an appropriate message and change game_state
+                if dead_entity == self.player:
+                    message, self.game_state = kill_player(dead_entity)
+                    turn_results.append({"message": message})
+                # Otherwise generate an appropriate message for the entities death
+                else:
+                    turn_results.append({"message": kill_monster(dead_entity)})
+                    xp = dead_entity.components["level"].drop_xp()
+                    turn_results.extend(self.player.components["level"].gain_xp(xp))
+
+            # If the player picked up an item
+            if item_added:
+                # Remove item from entities list and therefore the dungeon map. Change game state to enemy turn
+                self.entities.remove(item_added)
+                self.game_state = Game_States.ENEMY_TURN
 
         return result

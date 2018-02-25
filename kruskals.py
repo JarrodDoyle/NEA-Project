@@ -30,19 +30,6 @@ class Kruskals_Algorithm:
                     edge = Edge(x, y + 1, "v")
                     self.edges.append(edge)
 
-    def display_arr(self):
-        for y in range(len(self.arr)):
-            for x in range(len(self.arr[0])):
-                #if self.arr[y][x] is not None and self.arr[y][x] != 0 :
-                    #terminal.puts(x, y, "[bkcolor=grey] [/bkcolor]")
-                #else:
-                    #if self.arr[y][x] == None:
-                        #print(x, y)
-                    #if self.arr[y][x] == 0:
-                        #print(x, y)
-                    #erminal.puts(x, y, "[bkcolor=blue] [/bkcolor]")
-                terminal.puts(x, y, "{}".format(self.arr[y][x]))
-
     def is_node(self, x, y):
         if x in range(len(self.arr[0])) and y in range(len(self.arr)):
             if self.arr[y][x] != None and self.arr[y][x] != 0 and self.arr[y][x].type == "node":
@@ -85,7 +72,7 @@ class Kruskals_Algorithm:
             edge.id = node1.id
             self.add_connecting_edge(edge)
             self.update_region(node2.id, node1.id)
-                
+
     def set_regions(self):
         for y in range(len(self.arr)):
             for x in range(len(self.arr[y])):
@@ -98,9 +85,6 @@ class Kruskals_Algorithm:
         while len(self.edges) > 0:
             self.step()
         self.set_regions()
-        #self.display_arr()
-        #terminal.refresh()
-        #input()
 
 class Node:
     def __init__(self, region_id, x, y):
@@ -116,15 +100,3 @@ class Edge:
         self.y = y
         self.id = None
         self.dir = direction
-
-if __name__ == "__main__":
-    terminal.open()
-    terminal.set("window.size = 95x63; font: 'fonts/font_12x12.png', size = 12x12, codepage=437")
-    while True:
-        terminal.clear()
-        arr =  [[0 for x in range(95)] for y in range(63)]
-        maze = Kruskals_Algorithm(arr)
-        maze.gen_maze()
-        maze.display_arr()
-        terminal.refresh()
-        input()

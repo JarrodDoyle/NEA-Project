@@ -9,4 +9,5 @@ def load_game():
         raise FileNotFoundError
     with shelve.open("save", "r") as save_file:
         game = save_file["game"]
+    game.init_fov()
     return game

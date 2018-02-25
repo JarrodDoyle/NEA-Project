@@ -80,9 +80,10 @@ class Level(Component):
         return random.randint(self.avg_xp_drop - self.level, self.avg_xp_drop + self.level)
 
     def gain_xp(self, xp):
+        results = []
         self.xp += xp
-        message = "[color=light blue]You gain {} xp.[/color]".format(xp)
+        results.append({"message": "[color=light blue]You gain {} xp.[/color]".format(xp)})
         if self.can_level_up():
             self.level_up()
-            message += "\n[color=dark yellow]You leveled up! You are now level {}.[/color]".format(self.level)
-        return message
+            results.append({"message": "\n[color=dark yellow]You leveled up! You are now level {}.[/color]".format(self.level)})
+        return results

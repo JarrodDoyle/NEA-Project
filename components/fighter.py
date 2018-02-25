@@ -44,6 +44,7 @@ class Fighter(Component):
 
         # If fighter is dead return result saying so
         if self.hp <= 0:
+            self.hp == 0
             results.append({"dead": self.owner})
         return results
 
@@ -58,25 +59,6 @@ class Fighter(Component):
                     elif item[1].components.get("armor"):
                         stat_sum += item[1].components["armor"].get_stat(stat)
         return stat_sum
-
-    # Calculates bonus strength from weapons and buffs and returns it
-    def bonus_strength(self):
-        return self.bonus_stat("strength")
-
-    # Calculates bonus defense from armor and buffs and returns it
-    def bonus_defense(self):
-        return self.bonus_stat("defense")
-
-    def bonus_accuracy(self):
-        return self.bonus_stat("accuracy")
-
-    # Calculates bonus intelligence from buffs and returns it
-    def bonus_intelligence(self):
-        return self.bonus_stat("intelligence")
-
-    # Calculates bonus intelligence from buffs and returns it
-    def bonus_dexterity(self):
-        return self.bonus_stat("dexterity")
 
     @property
     def strength(self):
