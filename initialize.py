@@ -7,13 +7,8 @@ from map_generation.rogue import Dungeon_Rogue
 from create_character import Character_Creation
 from entities.mobs import Player
 
-def load_terminal_settings():
-    settings = open("config/terminal_settings.cfg", "r")
-    return "; ".join([i.strip() for i in settings.readlines()])
-
 def initialize_terminal():
     terminal.open()
-    #terminal.set(load_terminal_settings())
     terminal.bkcolor("black")
     terminal.color("white")
     terminal.refresh()
