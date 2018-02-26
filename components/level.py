@@ -85,5 +85,5 @@ class Level(Component):
         results.append({"message": "[color=light blue]You gain {} xp.[/color]".format(xp)})
         if self.can_level_up():
             self.level_up()
-            results.append({"message": "\n[color=dark yellow]You leveled up! You are now level {}.[/color]".format(self.level)})
+            results.append({"message": "[color=dark yellow]You leveled up! You are now level {}.[/color]".format(self.level)})
         return results
