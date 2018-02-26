@@ -154,25 +154,18 @@ class Inventory_UI_Window(UI_Element):
         base_color, base_layer = self.create_window()
         inventory = player.components["inventory"].items
         letter_index = ord("a")
-        num_item = 0
         dy = 0
-        if len(inventory) > 0:
-            current_item = inventory[0]
-        item_counts = {}
-        for i in range(len(inventory)):
-            if not item_counts.get(inventory[i].name):
-                item_counts[inventory[i].name] = [inventory[i], 1]
-            else:
-                item_counts[inventory[i].name][1] += 1
-        for item in item_counts.items():
-            item_name = item[0]
-            item, num_item = item[1]
-            terminal.puts(self.x, self.y + dy, "{}) [color={}]{}[/color]".format(chr(letter_index), item.color, item.name))
-            if num_item > 1:
-                dx = self.w - 3 - len(str(num_item))
-                terminal.puts(self.x + dx, self.y + dy, "(x{})".format(num_item))
-            dy += 1
-            letter_index += 1
+
+        for item_name, items in inventory.items():
+            if item_name != "num_items":
+                num_item = len(items)
+                item = items[0]
+                terminal.puts(self.x, self.y + dy, "{}) [color={}]{}[/color]".format(chr(letter_index), item.color, item_name))
+                if num_item > 1:
+                    dx = self.w - 3 - len(str(num_item))
+                    terminal.puts(self.x + dx, self.y + dy, "(x{})".format(num_item))
+                dy += 1
+                letter_index += 1
 
         terminal.color(base_color)
         terminal.layer(base_layer)

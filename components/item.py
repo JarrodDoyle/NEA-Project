@@ -21,7 +21,7 @@ class Item(Component):
 
     def drop(self, entity_list, entity, inventory):
         results = []
-        inventory.items.remove(self.owner)
+        inventory.remove_item(self.owner)
         self.owner.x = entity.x
         self.owner.y = entity.y
         entity_list.append(self.owner)

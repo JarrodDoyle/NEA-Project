@@ -160,7 +160,11 @@ class Game:
             results = []
             if inventory_index is not None:
                 if inventory_index < len(self.player.components["inventory"].items):
-                    self.item = self.player.components["inventory"].items[inventory_index]
+                    index = -1
+                    for items in self.player.components["inventory"].items.items():
+                        if index == inventory_index:
+                            self.item = items[1][0]
+                        index += 1
                     results.append({"message": "You look at the {}.".format(self.item.name)})
                     description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
                     self.ui_elements["description"].text = description
