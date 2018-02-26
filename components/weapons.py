@@ -1,4 +1,5 @@
 from components.component_base import Component
+from random import choice, randint
 import dice
 
 class Weapon(Component):
@@ -12,6 +13,16 @@ class Weapon(Component):
     def get_damage_roll(self, affecting_stat):
         max_hit_damage = int(self.attack_power * (affecting_stat / 4))
         return dice.roll_dice(self.hits, max_hit_damage)
+
+    def gen_random_bonus_stat(self):
+        potential_stats = ["strength", "defense", "accuracy", "dexterity", "intelligence", "max_hp", None]
+        stat = choice(potential_stats)
+        if stat is not None:
+            if self.bonus_stats.get(stat) is not None:
+                self.bonus_stats[stat] += randint(1, 3)
+            else:
+                self.bonus_stats[stat] = randint(1, 3)
+            print(stat, self.bonus_stats[stat])
 
     def get_stat(self, stat):
         bonus = self.bonus_stats.get(stat)

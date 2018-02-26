@@ -2,7 +2,18 @@ from render.render_classes import Render_Order
 from entities.entity_classes import Entity
 from components.item import Item
 from components.weapons import Melee, Ranged, Wand
+from components.armor import Armor
 import use_functions
+
+class Leather_Helmet(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "head", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args)
+        armor_component = Armor(bonus_stats = {"defense": 2})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Leather Helmet", "~", "brown", "A leather helmet.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Weak_Food(Entity):
     base_spawn_weight = 10

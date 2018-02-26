@@ -70,4 +70,5 @@ def get_item_list():
             items.Dexterity_Potion,
             items.Max_HP_Potion,
             items.Weak_Food,
-            items.Strong_Food]
+            items.Strong_Food,
+            items.Leather_Helmet]
