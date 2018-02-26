@@ -57,6 +57,10 @@ class Game:
         if quit:
             result["quit"] = True
 
+        if self.game_state == Game_States.PLAYER_DEAD:
+            if cancel:
+                result["cancel"] = True 
+
         # If it is the players turn
         if self.game_state == Game_States.PLAYER_TURN:
             if cancel:
