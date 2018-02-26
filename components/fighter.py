@@ -4,10 +4,9 @@ import random
 
 class Fighter(Component):
     # Fighter initialization
-    def __init__(self, fighter_class, spawn_chance):
+    def __init__(self, fighter_class):
         super().__init__()
         self.fighter_class = fighter_class
-        self.spawn_chance = spawn_chance
         self.hp = fighter_class.base_max_hp
 
     # Attack another fighter
@@ -15,24 +14,25 @@ class Fighter(Component):
         results = []
         weapon_damage = []
 
-        attacker_accuracy = roll_dice(1, self.accuracy)
-        target_defense = roll_dice(1, target.components["fighter"].defense)
-        if attacker_accuracy > target_defense:
-            weapon = self.owner.components.get("equipment").equipment.get("hands")
-            if weapon == None:
-                weapon_damage.append(random.randint(self.strength // 2, self.strength))
+        if self.hp > 0:
+            attacker_accuracy = roll_dice(1, self.accuracy)
+            target_defense = roll_dice(1, target.components["fighter"].defense)
+            if attacker_accuracy > target_defense:
+                weapon = self.owner.components.get("equipment").equipment.get("hands")
+                if weapon == None:
+                    weapon_damage.append(random.randint(self.strength // 2, self.strength))
+                else:
+                    weapon_damage.extend(weapon.components["weapon"].damage(self))
+
+                damage = 0
+                for i in weapon_damage:
+                    damage += i
+
+                # Generate appropriate attack message and simulate attack
+                results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
+                results.extend(target.components["fighter"].take_damage(damage))
             else:
-                weapon_damage.extend(weapon.components["weapon"].damage(self))
-
-            damage = 0
-            for i in weapon_damage:
-                damage += i
-
-            # Generate appropriate attack message and simulate attack
-            results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
-            results.extend(target.components["fighter"].take_damage(damage))
-        else:
-            results.append({"message": "[color={}]{}'s[/color] attack missed".format(self.owner.color, self.owner.name.capitalize())})
+                results.append({"message": "[color={}]{}'s[/color] attack missed".format(self.owner.color, self.owner.name.capitalize())})
         return results
 
     # Take damage

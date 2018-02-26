@@ -9,7 +9,7 @@ sys.setrecursionlimit(6144)
 
 initialize_terminal()
 game = None
-options = ["Play game", "Load game", "Options", "Exit"]
+options = ["Play game", "Load game", "Exit"]
 xc, yc = 96//2, 64//2
 w = 15
 h = len(options)
@@ -42,8 +42,6 @@ while True:
             play_game(game)
         except:
             pass
-    elif result.get("choice") == 2:
-        pass
-    elif result.get("choice") == 3 or result.get("cancel") or result.get("quit"):
+    elif result.get("choice") == 2 or result.get("cancel") or result.get("quit"):
         terminal.close()
         break
