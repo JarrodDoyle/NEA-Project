@@ -7,3 +7,8 @@ class Game_States(Enum):
     INVENTORY_ACTIVE = 4
     USING_ITEM = 5
     WIN = 6
+
+class Hunger_States(Enum):
+    STARVING = "starving"
+    HUNGRY = "hungry"
+    FULL = "full"

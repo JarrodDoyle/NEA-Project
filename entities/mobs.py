@@ -3,6 +3,7 @@ from components.ai import *
 from components.inventory import *
 from components.equipment import *
 from components.level import *
+from components.hunger import Hunger
 from render.render_classes import Render_Order
 from entities.entity_classes import Entity
 
@@ -15,7 +16,8 @@ class Player(Entity):
         inventory_component = Inventory(26)
         ai_component = Base_AI()
         equipment_component = Equipment()
-        components_dict = {"ai": ai_component, "inventory": inventory_component, "fighter": fighter_component, "level": level_component, "equipment": equipment_component}
+        hunger_component = Hunger(turns_to_starve = 1000)
+        components_dict = {"ai": ai_component, "inventory": inventory_component, "fighter": fighter_component, "level": level_component, "equipment": equipment_component, "hunger": hunger_component}
 
         # Composing entity
         super().__init__(x, y, name, "@", "white", "This is you, the player.", blocks = True, render_order = Render_Order.ACTOR, components = components_dict)

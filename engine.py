@@ -153,7 +153,10 @@ class Game:
                 self.game_state = Game_States.INVENTORY_ACTIVE
                 player_turn_results.append({"message": "You open your inventory."})
 
+            player_turn_results.extend(self.player.components["hunger"].update())
+
             turn_results.extend(player_turn_results)
+
 
         # If player is using the inventory
         if self.game_state == Game_States.INVENTORY_ACTIVE:

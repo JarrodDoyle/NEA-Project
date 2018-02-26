@@ -38,7 +38,7 @@ class Level(Component):
                 text += "\n c) Accuracy: {} (+{})".format(fighter.accuracy, stats[2])
                 text += "\n d) Intelligence: {} (+{})".format(fighter.intelligence, stats[3])
                 text += "\n e) Dexterity: {} (+{})".format(fighter.dexterity, stats[4])
-                text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 25)
+                text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 5)
                 menu.render(text)
                 terminal.refresh()
                 valid_choice = False
@@ -56,7 +56,7 @@ class Level(Component):
             text += "\n c) Accuracy: {} (+{})".format(fighter.accuracy, stats[2])
             text += "\n d) Intelligence: {} (+{})".format(fighter.intelligence, stats[3])
             text += "\n e) Dexterity: {} (+{})".format(fighter.dexterity, stats[4])
-            text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 25)
+            text += "\n f) Max HP: {} (+{})".format(fighter.max_hp, stats[5] * 5)
             menu.render(text)
             terminal.refresh()
             valid_choice = False
@@ -70,7 +70,7 @@ class Level(Component):
         fighter.accuracy += stats[2]
         fighter.intelligence += stats[3]
         fighter.dexterity += stats[4]
-        fighter.max_hp += stats[5] * 25
+        fighter.max_hp += stats[5] * 5
 
     @property
     def avg_xp_drop(self):
