@@ -5,7 +5,8 @@ from components.weapons import Melee, Ranged, Wand
 import use_functions
 
 class Test_Wand(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 15
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -14,7 +15,8 @@ class Test_Wand(Entity):
         super().__init__(x, y, "TEST WAND", ")", "red", "A test wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Iron_Sword(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 10
+    lowest_level_spawn = 8
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -23,7 +25,8 @@ class Iron_Sword(Entity):
         super().__init__(x, y, "Iron Sword", ")", "cyan", "A shiny sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Copper_Sword(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 15
+    lowest_level_spawn = 5
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -32,7 +35,8 @@ class Copper_Sword(Entity):
         super().__init__(x, y, "Copper Sword", ")", "orange", "A copper sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Copper_Dagger(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -41,7 +45,8 @@ class Copper_Dagger(Entity):
         super().__init__(x, y, "Copper Dagger", ")", "orange", "A short copper dagger.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Iron_Dagger(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 15
+    lowest_level_spawn = 3
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -50,7 +55,8 @@ class Iron_Dagger(Entity):
         super().__init__(x, y, "Iron Dagger", ")", "cyan", "A short iron dagger.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Copper_Axe(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 15
+    lowest_level_spawn = 3
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -59,7 +65,8 @@ class Copper_Axe(Entity):
         super().__init__(x, y, "Copper Axe", ")", "orange", "A copper axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Iron_Axe(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 10
+    lowest_level_spawn = 6
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -68,7 +75,8 @@ class Iron_Axe(Entity):
         super().__init__(x, y, "Iron Axe", ")", "cyan", "An iron axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Battle_Axe(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 6
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -77,7 +85,8 @@ class Battle_Axe(Entity):
         super().__init__(x, y, "Battle Axe", ")", "yellow", "A large battle axe.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Copper_Longsword(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 15
+    lowest_level_spawn = 8
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -86,7 +95,8 @@ class Copper_Longsword(Entity):
         super().__init__(x, y, "Copper Longsword", ")", "orange", "A large copper sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Iron_Longsword(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 10
+    lowest_level_spawn = 10
     def __init__(self, x, y):
         use_args = {"slot": "hands", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
@@ -95,7 +105,8 @@ class Iron_Longsword(Entity):
         super().__init__(x, y, "Iron Longsword", ")", "cyan", "A large iron sword.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Health_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"heal_amount": 30}
         item_component = Item(use_function = use_functions.heal_entity, args = use_args)
@@ -103,7 +114,8 @@ class Health_Potion(Entity):
         super().__init__(x, y, "Health Potion", "!", "yellow", "A weak health potion. Restores health to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Strength_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"strength_increase": 2}
         item_component = Item(use_function = use_functions.increase_strength, args = use_args)
@@ -111,7 +123,8 @@ class Strength_Potion(Entity):
         super().__init__(x, y, "Strength Potion", "!", "yellow", "A strength potion. Gives increased strength to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Defense_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"defense_increase": 2}
         item_component = Item(use_function = use_functions.increase_defense, args = use_args)
@@ -119,7 +132,8 @@ class Defense_Potion(Entity):
         super().__init__(x, y, "Defense Potion", "!", "yellow", "A defense potion. Gives increased defense to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Accuracy_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"accuracy_increase": 2}
         item_component = Item(use_function = use_functions.increase_accuracy, args = use_args)
@@ -127,7 +141,8 @@ class Accuracy_Potion(Entity):
         super().__init__(x, y, "Accuracy Potion", "!", "yellow", "A accuracy potion. Gives increased accuracy to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Intelligence_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"intelligence_increase": 2}
         item_component = Item(use_function = use_functions.increase_intelligence, args = use_args)
@@ -135,7 +150,8 @@ class Intelligence_Potion(Entity):
         super().__init__(x, y, "Intelligence Potion", "!", "yellow", "A intelligence potion. Gives increased intelligence to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Dexterity_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"dexterity_increase": 2}
         item_component = Item(use_function = use_functions.increase_dexterity, args = use_args)
@@ -143,7 +159,8 @@ class Dexterity_Potion(Entity):
         super().__init__(x, y, "Dexterity Potion", "!", "yellow", "A dexterity potion. Gives increased dexterity to whomever drinks it.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Max_HP_Potion(Entity):
-    spawn_weight = 1
+    base_spawn_weight = 5
+    lowest_level_spawn = 4
     def __init__(self, x, y):
         use_args = {"max_hp_increase": 5}
         item_component = Item(use_function = use_functions.increase_max_hp, args = use_args)

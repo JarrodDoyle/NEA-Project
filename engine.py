@@ -22,9 +22,9 @@ class Game:
         self.player = initialize_player()
 
         # Initialize dungeon
-        self.dungeon, self.entities = initialize_dungeon(self.player)
-        self.floors = [[self.dungeon, self.entities]]
         self.floor_index = 0
+        self.dungeon, self.entities = initialize_dungeon(self.player, self.floor_index)
+        self.floors = [[self.dungeon, self.entities]]
 
         # Initialize FOV
         self.init_fov()
@@ -129,7 +129,7 @@ class Game:
                     if self.floor_index == 25:
                         self.game_state = Game_States.WIN
                     elif self.floor_index >= len(self.floors):
-                        self.dungeon, self.entities = initialize_dungeon(self.player)
+                        self.dungeon, self.entities = initialize_dungeon(self.player, self.floor_index)
                         self.floors.append([self.dungeon, self.entities])
                     else:
                         self.dungeon, self.entities = self.floors[self.floor_index]

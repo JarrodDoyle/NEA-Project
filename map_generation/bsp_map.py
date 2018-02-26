@@ -121,7 +121,7 @@ class Dungeon_BSP(Dungeon):
                     self.h_line_right(right.x, y)
         return True
 
-    def gen_dungeon(self, player):
+    def gen_dungeon(self, player, floor_index):
         self.initialize_dungeon()
         self.rooms = []
 
@@ -137,8 +137,8 @@ class Dungeon_BSP(Dungeon):
         self.gen_stairs(only_in_rooms = True)
         self.set_player_coords(player)
         entity_list = [player]
-        self.gen_monsters(player, entity_list, only_in_rooms = True)
-        self.gen_items(entity_list, only_in_rooms = True)
+        self.gen_monsters(player, entity_list, floor_index, only_in_rooms = True)
+        self.gen_items(entity_list, floor_index, only_in_rooms = True)
         return entity_list
 
     def gen_empty_dungeon(self):

@@ -34,7 +34,7 @@ class Dungeon_Rogue(Dungeon):
             room = Rect(x, y, width, height)
             self.rooms.append(room)
             self.dig_room([room.x1, room.x2], [room.y1, room.y2])
-            
+
 
     def gen_corridors(self):
         region_width = self.width // self.columns
@@ -47,16 +47,16 @@ class Dungeon_Rogue(Dungeon):
 
         for i in range(0, self.rows):
             y_vals.append(self.regions[i*self.columns].get_center()[1])
-        
+
         for x in range(min(x_vals), max(x_vals) + 1):
             for y in y_vals:
-                self.tiles[y][x] = cells.Floor()        
+                self.tiles[y][x] = cells.Floor()
 
         for y in range(min(y_vals), max(y_vals)):
             for x in x_vals:
                 self.tiles[y][x] = cells.Floor()
 
-    def gen_dungeon(self, player):
+    def gen_dungeon(self, player, floor_index):
         self.initialize_dungeon()
         self.split_dungeon()
         self.gen_rooms()
@@ -64,7 +64,6 @@ class Dungeon_Rogue(Dungeon):
         self.gen_stairs(only_in_rooms = True)
         self.set_player_coords(player)
         entity_list = [player]
-        self.gen_monsters(player, entity_list, only_in_rooms = True)
-        self.gen_items(entity_list, only_in_rooms = True)
+        self.gen_monsters(player, entity_list, floor_index, only_in_rooms = True)
+        self.gen_items(entity_list, floor_index, only_in_rooms = True)
         return entity_list
-        

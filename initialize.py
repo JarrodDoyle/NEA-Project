@@ -13,24 +13,24 @@ def initialize_terminal():
     terminal.color("white")
     terminal.refresh()
 
-def initialize_dungeon(player):
+def initialize_dungeon(player, floor_index):
     dungeon_variants = [0,1,2,3]
     variant = random.choice(dungeon_variants)
     if variant == 0:
         dungeon = Dungeon_BSP(width = 96, height = 64, depth = 10, min_leaf_size = 7, min_room_size = 5, max_room_area = 36, full_rooms = False)
-        entities = dungeon.gen_dungeon(player)
+        entities = dungeon.gen_dungeon(player, floor_index)
         return dungeon, entities
     elif variant == 1:
         dungeon = Dungeon_Cellular_Automata(width = 96, height = 64, birth_limit = 4, death_limit = 3, chance_to_be_alive = 40, num_steps = 4)
-        entities = dungeon.gen_dungeon(player)
+        entities = dungeon.gen_dungeon(player, floor_index)
         return dungeon, entities
     elif variant == 2:
         dungeon = Dungeon_Mazes_And_Rooms(width = 95, height = 63)
-        entities = dungeon.gen_dungeon(player, attempts = 100)
+        entities = dungeon.gen_dungeon(player, floor_index, attempts = 100)
         return dungeon, entities
     elif variant == 3:
         dungeon = Dungeon_Rogue(width = 96, height = 64, rows = 3, columns = 4)
-        entities = dungeon.gen_dungeon(player)
+        entities = dungeon.gen_dungeon(player, floor_index)
         return dungeon, entities
 
 def initialize_move_keybinds():

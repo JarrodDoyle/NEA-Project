@@ -139,7 +139,7 @@ class Dungeon_Cellular_Automata(Dungeon):
                 self.dig_h_corridor(y2, x1, x2)
                 self.dig_v_corridor(x2, y2, y3)
 
-    def gen_dungeon(self, player):
+    def gen_dungeon(self, player, floor_index):
         self.initialize_dungeon()
         for i in range(self.num_steps):
             self.simulate_step()
@@ -148,8 +148,8 @@ class Dungeon_Cellular_Automata(Dungeon):
         self.gen_stairs()
         self.set_player_coords(player, rooms = False)
         entity_list = [player]
-        self.gen_monsters(player, entity_list)
-        self.gen_items(entity_list)
+        self.gen_monsters(player, entity_list, floor_index)
+        self.gen_items(entity_list, floor_index)
 
         # Insert border around dungeon
         self.tiles.insert(0, [cells.Rock() for x in range(self.width)])

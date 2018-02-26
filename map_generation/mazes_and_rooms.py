@@ -168,7 +168,7 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         height = random.choice([i for i in range(min_size, max_size + 1, 2)])
         return Rect(x, y, width, height)
 
-    def gen_dungeon(self, player, attempts):
+    def gen_dungeon(self, player, floor_index, attempts):
         self.gen_rooms(attempts)
         self.tiles = self.gen_mazes()
         self.build_room_regions()
@@ -183,7 +183,7 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         self.set_player_coords(player)
         entity_list = [player]
 
-        self.gen_monsters(player, entity_list, only_in_rooms = True)
-        self.gen_items(entity_list, only_in_rooms = True)
+        self.gen_monsters(player, entity_list, floor_index, only_in_rooms = True)
+        self.gen_items(entity_list, floor_index, only_in_rooms = True)
         self.gen_stairs(only_in_rooms = True)
         return entity_list

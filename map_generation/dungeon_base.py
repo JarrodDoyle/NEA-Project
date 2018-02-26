@@ -14,7 +14,7 @@ class Dungeon:
         else:
             self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
 
-    def gen_monsters(self, player, entity_list, only_in_rooms = False):
+    def gen_monsters(self, player, entity_list, floor_index, only_in_rooms = False):
         xp_sum = 0
         min_required_xp = player.components["level"].level_up_xp
 
@@ -28,11 +28,11 @@ class Dungeon:
                 y = libtcod.random_get_int(0, 0, self.height - 1)
 
             if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                monster = choose_entity_to_spawn("mob")(x,y)
+                monster = choose_entity_to_spawn("mob", floor_index)(x,y)
                 xp_sum += monster.components["level"].avg_xp_drop
                 entity_list.append(monster)
 
-    def gen_items(self, entity_list, only_in_rooms = False):
+    def gen_items(self, entity_list, floor_index, only_in_rooms = False):
         if only_in_rooms:
             for room in self.rooms:
                 max_num_items = room.get_area() // 15
@@ -41,7 +41,7 @@ class Dungeon:
                     x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
                     y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
                     if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                        item = choose_entity_to_spawn("item")(x,y)
+                        item = choose_entity_to_spawn("item", floor_index)(x,y)
                         entity_list.append(item)
         else:
             max_num_items = int((self.height * self.width) * 0.015)
@@ -49,7 +49,7 @@ class Dungeon:
                 x = random.randint(0, self.width - 1)
                 y = random.randint(0, self.height - 1)
                 if get_blocking_entity(entity_list, x, y) is None and self.tiles[y][x].is_blocked is False:
-                        item = choose_item_to_spawn()(x,y)
+                        item = choose_entity_to_spawn("item", floor_index)(x,y)
                         entity_list.append(item)
 
     def gen_stairs(self, only_in_rooms = False):
