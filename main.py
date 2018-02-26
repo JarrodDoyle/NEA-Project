@@ -27,7 +27,7 @@ def play_game(game):
             if result.get("quit"):
                 terminal.close()
 
-while True:
+while __name__ == "__main__":
     terminal.clear()
     terminal.puts(0, 0, chr(int(0xE000)))
     main_menu.render()

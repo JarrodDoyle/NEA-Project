@@ -4,6 +4,24 @@ from components.item import Item
 from components.weapons import Melee, Ranged, Wand
 import use_functions
 
+class Weak_Food(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"hunger_decrease_ratio": 0.5}
+        item_component = Item(use_function = use_functions.decrease_hunger, args = use_args)
+        components_dict = {"item": item_component}
+        super().__init__(x, y, "Weak Food", "%", "brown", "A moderately filling piece of food.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Strong_Food(Entity):
+    base_spawn_weight = 5
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"hunger_decrease_ratio": 1}
+        item_component = Item(use_function = use_functions.decrease_hunger, args = use_args)
+        components_dict = {"item": item_component}
+        super().__init__(x, y, "Food", "%", "brown", "A filling piece of food.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
 class Test_Wand(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 0

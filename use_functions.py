@@ -20,6 +20,15 @@ def dequip(equipment_list, slot, item):
     else:
         return False
 
+def decrease_hunger(entity, args):
+    hunger_decrease_ratio = args.get("hunger_decrease_ratio")
+    hunger_component = entity.components.get("hunger")
+    if hunger_component is not None:
+        hunger_component.turns -= hunger_component.turns_to_starve * hunger_decrease_ratio
+        return True
+    else:
+        return False
+
 def heal_entity(entity, args):
     heal_amount = args.get("heal_amount")
     if heal_amount is not None and entity.components.get("fighter") and entity.components["fighter"].hp < entity.components["fighter"].max_hp:

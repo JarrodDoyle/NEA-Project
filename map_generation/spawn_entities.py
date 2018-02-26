@@ -68,4 +68,6 @@ def get_item_list():
             items.Accuracy_Potion,
             items.Intelligence_Potion,
             items.Dexterity_Potion,
-            items.Max_HP_Potion]
+            items.Max_HP_Potion,
+            items.Weak_Food,
+            items.Strong_Food]
