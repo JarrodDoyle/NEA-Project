@@ -29,6 +29,8 @@ class Game:
         # Initialize FOV
         self.init_fov()
 
+        self.item = None
+
         # Initialize final player
         render(player = self.player, entities = self.entities, fov_map = self.fov_map, fov_recompute = self.fov_recompute, ui_elements = self.ui_elements, fog_of_war = self.fog_of_war)
 
@@ -59,7 +61,7 @@ class Game:
 
         if self.game_state == Game_States.PLAYER_DEAD:
             if cancel:
-                result["cancel"] = True 
+                result["cancel"] = True
 
         # If it is the players turn
         if self.game_state == Game_States.PLAYER_TURN:
@@ -139,16 +141,16 @@ class Game:
                         self.dungeon, self.entities = self.floors[self.floor_index]
                         self.player.x, self.player.y = self.dungeon.entrance
                         self.dungeon.set_player_offset(self.player)
-                    player_turn_results.append({"message": "go to next floor buddy"})
+                    player_turn_results.append({"message": "{} progresses deeper into the dungeon.".format(self.player.name)})
                 elif self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_up":
                     if self.floor_index > 0:
                         self.floor_index -= 1
                         self.dungeon, self.entities = self.floors[self.floor_index]
                         self.player.x, self.player.y = self.dungeon.exit
                         self.dungeon.set_player_offset(self.player)
-                        player_turn_results.append({"message": "go to previous floor buddy"})
+                        player_turn_results.append({"message": "{} ascends the stairs.".format(self.player.name)})
                     else:
-                        player_turn_results.append({"message": "cant go any higher"})
+                        player_turn_results.append({"message": "You cannot leave the dungeons."})
                 self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
 
             # If player accesses inventory
@@ -172,12 +174,11 @@ class Game:
                         if index == inventory_index:
                             self.item = items[1][0]
                         index += 1
-                    results.append({"message": "You look at the {}.".format(self.item.name)})
-                    description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
-                    self.ui_elements["description"].text = description
-                    self.game_state = Game_States.USING_ITEM
-                else:
-                    results.append({"message": "No valid item at index {}".format(inventory_index)})
+                    if self.item is not None:
+                        results.append({"message": "You look at the {}.".format(self.item.name)})
+                        description = "{}\n Us(e)\n (d)rop\n E(x)amine".format(self.item.name)
+                        self.ui_elements["description"].text = description
+                        self.game_state = Game_States.USING_ITEM
             elif cancel:
                 results.append({"message": "You close your inventory."})
                 self.game_state = self.previous_game_state
@@ -195,9 +196,11 @@ class Game:
 
             if use:
                 results.extend(self.item.components["item"].use(self.player, self.player.components["inventory"]))
+                self.item = None
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if drop:
                 results.extend(self.item.components["item"].drop(self.entities, self.player, self.player.components["inventory"]))
+                self.item = None
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if examine:
                 self.ui_elements["description"].text = self.item.description
