@@ -10,10 +10,90 @@ class Leather_Helmet(Entity):
     lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"slot": "head", "item": self}
-        item_component = Item(use_function = use_functions.toggle_equip, args = use_args)
-        armor_component = Armor(bonus_stats = {"defense": 2})
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 1})
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Helmet", "~", "brown", "A leather helmet.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Leather_Chestplate(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "body", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 1})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Leather Chestplate", "~", "brown", "A leather Chestplate.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Leather_Bracers(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "arms", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 1})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Leather Bracers", "~", "brown", "Some leather bracers.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Leather_Greaves(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "legs", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 1})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Leather Greaves", "~", "brown", "Some leather greaves.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Leather_Boots(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "feet", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 1})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Leather Boots", "~", "brown", "Some leather boots.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Intelligence_Ring(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "ring", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"intelligence": 2})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Ring of Intelligence", "=", "cyan", "An enchanted ring. Increases intelligence while worn.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Accuracy_Ring(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "ring", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"accuracy": 2})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Ring of Accuracy", "=", "cyan", "An enchanted ring. Increases accuracy while worn.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Strength_Ring(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "ring", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"strength": 2})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Ring of Strength", "=", "cyan", "An enchanted ring. Increases strength while worn.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Dexterity_Ring(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "ring", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"dexterity": 2})
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Ring of Dexterity", "=", "cyan", "An enchanted ring. Increases dexterity while worn.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Weak_Food(Entity):
     base_spawn_weight = 10
@@ -37,7 +117,7 @@ class Test_Wand(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 0
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Wand(attack_power = 40, attack_range = 5, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -47,7 +127,7 @@ class Iron_Sword(Entity):
     base_spawn_weight = 10
     lowest_level_spawn = 8
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 10, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -57,7 +137,7 @@ class Copper_Sword(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 5
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 5, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -67,7 +147,7 @@ class Copper_Dagger(Entity):
     base_spawn_weight = 10
     lowest_level_spawn = 0
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 2, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -77,7 +157,7 @@ class Iron_Dagger(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 3
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 4, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -87,7 +167,7 @@ class Copper_Axe(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 3
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 4, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -97,7 +177,7 @@ class Iron_Axe(Entity):
     base_spawn_weight = 10
     lowest_level_spawn = 6
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 8, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -107,7 +187,7 @@ class Battle_Axe(Entity):
     base_spawn_weight = 5
     lowest_level_spawn = 6
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 12, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -117,7 +197,7 @@ class Copper_Longsword(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 8
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 7, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
@@ -127,7 +207,7 @@ class Iron_Longsword(Entity):
     base_spawn_weight = 10
     lowest_level_spawn = 10
     def __init__(self, x, y):
-        use_args = {"slot": "hands", "item": self}
+        use_args = {"slot": "hand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Melee(attack_power = 14, attack_range = 1, hits = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}

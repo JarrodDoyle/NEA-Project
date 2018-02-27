@@ -71,4 +71,12 @@ def get_item_list():
             items.Max_HP_Potion,
             items.Weak_Food,
             items.Strong_Food,
-            items.Leather_Helmet]
+            items.Leather_Helmet,
+            items.Leather_Chestplate,
+            items.Leather_Bracers,
+            items.Leather_Greaves,
+            items.Leather_Boots,
+            items.Intelligence_Ring,
+            items.Accuracy_Ring,
+            items.Strength_Ring,
+            items.Dexterity_Ring]
