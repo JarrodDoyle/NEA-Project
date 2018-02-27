@@ -26,6 +26,9 @@ class Item(Component):
         self.owner.y = entity.y
         entity_list.append(self.owner)
         if self.use_function == use_functions.toggle_equip:
-            results.extend(self.use(entity, inventory))
+            equipment_component = entity.components.get("equipment")
+            slot = self.args.get("slot")
+            item = self.args.get("item")
+            use_functions.dequip(equipment_component.equipment, slot, item)
         results.append({"message": "You drop the {} on the ground.".format(self.owner.name)})
         return results
