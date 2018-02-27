@@ -81,6 +81,6 @@ class Basic_Monster(Base_AI):
                 self.move_astar(target, entities, dungeon)
             # Else attack player if they're alive
             elif target.components["fighter"].hp > 0:
-                attack_results = monster.components["fighter"].attack(target)
+                attack_results = monster.components["fighter"].attack(target, "hand")
                 results.extend(attack_results)
         return results

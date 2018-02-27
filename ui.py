@@ -329,9 +329,12 @@ class Equipment_UI_Window(UI_Element):
         for i in equipment:
             equipment_piece = equipment.get(i)
             if equipment_piece is not None:
-                terminal.puts(self.x, self.y + dy, "{}) {}: [color={}]{}[/color]".format(chr(letter_index + dy), i, equipment.get(i).color, equipment.get(i).name))
+                try:
+                    terminal.puts(self.x, self.y + dy, "{}) {}: [color={}]{}[/color]".format(chr(letter_index + dy), i.capitalize(), equipment.get(i).color, equipment.get(i).name))
+                except:
+                    terminal.puts(self.x, self.y + dy, "{}) {}: {}".format(chr(letter_index + dy), i.capitalize(), equipment.get(i)))
             else:
-                terminal.puts(self.x, self.y + dy, "{}) {}:".format(chr(letter_index + dy), i))
+                terminal.puts(self.x, self.y + dy, "{}) {}:".format(chr(letter_index + dy), i.capitalize()))
             dy += 1
 
         terminal.color(base_color)

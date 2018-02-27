@@ -75,7 +75,7 @@ class Game:
                 self.fog_of_war = not self.fog_of_war
 
             if player_action.get("target"):
-                weapon = self.player.components["equipment"].equipment["hands"]
+                weapon = self.player.components["equipment"].equipment["offhand"]
                 if weapon is not None:
                     target_range = weapon.components["weapon"].attack_range
                 else:
@@ -84,7 +84,7 @@ class Game:
                 targetting_result = targetting.choose_target(self.player, self.entities, target_range, entity_type = "fighter")
                 if targetting_result.get("target"):
                     target = targetting_result.get("target")
-                    player_turn_results.extend(self.player.components["fighter"].attack(target))
+                    player_turn_results.extend(self.player.components["fighter"].attack(target, "offhand"))
                     self.game_state = Game_States.ENEMY_TURN
                 elif targetting_result.get("cancel"):
                     pass
@@ -104,7 +104,7 @@ class Game:
 
                     # If there is a blocking entity at destination attack it
                     if target:
-                        attack_results = self.player.components["fighter"].attack(target)
+                        attack_results = self.player.components["fighter"].attack(target, "hand")
                         player_turn_results.extend(attack_results)
                     # Otherwise move to destination
                     else:

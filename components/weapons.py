@@ -3,7 +3,7 @@ from random import choice, randint
 import dice
 
 class Weapon(Component):
-    def __init__(self, attack_power, attack_range, hits, bonus_stats = {}):
+    def __init__(self, attack_power, attack_range, hits, weapon_type, bonus_stats = {}):
         super().__init__()
         self.attack_power = attack_power
         self.attack_range = attack_range
@@ -33,21 +33,36 @@ class Weapon(Component):
 
 class Melee(Weapon):
     def __init__(self, attack_power, hits, attack_range = 1, bonus_stats = {}):
-        super().__init__(attack_power, attack_range, hits, bonus_stats)
+        super().__init__(attack_power, attack_range, hits, "melee", bonus_stats)
 
     def damage(self, fighter):
         return self.get_damage_roll(fighter.strength)
 
 class Ranged(Weapon):
     def __init__(self, attack_power, hits, attack_range, bonus_stats = {}):
-        super().__init__(attack_power, attack_range, hits, bonus_stats)
+        super().__init__(attack_power, attack_range, hits, "ranged", bonus_stats)
 
     def damage(self, fighter):
-        return self.get_damage_roll(fighter.dexterity)
+        equipment_component = fighter.owner.components.get("equipment")
+        if equipment_component is not None:
+            if equipment_component.equipment["ammo"] > 0:
+                damage = self.get_damage_roll(fighter.dexterity)
+                equipment_component.equipment["ammo"] -= 1
+            else:
+                damage = []
+        else:
+            damage = []
+        return damage
 
 class Wand(Weapon):
-    def __init__(self, attack_power, hits, attack_range, bonus_stats = {}):
-        super().__init__(attack_power, attack_range, hits, bonus_stats)
+    def __init__(self, attack_power, hits, attack_range, charges, bonus_stats = {}):
+        self.charges = charges
+        super().__init__(attack_power, attack_range, hits, "wand", bonus_stats)
 
     def damage(self, fighter):
-        return self.get_damage_roll(fighter.intelligence)
+        if self.charges > 0:
+            self.charges -= 1
+            damage = self.get_damage_roll(fighter.intelligence)
+        else:
+            damage = []
+        return damage

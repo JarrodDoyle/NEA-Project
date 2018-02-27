@@ -10,7 +10,7 @@ class Fighter(Component):
         self.hp = fighter_class.base_max_hp
 
     # Attack another fighter
-    def attack(self, target):
+    def attack(self, target, slot):
         results = []
         weapon_damage = []
 
@@ -18,9 +18,10 @@ class Fighter(Component):
             attacker_accuracy = roll_dice(1, self.accuracy)
             target_defense = roll_dice(1, target.components["fighter"].defense)
             if attacker_accuracy > target_defense:
-                weapon = self.owner.components.get("equipment").equipment.get("hands")
+                weapon = self.owner.components.get("equipment").equipment.get(slot)
+
                 if weapon == None:
-                    weapon_damage.append(random.randint(self.strength // 2, self.strength))
+                    weapon_damage.append(random.randint(max(self.strength // 2, 1), self.strength))
                 else:
                     weapon_damage.extend(weapon.components["weapon"].damage(self))
 
@@ -28,9 +29,12 @@ class Fighter(Component):
                 for i in weapon_damage:
                     damage += i
 
-                # Generate appropriate attack message and simulate attack
-                results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
-                results.extend(target.components["fighter"].take_damage(damage))
+                if damage > 0:
+                    # Generate appropriate attack message and simulate attack
+                    results.append({"message": "[color={}]{}[color=red] dealt {} damage to [color={}]{}[color=red].".format(self.owner.color, self.owner.name.capitalize(), damage, target.color, target.name)})
+                    results.extend(target.components["fighter"].take_damage(damage))
+                else:
+                    results.append({"message": "[color={}]{}'s[/color] attack was unsuccesful.".format(self.owner.color, self.owner.name.capitalize())})
             else:
                 results.append({"message": "[color={}]{}'s[/color] attack missed".format(self.owner.color, self.owner.name.capitalize())})
         return results
@@ -53,7 +57,7 @@ class Fighter(Component):
         stat_sum = 0
         if equipment_component:
             for item in equipment_component.equipment.items():
-                if item[1] is not None:
+                if item[1] is not None and item[0] != "ammo":
                     if item[1].components.get("weapon"):
                         stat_sum += item[1].components["weapon"].get_stat(stat)
                     elif item[1].components.get("armor"):

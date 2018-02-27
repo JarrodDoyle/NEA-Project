@@ -117,9 +117,9 @@ class Test_Wand(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 0
     def __init__(self, x, y):
-        use_args = {"slot": "hand", "item": self}
+        use_args = {"slot": "offhand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
-        weapon_component = Wand(attack_power = 40, attack_range = 5, hits = 1)
+        weapon_component = Wand(attack_power = 40, attack_range = 5, hits = 1, charges = 1)
         components_dict = {"item": item_component, "weapon": weapon_component}
         super().__init__(x, y, "TEST WAND", ")", "red", "A test wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
