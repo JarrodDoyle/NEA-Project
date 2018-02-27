@@ -13,7 +13,7 @@ class Character_Creation:
             terminal.refresh()
             key = terminal.read()
 
-            if key == terminal.TK_RETURN or key == terminal.TK_ESCAPE:
+            if (key == terminal.TK_RETURN or key == terminal.TK_ESCAPE) and len(name) > 0:
                 break
             elif key == terminal.TK_BACKSPACE and len(name) > 0:
                 name = name[:-1]
