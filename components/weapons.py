@@ -45,9 +45,9 @@ class Ranged(Weapon):
     def damage(self, fighter):
         equipment_component = fighter.owner.components.get("equipment")
         if equipment_component is not None:
-            if equipment_component.equipment["ammo"] > 0:
+            if equipment_component.equipment["arrows"] > 0:
                 damage = self.get_damage_roll(fighter.dexterity)
-                equipment_component.equipment["ammo"] -= 1
+                equipment_component.equipment["arrows"] -= 1
             else:
                 damage = []
         else:

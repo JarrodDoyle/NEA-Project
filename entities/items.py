@@ -3,7 +3,17 @@ from entities.entity_classes import Entity
 from components.item import Item
 from components.weapons import Melee, Ranged, Wand
 from components.armor import Armor
+from random import randint
 import use_functions
+
+class Arrow_Pile(Entity):
+    base_spawn_weight = 10
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"arrow_count": randint(1, 5)}
+        item_component = Item(use_function = use_functions.add_arrows, args = use_args)
+        components_dict = {"item": item_component}
+        super().__init__(x, y, "Arrow Pile", "*", "yellow", "A pile of arrows.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Leather_Helmet(Entity):
     base_spawn_weight = 10
@@ -12,6 +22,7 @@ class Leather_Helmet(Entity):
         use_args = {"slot": "head", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         armor_component = Armor(bonus_stats = {"defense": 1})
+        armor_component.gen_random_bonus_stat()
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Helmet", "~", "brown", "A leather helmet.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
@@ -22,6 +33,7 @@ class Leather_Chestplate(Entity):
         use_args = {"slot": "body", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         armor_component = Armor(bonus_stats = {"defense": 1})
+        armor_component.gen_random_bonus_stat()
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Chestplate", "~", "brown", "A leather Chestplate.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
@@ -32,6 +44,7 @@ class Leather_Bracers(Entity):
         use_args = {"slot": "arms", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         armor_component = Armor(bonus_stats = {"defense": 1})
+        armor_component.gen_random_bonus_stat()
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Bracers", "~", "brown", "Some leather bracers.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
@@ -42,6 +55,7 @@ class Leather_Greaves(Entity):
         use_args = {"slot": "legs", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         armor_component = Armor(bonus_stats = {"defense": 1})
+        armor_component.gen_random_bonus_stat()
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Greaves", "~", "brown", "Some leather greaves.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
@@ -52,8 +66,64 @@ class Leather_Boots(Entity):
         use_args = {"slot": "feet", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         armor_component = Armor(bonus_stats = {"defense": 1})
+        armor_component.gen_random_bonus_stat()
         components_dict = {"item": item_component, "armor": armor_component}
         super().__init__(x, y, "Leather Boots", "~", "brown", "Some leather boots.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Helmet(Entity):
+    base_spawn_weight = 20
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "head", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 3})
+        armor_component.gen_random_bonus_stat()
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Iron Helmet", "~", "cyan", "A Iron helmet.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Chestplate(Entity):
+    base_spawn_weight = 20
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "body", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 3})
+        armor_component.gen_random_bonus_stat()
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Iron Chestplate", "~", "cyan", "A Iron Chestplate.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Bracers(Entity):
+    base_spawn_weight = 20
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "arms", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 3})
+        armor_component.gen_random_bonus_stat()
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Iron Bracers", "~", "cyan", "Some Iron bracers.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Greaves(Entity):
+    base_spawn_weight = 20
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "legs", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 3})
+        armor_component.gen_random_bonus_stat()
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Iron Greaves", "~", "cyan", "Some Iron greaves.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Iron_Boots(Entity):
+    base_spawn_weight = 20
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "feet", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        armor_component = Armor(bonus_stats = {"defense": 3})
+        armor_component.gen_random_bonus_stat()
+        components_dict = {"item": item_component, "armor": armor_component}
+        super().__init__(x, y, "Iron Boots", "~", "cyan", "Some Iron boots.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Intelligence_Ring(Entity):
     base_spawn_weight = 10
@@ -113,15 +183,35 @@ class Strong_Food(Entity):
         components_dict = {"item": item_component}
         super().__init__(x, y, "Food", "%", "brown", "A filling piece of food.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
-class Test_Wand(Entity):
+class Magic_Missile_Wand(Entity):
     base_spawn_weight = 15
     lowest_level_spawn = 0
     def __init__(self, x, y):
         use_args = {"slot": "offhand", "item": self}
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
-        weapon_component = Wand(attack_power = 40, attack_range = 5, hits = 1, charges = 1)
+        weapon_component = Wand(attack_power = 10, attack_range = 5, hits = 2, charges = 50)
         components_dict = {"item": item_component, "weapon": weapon_component}
-        super().__init__(x, y, "TEST WAND", ")", "red", "A test wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+        super().__init__(x, y, "Wand of Magic Missile", ")", "red", "A magical wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Short_Bow(Entity):
+    base_spawn_weight = 15
+    lowest_level_spawn = 0
+    def __init__(self, x, y):
+        use_args = {"slot": "offhand", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        weapon_component = Ranged(attack_power = 10, attack_range = 5, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Short Bow", ")", "red", "A short bow.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+
+class Long_Bow(Entity):
+    base_spawn_weight = 15
+    lowest_level_spawn = 5
+    def __init__(self, x, y):
+        use_args = {"slot": "offhand", "item": self}
+        item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
+        weapon_component = Ranged(attack_power = 10, attack_range = 10, hits = 1)
+        components_dict = {"item": item_component, "weapon": weapon_component}
+        super().__init__(x, y, "Long Bow", ")", "red", "A long bow.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Iron_Sword(Entity):
     base_spawn_weight = 10

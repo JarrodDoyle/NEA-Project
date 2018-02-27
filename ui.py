@@ -140,9 +140,6 @@ class Player_UI_Window(UI_Element):
         # LINE TELVE
         health_bar(self.x, self.y + 11, self.w, 1, player)
 
-        # LINE THIRTEEN
-        terminal.puts(self.x, self.y + 12, "Gold: [color=yellow]{}[/color]".format(200)) # TODO: Replace with players gold amount
-
         terminal.color(base_color)
         terminal.layer(base_layer)
 

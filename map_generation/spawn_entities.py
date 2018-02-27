@@ -52,7 +52,7 @@ def get_mob_list():
             mobs.Mob_Monkey]
 
 def get_item_list():
-    return [items.Test_Wand,
+    return [items.Magic_Missile_Wand,
             items.Iron_Longsword,
             items.Copper_Longsword,
             items.Battle_Axe,
@@ -76,7 +76,15 @@ def get_item_list():
             items.Leather_Bracers,
             items.Leather_Greaves,
             items.Leather_Boots,
+            items.Iron_Helmet,
+            items.Iron_Chestplate,
+            items.Iron_Bracers,
+            items.Iron_Greaves,
+            items.Iron_Boots,
             items.Intelligence_Ring,
             items.Accuracy_Ring,
             items.Strength_Ring,
-            items.Dexterity_Ring]
+            items.Dexterity_Ring,
+            items.Arrow_Pile,
+            items.Short_Bow,
+            items.Long_Bow]

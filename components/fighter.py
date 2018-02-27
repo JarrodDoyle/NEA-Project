@@ -57,7 +57,7 @@ class Fighter(Component):
         stat_sum = 0
         if equipment_component:
             for item in equipment_component.equipment.items():
-                if item[1] is not None and item[0] != "ammo":
+                if item[1] is not None and item[0] != "arrows":
                     if item[1].components.get("weapon"):
                         stat_sum += item[1].components["weapon"].get_stat(stat)
                     elif item[1].components.get("armor"):

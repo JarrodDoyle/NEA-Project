@@ -1,3 +1,12 @@
+def add_arrows(entity, args):
+    arrow_count = args.get("arrow_count")
+    equipment_component = entity.components.get("equipment")
+    if equipment_component:
+        equipment_component.equipment["arrows"] += arrow_count
+        return True
+    else:
+        return False
+
 def toggle_equip(entity, args):
     equipment_component = entity.components.get("equipment")
     slot = args.get("slot")
