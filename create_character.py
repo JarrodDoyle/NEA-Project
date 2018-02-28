@@ -30,7 +30,7 @@ class Character_Creation:
     def choose_class(self):
         menu = Generic_Text_Window(1, 1, 94, 62, "Character Creation")
         classes = [fighter.Barbarian, fighter.Wizard, fighter.Rogue, fighter.Ranger]
-        text = "Please select a class:\n a) Barbarian\n b) Wizard\n c) Rogue\n d) Ranger"
+        text = "Please select a class:\n a) Barbarian:\n{}\n[color=black]█[\color]\n b) Wizard:\n{}\n[color=black]█[\color]\n c) Rogue:\n{}\n[color=black]█[\color]\n d) Ranger:\n{}".format(classes[0].description, classes[1].description, classes[2].description, classes[3].description)
         menu.render(text)
         terminal.refresh()
         valid_choice = False

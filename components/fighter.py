@@ -131,21 +131,21 @@ class Fighter_Class:
 
 # The four classes the player can choose from.
 class Barbarian(Fighter_Class):
+    description = "Barbarians are very strong and fairly accurate with their attacks. They have a lot of health which allows them to survive long, close range, fights. However they severely lack abilities with magic and ranged weapons.\n STR: 4\n DEF: 1\n ACC: 3\n INT: 1\n DEX: 5\n HP: 100"
     def __init__(self):
         super().__init__(name = "barbarian", strength = 4, defense = 1, accuracy = 3, intelligence = 1, dexterity = 1, max_hp = 100)
-        self.description = "Barbarians are very strong and fairly accurate with their attacks. They have a lot of health which allows them to survive long, close range, fights. However they severely lack abilities with magic and ranged weapons."
 
 class Wizard(Fighter_Class):
+    description = "Wizards are extremely strong with magical attacks and are trained in some hand to hand combat. They lack ability with ranged weapons.\n STR: 2\n DEF: 1\n ACC: 2\n INT: 5\n DEX: 1\n HP: 50"
     def __init__(self):
         super().__init__(name = "wizard", strength = 2, defense = 1, accuracy = 2, intelligence = 5, dexterity = 1, max_hp = 50)
-        self.description = "Wizards are extremely strong with magical attacks and are trained in some hand to hand combat. They lack ability with ranged weapons."
 
 class Rogue(Fighter_Class):
+    description = "Rogues are capable in all standard combat methods but struggle with magic attacks.\n STR: 2\n DEF: 1\n ACC: 4\n INT: 1\n DEX: 2\n HP: 75"
     def __init__(self):
         super().__init__(name = "rogue", strength = 2, defense = 1, accuracy = 4, intelligence = 1, dexterity = 2, max_hp = 75)
-        self.description = "Rogues are capable in all standard combat methods but struggle with magic attacks."
 
 class Ranger(Fighter_Class):
+    description = "Rangers are extremely good with ranged weapons and are accurate shots, they are however very weak and struggle in close combat situations.\n STR: 1\n DEF: 1\n ACC: 4\n INT: 1\n DEX: 5\n HP: 25"
     def __init__(self):
         super().__init__(name = "ranger", strength = 1, defense = 1, accuracy = 4, intelligence = 1, dexterity = 5, max_hp = 25)
-        self.description = "Rangers are extremely good with ranged weapons and are accurate shots, they are however very weak and struggle in close combat situations."
