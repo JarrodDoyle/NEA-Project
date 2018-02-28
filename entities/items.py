@@ -191,7 +191,7 @@ class Magic_Missile_Wand(Entity):
         item_component = Item(use_function = use_functions.toggle_equip, args = use_args, remove_on_use = False)
         weapon_component = Wand(attack_power = 10, attack_range = 5, hits = 2, charges = 50)
         components_dict = {"item": item_component, "weapon": weapon_component}
-        super().__init__(x, y, "Wand of Magic Missile", ")", "red", "A magical wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
+        super().__init__(x, y, "Magic Wand", ")", "red", "A magical wand.", blocks = False, render_order = Render_Order.ITEM, components = components_dict)
 
 class Short_Bow(Entity):
     base_spawn_weight = 15
