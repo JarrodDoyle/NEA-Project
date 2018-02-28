@@ -9,6 +9,6 @@ class Game_States(Enum):
     WIN = 6
 
 class Hunger_States(Enum):
-    STARVING = "starving"
-    HUNGRY = "hungry"
-    FULL = "full"
+    STARVING = 1
+    HUNGRY = 2
+    FULL = 3
