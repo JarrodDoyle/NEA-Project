@@ -5,6 +5,7 @@ from ui import Menu
 from engine import Game
 from data_loading import save_game, load_game
 
+# Python recursion limit increased to allow for large cave maps
 sys.setrecursionlimit(6144)
 
 initialize_terminal()

@@ -1,3 +1,4 @@
+# Rectangle class
 class Rect:
     def __init__(self, x, y, w, h):
         self.x1 = x

@@ -1,3 +1,4 @@
+# Base cell class inherited by all cell types
 class Cell:
     def __init__(self, cell_name, char, bk_color = "dark gray", color = "white", is_blocked = True, blocks_sight = True):
         self.cell_name = cell_name

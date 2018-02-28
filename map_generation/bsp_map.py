@@ -13,6 +13,7 @@ class Dungeon_BSP(Dungeon):
         self.full_rooms = full_rooms
 
     def v_line(self, x, y1, y2):
+        # Draws a vertical line between specified y vals at x
         if y1 > y2:
             y1, y2 = y2, y1
 

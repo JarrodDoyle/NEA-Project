@@ -9,22 +9,28 @@ class Fighter(Component):
         self.fighter_class = fighter_class
         self.hp = fighter_class.base_max_hp
 
-    # Attack another fighter
+    # Attack another entity with a fighter component.
     def attack(self, target, slot):
         results = []
         weapon_damage = []
 
+        # If alive
         if self.hp > 0:
+            # Do a dice roll for self accuracy and targets defense.
             attacker_accuracy = roll_dice(1, self.accuracy)
             target_defense = roll_dice(1, target.components["fighter"].defense)
             if attacker_accuracy > target_defense:
+                # Get the weapon held at the specified equipment slot.
                 weapon = self.owner.components.get("equipment").equipment.get(slot)
 
                 if weapon == None:
+                    # If fighter doesn't have a weapon in the specified slot, deal a random amount of damage in the specified range
                     weapon_damage.append(random.randint(max(self.strength // 2, 1), self.strength))
                 else:
+                    # Else call the weapon's damage function and extend the damage list with the results of the call
                     weapon_damage.extend(weapon.components["weapon"].damage(self))
 
+                # Total up all of the damage dealt
                 damage = 0
                 for i in weapon_damage:
                     damage += i
@@ -52,6 +58,7 @@ class Fighter(Component):
             results.append({"dead": self.owner})
         return results
 
+    # Returns the amount of a specified stat provided by the fighter's equipment
     def bonus_stat(self, stat):
         equipment_component = self.owner.components.get("equipment")
         stat_sum = 0
@@ -122,6 +129,7 @@ class Fighter_Class:
         self.base_dexterity = dexterity
         self.base_max_hp = max_hp
 
+# The four classes the player can choose from.
 class Barbarian(Fighter_Class):
     def __init__(self):
         super().__init__(name = "barbarian", strength = 4, defense = 1, accuracy = 3, intelligence = 1, dexterity = 1, max_hp = 100)
@@ -141,8 +149,3 @@ class Ranger(Fighter_Class):
     def __init__(self):
         super().__init__(name = "ranger", strength = 1, defense = 1, accuracy = 4, intelligence = 1, dexterity = 5, max_hp = 25)
         self.description = "Rangers are extremely good with ranged weapons and are accurate shots, they are however very weak and struggle in close combat situations."
-
-class God(Fighter_Class):
-    def __init__(self):
-        super().__init__(name = "god", strength = 1000, defense = 1000, accuracy = 1000, intelligence = 1000, dexterity = 1000, max_hp = 1000)
-        self.description = "You're a GOD with almost no weaknesses."

@@ -11,6 +11,7 @@ from death_functions import kill_player, kill_monster
 from entities.entity_functions import get_blocking_entity
 from initialize import initialize_dungeon, initialize_player
 
+# Game class contains the main game loop
 class Game:
     def __init__(self):
         # Set inital game state
@@ -31,14 +32,12 @@ class Game:
 
         self.item = None
 
-        # Initialize final player
-        render(player = self.player, entities = self.entities, fov_map = self.fov_map, fov_recompute = self.fov_recompute, ui_elements = self.ui_elements, fog_of_war = self.fog_of_war)
-
     def init_fov(self):
         self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
         self.fog_of_war = True
 
     def play(self):
+        # Main game loop
         result = {}
         turn_results = []
 
@@ -59,6 +58,7 @@ class Game:
         if quit:
             result["quit"] = True
 
+        # If the player is dead
         if self.game_state == Game_States.PLAYER_DEAD:
             if cancel:
                 result["cancel"] = True
@@ -68,11 +68,8 @@ class Game:
             if cancel:
                 result["cancel"] = True
 
+            # List to store all dicts of turn results
             player_turn_results = []
-
-            # Toggle fog of war
-            if player_action.get("toggle_fog"):
-                self.fog_of_war = not self.fog_of_war
 
             if player_action.get("target"):
                 weapon = self.player.components["equipment"].equipment["offhand"]
@@ -132,17 +129,21 @@ class Game:
             if player_action.get("stair_used"):
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
                     self.floor_index += 1
+                    # If player on 26th floor they win
                     if self.floor_index == 25:
                         self.game_state = Game_States.WIN
+                    # If floor hasn#t previously been visited generate a new one and add it to the floors list
                     elif self.floor_index >= len(self.floors):
                         self.dungeon, self.entities = initialize_dungeon(self.player, self.floor_index)
                         self.floors.append([self.dungeon, self.entities])
+                    # Otherwise load dungeon and entities from floors list and update player coordinates/offset
                     else:
                         self.dungeon, self.entities = self.floors[self.floor_index]
                         self.player.x, self.player.y = self.dungeon.entrance
                         self.dungeon.set_player_offset(self.player)
                     player_turn_results.append({"message": "{} progresses deeper into the dungeon.".format(self.player.name)})
                 elif self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_up":
+                    # Load previous dungeon and entities from floors list and update player coordinates/offset
                     if self.floor_index > 0:
                         self.floor_index -= 1
                         self.dungeon, self.entities = self.floors[self.floor_index]
@@ -162,7 +163,6 @@ class Game:
             player_turn_results.extend(self.player.components["hunger"].update())
 
             turn_results.extend(player_turn_results)
-
 
         # If player is using the inventory
         if self.game_state == Game_States.INVENTORY_ACTIVE:
@@ -195,14 +195,17 @@ class Game:
             examine = player_action.get("examine")
 
             if use:
+                # Use the item
                 results.extend(self.item.components["item"].use(self.player, self.player.components["inventory"]))
                 self.item = None
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if drop:
+                # Drop the item
                 results.extend(self.item.components["item"].drop(self.entities, self.player, self.player.components["inventory"]))
                 self.item = None
                 self.game_state = Game_States.INVENTORY_ACTIVE
             if examine:
+                # Examine the item
                 self.ui_elements["description"].text = self.item.description
                 results.append({"message": "You decide to look more closely at the {}.".format(self.item.name)})
             if cancel:
@@ -225,6 +228,7 @@ class Game:
             turn_results.extend(results)
 
         if self.game_state == Game_States.WIN:
+            # Display "You win" window
             win_screen = Generic_Text_Window(17, 1, 46, 46, "Congratulations!")
             win_screen.render("Congratulations you won! Review your inventory and character stats then press any key to go back to the main menu.")
             terminal.refresh()

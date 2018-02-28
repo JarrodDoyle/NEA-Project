@@ -1,6 +1,7 @@
 from random import randint
 
 def roll_dice(number_of_dice, max_roll):
+    # rolls an n sided dice x times and returns the results
     rolls = []
 
     for i in range(number_of_dice):

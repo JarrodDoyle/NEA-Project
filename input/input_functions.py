@@ -32,8 +32,6 @@ def handle_player_turn_inputs():
         return {"pickup": True}
     elif key == Command_Keybinds.OPEN_INVENTORY:
         return {"inventory_active": True}
-    elif key == Command_Keybinds.TOGGLE_FOG:
-        return {"toggle_fog": True}
     elif key == Command_Keybinds.TARGET:
         return {"target": True}
     if terminal.state(terminal.TK_SHIFT):
@@ -63,6 +61,7 @@ def handle_inventory_inputs():
         return {"inventory_index": index}
 
 def handle_inputs(game_state):
+    # Determine which input function to use
     if game_state == Game_States.PLAYER_TURN:
         return handle_player_turn_inputs()
     elif game_state == Game_States.PLAYER_DEAD:

@@ -10,12 +10,15 @@ def choose_entity_to_spawn(entity_type, floor_index):
     elif entity_type == "mob":
         arr = get_mob_list()
 
+    # Sum the spawn weights of each entity that can be spawned
     weight_sum = 0
     for i in arr:
         weight_sum += max(i.base_spawn_weight * (floor_index - i.lowest_level_spawn + 1), 0)
 
+    # Pick a random weight less than the weight_sum
     roll = dice.roll_dice(1, weight_sum)[0]
     chance_sum = 0
+    # Start summing the weights again but break when the weight is >= the randomly chosen weight, return the entity whose weight was being added to the sum
     for entity in arr:
         chance_sum += max(entity.base_spawn_weight * (floor_index - entity.lowest_level_spawn + 1), 0)
         if chance_sum >= roll:
@@ -23,6 +26,7 @@ def choose_entity_to_spawn(entity_type, floor_index):
     return entity
 
 def get_mob_list():
+    # List of all mobs that can spawn
     return [mobs.Mob_Goblin,
             mobs.Mob_Ant,
             mobs.Mob_Blob,
@@ -52,6 +56,7 @@ def get_mob_list():
             mobs.Mob_Monkey]
 
 def get_item_list():
+    # List of all items that can spawn
     return [items.Magic_Missile_Wand,
             items.Iron_Longsword,
             items.Copper_Longsword,

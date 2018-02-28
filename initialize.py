@@ -8,12 +8,14 @@ from create_character import Character_Creation
 from entities.mobs import Player
 
 def initialize_terminal():
+    # Initializes bearlibterminal terminal, terminal settings loaded from a .ini file
     terminal.open()
     terminal.bkcolor("black")
     terminal.color("white")
     terminal.refresh()
 
 def initialize_dungeon(player, floor_index):
+    # Randomly choose a dungeon variant to generate
     dungeon_variants = [0,1,2,3]
     variant = random.choice(dungeon_variants)
     if variant == 0:
@@ -45,6 +47,7 @@ def initialize_move_keybinds():
     return keybinds
 
 def initialize_player():
+    # Create player character
     creator_class = Character_Creation()
     player_name = creator_class.choose_name()
     player_class = creator_class.choose_class()
