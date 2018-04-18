@@ -4,7 +4,16 @@ from rect import Rect
 from map_generation.dungeon_base import Dungeon
 
 class Dungeon_BSP(Dungeon):
+    """
+    Class used to generate binary space partitioned dungeons, inherits from Dungeon
+    """
     def __init__(self, width, height, depth = 5, min_leaf_size = 10, min_room_size = 5, max_room_area = 36, full_rooms = False):
+        """
+        Initialize BSP dungeon
+
+        width -- dungeon width
+        height -- dungeon height
+        """
         super().__init__(width, height)
         self.depth = depth
         self.min_leaf_size = min_leaf_size
@@ -13,7 +22,10 @@ class Dungeon_BSP(Dungeon):
         self.full_rooms = full_rooms
 
     def v_line(self, x, y1, y2):
-        # Draws a vertical line between specified y vals at x
+        """
+        Draw a vertical line of floors between specified y vals at x
+        """
+        # rearrange y1 and y2 such that y1 < y2
         if y1 > y2:
             y1, y2 = y2, y1
 
@@ -21,16 +33,26 @@ class Dungeon_BSP(Dungeon):
             self.tiles[y][x] = cells.Floor()
 
     def v_line_up(self, x, y):
+        """
+        Draw a vertical line of floors from x, y until a blocking cell is reached
+        """
         while y >= 0 and self.tiles[y][x].is_blocked == True:
             self.tiles[y][x] = cells.Floor()
             y -= 1
 
     def v_line_down(self, x, y):
+        """
+        Draw a downwards vertical line of floors from x, y until a blocking cell is reached
+        """
         while y < self.height and self.tiles[y][x].is_blocked == True:
             self.tiles[y][x] = cells.Floor()
             y += 1
 
     def h_line(self, x1, y, x2):
+        """
+        Draw a horizontal line of floors between specified x vals at y
+        """
+        # Rearrange x1 and x2 such that x1 < x2
         if x1 > x2:
             x1, x2 = x2, x1
 
@@ -38,10 +60,17 @@ class Dungeon_BSP(Dungeon):
             self.tiles[y][x] = cells.Floor()
 
     def h_line_left(self, x, y):
+        """
+        Draw a horizontal line of floors from x, y until a blocking cell is reached
+        """
         while x >= 0 and self.tiles[y][x].is_blocked == True:
             self.tiles[y][x] = cells.Floor()
             x -= 1
+
     def h_line_right(self, x, y):
+        """
+        Draw a negative horizontal line of floors from x, y until a blocking cell is reached
+        """
         while x < self.width and self.tiles[y][x].is_blocked == True:
             self.tiles[y][x] = cells.Floor()
             x += 1

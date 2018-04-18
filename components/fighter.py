@@ -3,14 +3,28 @@ from components.component_base import Component
 import random
 
 class Fighter(Component):
-    # Fighter initialization
+    """
+    Fighter component inheriting from Component.
+
+    Controls attacking, taking damage, and the associated stats.
+    """
     def __init__(self, fighter_class):
+        """
+        Initialize fighter component.
+
+        fighter_class -- The name of the fighters class (e.g. barbarian)
+        """
         super().__init__()
         self.fighter_class = fighter_class
         self.hp = fighter_class.base_max_hp
 
-    # Attack another entity with a fighter component.
     def attack(self, target, slot):
+        """
+        Return the results of an attack attempt on a target.
+
+        target -- The entity to be attacked
+        slot -- The weapon slot to use in the attack
+        """
         results = []
         weapon_damage = []
 
@@ -47,6 +61,11 @@ class Fighter(Component):
 
     # Take damage
     def take_damage(self, damage):
+        """
+        Reduce fighter HP and return the results.
+
+        damage -- How much damage to be taken
+        """
         results = []
 
         # Take the damage
@@ -60,11 +79,19 @@ class Fighter(Component):
 
     # Returns the amount of a specified stat provided by the fighter's equipment
     def bonus_stat(self, stat):
+        """
+        Returns how much of a stat is given as bonuses by equipment.
+
+        stat -- The name of the stat to be returned
+        """
         equipment_component = self.owner.components.get("equipment")
         stat_sum = 0
+        # If the fighter has an equipment component
         if equipment_component:
+            # For each equipment slot
             for item in equipment_component.equipment.items():
                 if item[1] is not None and item[0] != "arrows":
+                    # Add stat from weapon or armor respectively
                     if item[1].components.get("weapon"):
                         stat_sum += item[1].components["weapon"].get_stat(stat)
                     elif item[1].components.get("armor"):
@@ -120,7 +147,13 @@ class Fighter(Component):
         self.fighter_class.base_max_hp = hp
 
 class Fighter_Class:
+    """
+    Base class inherited by different fighter "classes"
+    """
     def __init__(self, name, strength, defense, accuracy, intelligence, dexterity, max_hp):
+        """
+        Initialize "fighter class"
+        """
         self.class_name = name
         self.base_strength = strength
         self.base_defense = defense

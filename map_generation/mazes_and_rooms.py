@@ -3,14 +3,24 @@ from rect import Rect
 from kruskals import Kruskals_Algorithm
 import random, cells
 
-# Generates mazes and rooms dungeon type
 class Dungeon_Mazes_And_Rooms(Dungeon):
+    """
+    Class used to generate rooms and mazes dungeon variant, inherits from Dungeon
+    """
     def __init__(self, width, height):
+        """
+        Initialize rooms and mazes dungeon
+
+        width -- dungeon width
+        height -- dungeon height
+        """
         super().__init__(width, height)
         self.initialize_dungeon(tile = 0) # Initializes a dungeon arr of 0's
 
     def gen_rooms(self, attempts):
-        '''Make a specified number of attempts to generate rooms'''
+        """
+        Make a specified number of attempts to generate rooms
+        """
         self.rooms = []
         for i in range(attempts):
             # Pick a random point with odd coordinates and pick an odd sized room
@@ -36,16 +46,20 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
                     for j in range(y, rect.y2 + 1):
                         self.tiles[j][i] = None
 
-    # Sets all floor cells
     def build_floors(self):
+        """
+        Converts binary floor representation to cell based representation
+        """
         for y in range(self.height):
             for x in range(self.width):
                 # If point is not None (Room) and not 0 (rock walls) set it to a floor cell
                 if self.tiles[y][x] != None and self.tiles[y][x] != 0:
                     self.tiles[y][x] = cells.Floor()
 
-    # Builds the walls for rooms
     def build_walls(self):
+        """
+        Build walls for rooms
+        """
         for room in self.rooms:
             # Builds top and bottom walls
             for x in range(room.x1 - 1, room.x2 + 2):
@@ -64,9 +78,10 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
                 if self.tiles[y][room.x2 + 1].is_blocked:
                     self.tiles[y][room.x2 + 1] = cells.Wall()
 
-    # Gives each room a unique region id
     def build_room_regions(self):
-        '''Finds highest current region id and gives each room an id above it'''
+        """
+        Give each room region a unique ID
+        """
         max_region_id = 0
         # Finds the highest current region id
         for y in range(self.height):
@@ -82,13 +97,17 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
             room_region_id += 1
 
     def gen_mazes(self):
-        '''Gen perfect mazes in empty areas using kruskals'''
+        """
+        Gen perfect mazes in empty areas using kruskals
+        """
         mazes = Kruskals_Algorithm(self.tiles)
         mazes.gen_maze()
         return mazes.arr
 
-    # Attempts to generate a connection at the specified point
     def gen_connection_at_point(self, connections, x, y):
+        """
+        Attempt connection generation at (x,y)
+        """
         above = self.tiles[y-1][x]
         below = self.tiles[y+1][x]
         left = self.tiles[y][x-1]
@@ -101,7 +120,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
             connections.append([x, y, "h"])
 
     def gen_connections_list(self):
-        '''Find valid connection points between regions'''
+        """
+        Find valid connection points between regions
+        """
         connections = []
         for room in self.rooms:
             # Check for vertical connections
@@ -117,6 +138,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         return connections
 
     def remove_invalid_connections(self, connections):
+        """
+        Return trimmed connections list and a list of connections removed
+        """
         # Iterate through connections list and remove all connection points that are no longer valid
         invalid_connections = []
         for connection in connections:
@@ -137,6 +161,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         return connections, invalid_connections
 
     def make_connection(self, connection):
+        """
+        Connect two regions
+        """
         # Get the region id's of the two regions to be connected
         x, y, direction = connection
         if direction == "v":
@@ -154,7 +181,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
                         self.tiles[y][x] = id1
 
     def connect_dungeon(self, connections):
-        '''Adds at least one connection to the dungeon'''
+        """
+        Make a connection between dungeon regions
+        """
         connection = random.choice(connections)
         self.make_connection(connection)
         connections, lost_connections = self.remove_invalid_connections(connections)
@@ -166,7 +195,9 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
         return connections
 
     def remove_dead_ends(self):
-        '''iterate over mazes and remove dead ends'''
+        """
+        Iterate over mazes and remove dead ends
+        """
         done = False
         while not done:
             # Keep looping through the dungeon arr and removing points with only one direction to go until no dead ends are removed
@@ -185,21 +216,27 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
                             self.tiles[y][x] = cells.Rock()
                             done = False
 
-    # Fill in rock walls
     def fill_blank_space(self):
+        """
+        Fill in blank dungeon space with Rock cells
+        """
         for y in range(self.height):
             for x in range(self.width):
                 if self.tiles[y][x] == 0:
                     self.tiles[y][x] = cells.Rock()
 
     def gen_rand_odd_rect(self, x, y, min_size, max_size):
-        '''Generate a rect object with odd length sides.'''
+        """
+        Generate a rect object with odd length sides.
+        """
         width = random.choice([i for i in range(min_size, max_size + 1, 2)])
         height = random.choice([i for i in range(min_size, max_size + 1, 2)])
         return Rect(x, y, width, height)
 
-    # Generate a full dungeon
     def gen_dungeon(self, player, floor_index, attempts):
+        """
+        Generate all rooms and mazes dungeon parts and return them
+        """
         self.gen_rooms(attempts)
         self.tiles = self.gen_mazes()
         self.build_room_regions()

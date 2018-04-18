@@ -4,12 +4,28 @@ from floodfill import flood_fill
 from entities.entity_functions import get_blocking_entity
 
 class Dungeon_Cellular_Automata(Dungeon):
+    """
+    Class used to generate cellular automata dungeons, inherits from Dungeon
+    """
     def __init__(self, width, height, birth_limit, death_limit, chance_to_be_alive, num_steps):
+        """
+        Initialize cellular automata dungeon
+
+        width -- dungeon width
+        height -- dungeon height
+        birth_limit -- minimum number of living neighbours for a cell to become alive
+        death_limit -- minimum number of living neighbours for a cell to stay alive
+        chance_to_be_alive -- probability of a cell being alive on first step
+        num_steps -- number of times to simulate cellular automata progressions
+        """
         super().__init__(width - 2, height - 2)
         self.set_ruleset(birth_limit, death_limit, chance_to_be_alive)
         self.num_steps = num_steps
 
     def initialize_dungeon(self):
+        """
+        Initialize dungeon tile array
+        """
         self.tiles = [[cells.Rock() for x in range(self.width)]for y in range(self.height)]
         # Create a list of 1's and 0's based on the set chance to be alive for each cell
         self.room_arr = []
@@ -23,21 +39,28 @@ class Dungeon_Cellular_Automata(Dungeon):
             self.room_arr.append(row)
 
     def simulate_step(self):
+        """
+        Simulate a step of the cellular automata
+        """
         # Duplicate the main tile list
         new_tiles = self.room_arr
+        # For each cell in the dungeon
         for y in range(self.height):
             for x in range(self.width):
                 # Check the cell's neighbourhood and update the cell based on the ruleset
                 num_alive = self.check_neighbourhood((x, y))
                 if self.room_arr[y][x]:
                     if num_alive < self.death_limit:
-                        new_tiles[y][x] = 0
+                        new_tiles[y][x] = 0 # Cell is dead
                 if not self.room_arr[y][x]:
                     if num_alive > self.birth_limit:
-                        new_tiles[y][x] = 1
+                        new_tiles[y][x] = 1 # Cell is alive
         self.room_arr = new_tiles
 
     def check_neighbourhood(self, cell_coords):
+        """
+        Return the number of living cells surrounding a specified cell position
+        """
         # Calculates the number of alive cells surrounding the cell at specified coords
         cell_x, cell_y = cell_coords
         cell = self.room_arr[cell_y][cell_x]
@@ -57,13 +80,18 @@ class Dungeon_Cellular_Automata(Dungeon):
                         alive += 1
         return alive
 
-    # Sets the ruleset used for determining whether a cell is alive or dead
     def set_ruleset(self, birth_limit, death_limit, chance_to_be_alive):
+        """
+        Set the ruleset used to determine whether a cell is alive or dead
+        """
         self.birth_limit = birth_limit
         self.death_limit = death_limit
         self.chance_to_be_alive = chance_to_be_alive
 
     def connect_rooms(self):
+        """
+        Connect cave regions
+        """
         base_mark = 0
         room_mark = 2
         rooms_calculated = False
@@ -100,8 +128,10 @@ class Dungeon_Cellular_Automata(Dungeon):
                         break
                 self.dig_corridor(p1, p2)
 
-    # Converts the numerical list into an actual dungeon
     def convert_dungeon(self):
+        """
+        Convert binary dungeon representation into cell representation
+        """
         # Iterate through all points of dungeon
         for y in range(self.height):
             for x in range(self.width):
@@ -110,17 +140,25 @@ class Dungeon_Cellular_Automata(Dungeon):
                     self.tiles[y][x] = cells.Floor()
 
     def dig_v_corridor(self, x, y1, y2):
+        """
+        Draw a vertical line of floors between specified y vals at x
+        """
         # Turn all cells in specified range to floor cells
         for y in range(y1, y2 + 1):
             self.tiles[y][x] = cells.Floor()
 
     def dig_h_corridor(self, y, x1, x2):
+        """
+        Draw a horizontal line of floors between specified y vals at x
+        """
         # Turn all cells in specified range to floor cells
         for x in range(x1, x2 + 1):
             self.tiles[y][x] = cells.Floor()
 
     def dig_corridor(self, p1, p2):
-        # Digs a zig zagging corridor between two points
+        """
+        Dig a zig zagging corridor between two points
+        """
         x1 = min(p1[0], p2[0])
         x2 = max(p1[0], p2[0])
         y1 = min(p1[1], p2[1])
@@ -152,8 +190,10 @@ class Dungeon_Cellular_Automata(Dungeon):
                 self.dig_h_corridor(y2, x1, x2)
                 self.dig_v_corridor(x2, y2, y3)
 
-    # Generate a full cellular automata dungeon
     def gen_dungeon(self, player, floor_index):
+        """
+        Generate a full cellular automata dungeon
+        """
         self.initialize_dungeon()
         # Simulate specified number of steps
         for i in range(self.num_steps):

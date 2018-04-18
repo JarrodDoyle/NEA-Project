@@ -3,21 +3,40 @@ import cells, random
 from map_generation.spawn_entities import choose_entity_to_spawn
 from entities.entity_functions import get_blocking_entity
 
-# Base dungeon class inherited by all other dungeon generators
 class Dungeon:
+    """
+    Base dungeon class inherited by all dungeon generation algorithms
+    """
     def __init__(self, width, height):
+        """
+        Initialise dungeon
+
+        width -- dungeon width
+        height -- dungeon height
+        """
         self.width = width
         self.height = height
 
     def initialize_dungeon(self, tile = None):
-        # Initialise a dungeon arr with specified tile
+        """
+        Initialize a dungeon array with the specified tile
+        """
+        # If a tile is specified use it otherwise use Rock cells
         if tile != None:
             self.tiles = [[tile for x in range(self.width)] for y in range(self.height)]
         else:
             self.tiles = [[cells.Rock() for x in range(self.width)] for y in range(self.height)]
 
-    # Generates all the monsters for the dungeon floor
     def gen_monsters(self, player, entity_list, floor_index, only_in_rooms = False):
+        """
+        Generate and return monsters for the dungeon floor
+
+        player -- player entity object
+        entity_list -- list of entities on the dungeon floor
+        floor_index -- how far into the overall dungeon this floor is
+        only_in_rooms -- boolean for whether monsters should be able to spawn
+        anywhere or only in rooms
+        """
         xp_sum = 0
         min_required_xp = player.components["level"].level_up_xp
 
@@ -40,8 +59,15 @@ class Dungeon:
                 xp_sum += monster.components["level"].avg_xp_drop
                 entity_list.append(monster)
 
-    # Generates all the items for the dungeon floor
     def gen_items(self, entity_list, floor_index, only_in_rooms = False):
+        """
+        Generate and return items for the dungeon floor
+
+        entity_list -- list of entities on the dungeon floor
+        floor_index -- how far into the overall dungeon this floor is
+        only_in_rooms -- boolean for whether items should be able to spawn
+        anywhere or only in rooms
+        """
         if only_in_rooms:
             # Attempt to gen items in each room
             for room in self.rooms:
@@ -72,8 +98,13 @@ class Dungeon:
                         item = choose_entity_to_spawn("item", floor_index)(x,y)
                         entity_list.append(item)
 
-    # Generate the up and down stairs
     def gen_stairs(self, only_in_rooms = False):
+        """
+        Generate up/down staircases
+
+        only_in_rooms -- boolean for whether stairs should only spawn in rooms or
+        can occur anywhere in the dungeon
+        """
         if only_in_rooms:
             # Calculate points for the stairs
             x1, y1 = self.rooms[0].get_center() # Up stairs in center of the first room
@@ -120,8 +151,10 @@ class Dungeon:
             player.x, player.y = self.entrance
             self.set_player_offset(player)
 
-    # Digs out a rectangle room in specified x and y ranges
     def dig_room(self, x_range, y_range):
+        """
+        Dig a rectangular room within the specified x and y ranges
+        """
         min_x, max_x = x_range
         min_y, max_y = y_range
         # Place room wall cells

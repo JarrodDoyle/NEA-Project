@@ -1,7 +1,9 @@
 import libtcodpy as libtcod
 
-# Calculate and return entities in player FOV
 def get_visible_entities(player, entities, fov_map):
+    """
+    Calculate and return a list of entities in the player field of view
+    """
     visible_entities = []
     # For every non-player entity
     for entity in entities:
@@ -16,8 +18,10 @@ def get_visible_entities(player, entities, fov_map):
     else:
         return None
 
-# Return blocking entity at target location
 def get_blocking_entity(entities, x, y):
+    """
+    Return blocking entity at target location or None if no blocking entity exists
+    """
     # For each entity
     for entity in entities:
         # If entity at target location and entity blocks

@@ -2,13 +2,26 @@ from components.component_base import Component
 from game_states import Hunger_States
 
 class Hunger(Component):
+    """
+    Hunger component inheriting from Component
+    """
     def __init__(self, turns_to_starve, starve_damage = 1):
+        """
+        Initialize hunger component.
+
+        turns_to_starve -- How many turns it takes to start starving
+        starve_damage -- How much damage is taken each turn while starving,
+        defaults to 1.
+        """
         self.turns_to_starve = turns_to_starve # How many turns it takes to start starving
         self.starve_damage = starve_damage # Damage taken each turn when starving
         self.turns = 0
         self.state = Hunger_States.FULL # Current hunger state
 
     def update(self):
+        """
+        Return results of hunger state updates.
+        """
         results = []
         prev_state = self.state # Store previous state for later comparison
 

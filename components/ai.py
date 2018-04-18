@@ -4,12 +4,24 @@ from entities.entity_functions import *
 from components.component_base import Component
 
 class Base_AI(Component):
+    """
+    Base AI class to be built off of.
+    """
     def move(self, dx, dy):
-        super().__init__()
+        """
+        Move the owning entity by passed offset.
+        """
         self.owner.x += dx
         self.owner.y += dy
 
     def move_astar(self, target, entities, dungeon):
+        """
+        Move the owning entity using A*
+
+        target -- target entity to move towards
+        entities -- list of all entities on the dungeon floor
+        dungeon -- dungeon object
+        """
         owner = self.owner
 
         # Initialize FOV map for self
@@ -51,11 +63,20 @@ class Base_AI(Component):
         libtcod.path_delete(path)
 
     def move_towards(self, target_x, target_y, dungeon, entities):
+        """
+        Move owning entity towards target x/y.
+
+        target_x -- x value to move towards
+        target_y -- y value to move towards
+        dungeon -- dungeon object
+        entities -- list of entities on dungeon floor
+        """
         owner = self.owner
         dx = target_x - owner.x
         dy = target_y - owner.y
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
+        # Turns dx/dy into integers in range(-1, 1) inclusive
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
 
@@ -69,7 +90,18 @@ class Base_AI(Component):
             self.move(dx, dy)
 
 class Basic_Monster(Base_AI):
+    """
+    Basic AI class used for monsters.
+    """
     def take_turn(self, target, fov_map, dungeon, entities):
+        """
+        Take a turn.
+
+        target -- entity to move towards (usually the player)
+        fov_map -- Field of view map
+        dungeon -- A dungeon object
+        entities -- List of entities on the dungeon floor
+        """
         results = []
         monster = self.owner
 

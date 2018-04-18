@@ -2,13 +2,23 @@ import libtcodpy as libtcod
 from components.component_base import Component
 
 class Inventory(Component):
+    """
+    Inventory component inheriting from Component
+    """
     def __init__(self, max_items):
+        """
+        Initialize inventory component
+
+        max_items -- Maximum amount of items that can be in the inventory
+        """
         super().__init__()
         self.items = {"num_items": 0}
         self.max_items = max_items
 
-    # Attempts to add an item to the inventory
     def add_item(self, item):
+        """
+        Attempt to add item to inventory and return the results.
+        """
         results = []
         # If inventory is full
         if self.items["num_items"] >= self.max_items:
@@ -24,8 +34,10 @@ class Inventory(Component):
                 self.items[item.name] = [item]
         return results
 
-    # Removes the specified item from the inventory
     def remove_item(self, item):
+        """
+        Attempt to remove item from inventory and return the results.
+        """
         self.items[item.name].remove(item)
         # If there are no longer any items of the item type in inventory, delete the key from the items dict
         if self.items[item.name] == []:

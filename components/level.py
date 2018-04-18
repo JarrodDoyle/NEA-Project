@@ -4,7 +4,19 @@ from bearlibterminal import terminal
 import random
 
 class Level(Component):
+    """
+    Level component inheriting from Component
+    """
     def __init__(self, base_level, base_xp, lvl_up_factor = 3, xp_drop = 0):
+        """
+        Initialize level component
+
+        base_level -- level to start at
+        base_xp -- base xp needed to level up
+        lvl_up_factor -- used as a power when calculating xp needed to progress
+        a level.
+        xp_drop -- how much xp to drop on death
+        """
         self.level = base_level
         self.base_xp = base_xp
         self.level_up_xp = base_xp
@@ -13,12 +25,22 @@ class Level(Component):
         self.base_xp_drop = xp_drop
 
     def set_level(self, level):
+        """
+        Set the level
+        """
         self.level = level
 
     def can_level_up(self):
+        """
+        Return a boolean value representing whether the entity can level up
+        """
         return self.xp >= self.level_up_xp
 
     def level_up(self):
+        """
+        Level up the entity.
+        """
+        # Create a level up window
         menu = Generic_Text_Window(1, 1, 94, 62, "Level Up Menu")
         self.level += 1
         self.xp = self.xp - self.level_up_xp
@@ -26,6 +48,7 @@ class Level(Component):
 
         fighter = self.owner.components.get("fighter")
 
+        # Text for level up window
         confirmed_stats = False
         while not confirmed_stats:
             available_points = 5
@@ -65,6 +88,8 @@ class Level(Component):
                 if key - terminal.TK_A in range(2):
                     valid_choice = True
                     confirmed_stats = not (key - terminal.TK_A)
+
+        # Increase fighter stats by chosen amount
         fighter.strength += stats[0]
         fighter.defense += stats[1]
         fighter.accuracy += stats[2]
@@ -77,9 +102,17 @@ class Level(Component):
         return self.base_xp_drop + self.level_up_factor
 
     def drop_xp(self):
+        """
+        Returns how much xp to drop.
+        """
         return random.randint(self.avg_xp_drop - self.level, self.avg_xp_drop + self.level)
 
     def gain_xp(self, xp):
+        """
+        Gain xp and return the results.
+
+        xp -- how much xp to gain.
+        """
         results = []
         self.xp += xp
         results.append({"message": "[color=light blue]You gain {} xp.[/color]".format(xp)})
