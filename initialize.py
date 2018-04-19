@@ -8,14 +8,26 @@ from create_character import Character_Creation
 from entities.mobs import Player
 
 def initialize_terminal():
-    # Initializes bearlibterminal terminal, terminal settings loaded from a .ini file
+    """
+    Initialize BearLibTerminal terminal
+
+    Settings for the terminal are loaded automatically from terminal_settings.ini
+    by BearLibTerminal
+    """
     terminal.open()
     terminal.bkcolor("black")
     terminal.color("white")
     terminal.refresh()
 
 def initialize_dungeon(player, floor_index):
-    # Randomly choose a dungeon variant to generate
+    """
+    Generate and return a dungeon and dungeon entities
+
+    player -- the player entity object
+    floor_index -- how many floors into the overall dungeon this dungeon occurs
+    Dungeon type is chosen randomly between 4 dungeon variants which are BSP,
+    Cellular Automata, Rooms and Mazes, and Rogue.
+    """
     dungeon_variants = [0,1,2,3]
     variant = random.choice(dungeon_variants)
     if variant == 0:
@@ -36,6 +48,9 @@ def initialize_dungeon(player, floor_index):
         return dungeon, entities
 
 def initialize_move_keybinds():
+    """
+    Return movement keybindings loaded from a config file
+    """
     file = open("config/keybindings/move_keys.cfg", "r")
     keybinds = {}
     key_vals = []
@@ -47,7 +62,9 @@ def initialize_move_keybinds():
     return keybinds
 
 def initialize_player():
-    # Create player character
+    """
+    Create and return player character
+    """
     creator_class = Character_Creation()
     player_name = creator_class.choose_name()
     player_class = creator_class.choose_class()

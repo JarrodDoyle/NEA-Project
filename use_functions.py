@@ -1,4 +1,7 @@
 def add_arrows(entity, args):
+    """
+    Add arrows to the entities equipment
+    """
     arrow_count = args.get("arrow_count")
     equipment_component = entity.components.get("equipment")
     if equipment_component:
@@ -8,6 +11,9 @@ def add_arrows(entity, args):
         return False
 
 def toggle_equip(entity, args):
+    """
+    Toggle whether an equipment piece is equipped
+    """
     equipment_component = entity.components.get("equipment")
     slot = args.get("slot")
     item = args.get("item")
@@ -19,10 +25,16 @@ def toggle_equip(entity, args):
     return False
 
 def equip(equipment_list, slot, item):
+    """
+    Equip an equipment piece
+    """
     equipment_list[slot] = item
     return True
 
 def dequip(equipment_list, slot, item):
+    """
+    Dequip an equipment piece
+    """
     if equipment_list[slot] == item:
         equipment_list[slot] = None
         return True
