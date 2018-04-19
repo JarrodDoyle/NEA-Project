@@ -235,7 +235,7 @@ class Dungeon_Mazes_And_Rooms(Dungeon):
 
     def gen_dungeon(self, player, floor_index, attempts):
         """
-        Generate all rooms and mazes dungeon parts and return them
+        Generate full rooms and mazes dungeon and return the entities in it
         """
         self.gen_rooms(attempts)
         self.tiles = self.gen_mazes()

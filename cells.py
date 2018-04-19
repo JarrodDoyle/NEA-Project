@@ -1,5 +1,7 @@
-# Base cell class inherited by all cell types
 class Cell:
+    """
+    Base cell class inherited by all cell types
+    """
     def __init__(self, cell_name, char, bk_color = "dark gray", color = "white", is_blocked = True, blocks_sight = True):
         self.cell_name = cell_name
         self.char = char
@@ -9,6 +11,7 @@ class Cell:
         self.blocks_sight = blocks_sight
         self.explored = False
 
+# ALL THE CELLS USED IN THE GAME
 class Wall(Cell):
     def __init__(self):
         super().__init__("wall", "▒", is_blocked = True, blocks_sight = True)

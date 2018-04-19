@@ -1,5 +1,12 @@
-# Recursive flood fill algorithm
 def flood_fill(arr, coords, base_mark, mark):
+    """
+    Recursive flood fill algorithm
+
+    arr -- 2d array of cells
+    coords -- current cell being accessed
+    base_mark -- the mark/id of the cells you want "filled"
+    mark -- the mark/id cells should be "filed" with
+    """
     base_x, base_y = coords
     arr[base_y][base_x] = mark
     # Check above and below

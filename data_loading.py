@@ -1,11 +1,16 @@
 import shelve, os
 
 def save_game(game):
-    # Save game using shelve
+    """
+    Save the current game using a shelf
+    """
     with shelve.open("save", "n") as save_file:
         save_file["game"] = game
 
 def load_game():
+    """
+    Load and return a saved game in shelf format
+    """
     # If save file doesn't exist raise an error
     if not os.path.isfile("save.dat"):
         raise FileNotFoundError

@@ -4,6 +4,9 @@ from fov_functions import *
 from ui import *
 
 def render(dungeon = None, player = None, entities = None, fov_map = None, fov_recompute = None, ui_elements = None, fog_of_war = None):
+    """
+    Render all UI elements
+    """
     terminal.clear()
     recompute_fov(fov_recompute, fov_map, player)
     if player != None:

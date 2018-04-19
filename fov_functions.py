@@ -1,17 +1,25 @@
 import libtcodpy as libtcod
 from bearlibterminal import terminal
 
-# Recomputes the fov_map
 def recompute_fov(fov_recompute, fov_map, player):
+    """
+    Recompute the field of view
+
+    fov_recompute -- Boolean for whether to recompute field of view
+    fov_map -- current fov map to be updated
+    player -- the entity whose field of view is calculated
+    """
     if fov_recompute:
         fov_recompute = False
         libtcod.map_compute_fov(fov_map, player.x, player.y, 10, True, 0)
 
-# Initializes a fov map based on the provided dungeon
 def initialize_fov(dungeon):
+    """
+    Return base field of view map of the passed dungeon
+    """
     w = dungeon.width
     h = dungeon.height
-    fov_map = libtcod.map_new(w, h)
+    fov_map = libtcod.map_new(w, h) # Create a new LibTCOD map
     fov_recompute = True
     for y in range(h):
         for x in range(w):

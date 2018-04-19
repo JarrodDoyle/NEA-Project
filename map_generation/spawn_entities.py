@@ -5,6 +5,9 @@ from random import choice
 from inspect import getmembers, isclass
 
 def choose_entity_to_spawn(entity_type, floor_index):
+    """
+    Choose an entity of the specified type to spawn
+    """
     if entity_type == "item":
         arr = get_item_list()
     elif entity_type == "mob":
@@ -18,7 +21,8 @@ def choose_entity_to_spawn(entity_type, floor_index):
     # Pick a random weight less than the weight_sum
     roll = dice.roll_dice(1, weight_sum)[0]
     chance_sum = 0
-    # Start summing the weights again but break when the weight is >= the randomly chosen weight, return the entity whose weight was being added to the sum
+    # Start summing the weights again but break when the weight is >= the randomly
+    # chosen weight, return the entity whose weight was being added to the sum
     for entity in arr:
         chance_sum += max(entity.base_spawn_weight * (floor_index - entity.lowest_level_spawn + 1), 0)
         if chance_sum >= roll:
@@ -26,7 +30,9 @@ def choose_entity_to_spawn(entity_type, floor_index):
     return entity
 
 def get_mob_list():
-    # List of all mobs that can spawn
+    """
+    Return a list of all mobs in the game
+    """
     return [mobs.Mob_Goblin,
             mobs.Mob_Ant,
             mobs.Mob_Blob,
@@ -56,7 +62,9 @@ def get_mob_list():
             mobs.Mob_Monkey]
 
 def get_item_list():
-    # List of all items that can spawn
+    """
+    Return a list of all items in the game
+    """
     return [items.Magic_Missile_Wand,
             items.Iron_Longsword,
             items.Copper_Longsword,

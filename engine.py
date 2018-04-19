@@ -11,18 +11,23 @@ from death_functions import kill_player, kill_monster
 from entities.entity_functions import get_blocking_entity
 from initialize import initialize_dungeon, initialize_player
 
-# Game class contains the main game loop
 class Game:
+    """
+    Game class containing main game loop
+    """
     def __init__(self):
+        """
+        Initialize game
+        """
         # Set inital game state
         self.game_state = Game_States.PLAYER_TURN
         self.previous_game_state = self.game_state
 
-        # Initialize UI elements and dummy player
+        # Initialize UI elements and dummy player object
         self.ui_elements = initialize_ui_elements()
         self.player = initialize_player()
 
-        # Initialize dungeon
+        # Initialize first dungeon floor
         self.floor_index = 0
         self.dungeon, self.entities = initialize_dungeon(self.player, self.floor_index)
         self.floors = [[self.dungeon, self.entities]]
@@ -33,11 +38,16 @@ class Game:
         self.item = None
 
     def init_fov(self):
+        """
+        Initialize the FOV variables used in the game
+        """
         self.fov_map, self.fov_recompute = initialize_fov(self.dungeon)
         self.fog_of_war = True
 
     def play(self):
-        # Main game loop
+        """
+        Main game loop. Return the result of the "turn"
+        """
         result = {}
         turn_results = []
 
@@ -71,15 +81,19 @@ class Game:
             # List to store all dicts of turn results
             player_turn_results = []
 
-            if player_action.get("target"):
+            if player_action.get("target"): # If player using a targetted attack
                 weapon = self.player.components["equipment"].equipment["offhand"]
+                # Set appropriate attack range depending on if the player has a
+                # ranged weapon.
                 if weapon is not None:
                     target_range = weapon.components["weapon"].attack_range
                 else:
                     target_range = 1
 
+                # If a target is chosen otherwise cancel or quit
                 targetting_result = targetting.choose_target(self.player, self.entities, target_range, entity_type = "fighter")
                 if targetting_result.get("target"):
+                    # Attack target and change game state
                     target = targetting_result.get("target")
                     player_turn_results.extend(self.player.components["fighter"].attack(target, "offhand"))
                     self.game_state = Game_States.ENEMY_TURN
@@ -125,7 +139,7 @@ class Game:
                     pickup_results = [{"message": "[color=yellow]There is nothing here to pick up."}]
                 player_turn_results.extend(pickup_results)
 
-            # GO DOWN A FLOOR BOI
+            # Player uses the stairs to go up/down
             if player_action.get("stair_used"):
                 if self.dungeon.tiles[self.player.y][self.player.x].cell_name == "stair_down":
                     self.floor_index += 1
